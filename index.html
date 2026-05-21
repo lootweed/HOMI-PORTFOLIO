@@ -549,7 +549,6 @@ section { position: relative; z-index: 1; }
 .a-word.commit  { color: var(--yellow); font-size: clamp(1.5rem,3vw,2.5rem); top: 12%; right: 5%;  transform: rotate(8deg); }
 .a-word.deploy  { color: white;         font-size: clamp(1rem,2vw,1.8rem);   bottom: 18%; right: 8%; transform: rotate(-5deg); }
 .a-word.debug   { color: var(--yellow); font-size: clamp(1.2rem,2.5vw,2rem); top: 55%;    right: 2%; transform: rotate(12deg); }
-.a-word.ship    { color: white;         font-size: clamp(1rem,2vw,1.6rem);   bottom: 30%; left: 5%;  transform: rotate(-10deg); }
 
 /* Hero right - Spider-Man */
 .hero-right {
@@ -1773,7 +1772,8 @@ footer {
   .hero-left { padding: 40px 24px; border-right: none; border-bottom: 6px solid var(--black); min-height: auto; }
   .hero-stats { grid-column: 1; }
   .a-word.commit { font-size: 1.2rem; }
-  .a-word.deploy, .a-word.debug, .a-word.ship { display: none; }
+  .a-word.debug { font-size: 1.1rem; top: 55%; right: 4%; }
+  .a-word.deploy { display: none; }
 
   .origin-panels { grid-template-columns: 1fr; }
   .origin-panel { border-right: none; border-bottom: 4px solid var(--black); }
@@ -1949,7 +1949,6 @@ footer {
       <span class="a-word commit">COMMIT!</span>
       <span class="a-word deploy">DEPLOY!</span>
       <span class="a-word debug">DEBUG!</span>
-      <span class="a-word ship">SHIP IT!</span>
     </div>
 
     <div class="hero-issue">THE AMAZING DEVELOPER · ISSUE #001 · thehomi.in</div>
