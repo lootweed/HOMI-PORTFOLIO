@@ -7,6 +7,7 @@
 <meta property="og:title" content="THE AMAZING DEVELOPER | thehomi.in">
 <meta property="og:description" content="With great code comes great responsibility.">
 <title>THE AMAZING DEVELOPER | thehomi.in</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕷️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -3029,9 +3030,9 @@ let lastClickTime = 0;
 
 // ─── THREE.JS 3D SPIDERMAN RENDERING ENGINE ───────────────────────
 let scene, camera, renderer, spideyMesh, mixer;
-const canvas = document.getElementById('spideyCanvas');
+const spideyCanvasElement = document.getElementById('spideyCanvas');
 
-if (canvas) {
+if (spideyCanvasElement) {
   // 1. Scene Setup
   scene = new THREE.Scene();
   
@@ -3041,7 +3042,7 @@ if (canvas) {
   
   // 3. Renderer Setup
   renderer = new THREE.WebGLRenderer({
-    canvas: canvas,
+    canvas: spideyCanvasElement,
     alpha: true,
     antialias: true,
     powerPreference: "high-performance"
@@ -3128,9 +3129,9 @@ if (canvas) {
 const clock = new THREE.Clock();
 
 function resize3DCanvas() {
-  const w = canvas.clientWidth;
-  const h = canvas.clientHeight;
-  if (canvas.width !== w || canvas.height !== h) {
+  const w = spideyCanvasElement.clientWidth;
+  const h = spideyCanvasElement.clientHeight;
+  if (spideyCanvasElement.width !== w || spideyCanvasElement.height !== h) {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
