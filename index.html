@@ -3171,8 +3171,8 @@ function animate3D() {
 
     // Project 3D hand coordinates to 2D screen space to position the web origin dynamically
     spideyMesh.updateMatrixWorld(true);
-    // Position of the outstretched hand in the local space of spiderman.glb (right hand, forward & right)
-    const localHand = new THREE.Vector3(0.85, 0.38, 0.80);
+    // Position of the outstretched hand in the local space of spiderman.glb (bottom right)
+    const localHand = new THREE.Vector3(0.50, -0.72, 0.0);
     const worldHand = localHand.clone().applyMatrix4(spideyMesh.matrixWorld);
     const projectedHand = worldHand.project(camera);
     
