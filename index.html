@@ -3029,11 +3029,11 @@ let clickActive = false;
 let lastClickTime = 0;
 
 // ─── THREE.JS 3D SPIDERMAN RENDERING ENGINE ───────────────────────
-let scene, camera, renderer, spideyMesh, mixer;
-const clock = new THREE.Clock();
+let scene, camera, renderer, spideyMesh, mixer, clock;
 const spideyCanvasElement = document.getElementById('spideyCanvas');
 
 if (spideyCanvasElement) {
+  clock = new THREE.Clock();
   // 1. Scene Setup
   scene = new THREE.Scene();
   
