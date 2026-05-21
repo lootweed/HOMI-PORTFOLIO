@@ -3030,6 +3030,7 @@ let lastClickTime = 0;
 
 // ─── THREE.JS 3D SPIDERMAN RENDERING ENGINE ───────────────────────
 let scene, camera, renderer, spideyMesh, mixer;
+const clock = new THREE.Clock();
 const spideyCanvasElement = document.getElementById('spideyCanvas');
 
 if (spideyCanvasElement) {
@@ -3125,8 +3126,6 @@ if (spideyCanvasElement) {
   // Initialize loop
   animate3D();
 }
-
-const clock = new THREE.Clock();
 
 function resize3DCanvas() {
   const w = spideyCanvasElement.clientWidth;
