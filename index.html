@@ -777,6 +777,7 @@ canvas.spidey-img-cutout {
   font-size: 2.5rem;
   margin-bottom: 12px;
   display: inline-block;
+  filter: drop-shadow(2px 2px 0 var(--black));
 }
 .origin-panel-body h3 {
   font-family: var(--font-bang);
@@ -784,24 +785,36 @@ canvas.spidey-img-cutout {
   letter-spacing: 2px;
   margin-bottom: 10px;
 }
-.op-1 h3 { color: var(--red); }
-.op-2 h3 { color: var(--blue); }
-.op-3 h3 { color: var(--black); }
+.op-1 h3 { color: var(--yellow); text-shadow: 2px 2px 0 var(--black); -webkit-text-stroke: 1px var(--black); }
+.op-2 h3 { color: var(--yellow); text-shadow: 2px 2px 0 var(--black); -webkit-text-stroke: 1px var(--black); }
+.op-3 h3 { color: var(--yellow); text-shadow: 2px 2px 0 var(--black); -webkit-text-stroke: 1px var(--black); }
+.op-1 .origin-panel-body p { color: var(--white); }
+.op-2 .origin-panel-body p { color: var(--white); }
+.op-3 .origin-panel-body p { color: var(--paper); }
 .origin-panel-body p {
   font-size: 0.95rem;
   line-height: 1.65;
   font-weight: 700;
-  color: rgba(0,0,0,0.75);
   flex: 1;
+}
+.origin-panel-body strong {
+  color: var(--yellow);
+}
+.origin-panel-body em {
+  color: var(--yellow);
+  font-style: italic;
 }
 .panel-num {
   font-family: var(--font-bang);
-  font-size: 3rem;
-  color: rgba(0,0,0,0.06);
+  font-size: 4rem;
   position: absolute;
   bottom: 10px; right: 15px;
   line-height: 1;
+  pointer-events: none;
 }
+.op-1 .panel-num { color: rgba(255, 255, 255, 0.12); }
+.op-2 .panel-num { color: rgba(255, 255, 255, 0.12); }
+.op-3 .panel-num { color: rgba(255, 255, 255, 0.08); }
 
 /* RPG stats */
 .rpg-stats {
@@ -2090,9 +2103,9 @@ footer {
             Like any hero, I trained relentlessly — learning Python, TensorFlow, PyTorch, and training Convolutional Neural Networks (CNNs). I conquered data preprocessing and engineered bulletproof voice authentication models and deep-learning image distenders in intense, fast-paced hackathons.
           </p>
           <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
-            <span style="background:rgba(0,56,168,0.2);border:2px solid var(--blue);color:#fff;font-family:var(--font-bang);font-size:0.75rem;letter-spacing:1px;padding:3px 8px">B.Tech AI &amp; DS</span>
-            <span style="background:rgba(0,56,168,0.2);border:2px solid var(--blue);color:#fff;font-family:var(--font-bang);font-size:0.75rem;letter-spacing:1px;padding:3px 8px">TensorFlow / Keras</span>
-            <span style="background:rgba(0,56,168,0.2);border:2px solid var(--blue);color:#fff;font-family:var(--font-bang);font-size:0.75rem;letter-spacing:1px;padding:3px 8px">Firebase / Git</span>
+            <span style="background:var(--yellow);border:2px solid var(--black);color:var(--black);font-family:var(--font-bang);font-size:0.75rem;letter-spacing:1px;padding:4px 10px;box-shadow:2px 2px 0 var(--black)">B.TECH AI &amp; DS</span>
+            <span style="background:var(--yellow);border:2px solid var(--black);color:var(--black);font-family:var(--font-bang);font-size:0.75rem;letter-spacing:1px;padding:4px 10px;box-shadow:2px 2px 0 var(--black)">TENSORFLOW / KERAS</span>
+            <span style="background:var(--yellow);border:2px solid var(--black);color:var(--black);font-family:var(--font-bang);font-size:0.75rem;letter-spacing:1px;padding:4px 10px;box-shadow:2px 2px 0 var(--black)">FIREBASE / GIT</span>
           </div>
         </div>
         <div class="panel-num">2</div>
@@ -2126,42 +2139,42 @@ footer {
         <div class="rpg-stat">
           <div class="rpg-stat-row">
             <span class="rpg-stat-name">🕸️ AI &amp; DATA SCIENCE (DEX)</span>
-            <span class="rpg-stat-val">92/100</span>
+            <span class="rpg-stat-val">CLASS S [ELITE]</span>
           </div>
           <div class="rpg-bar-track"><div class="rpg-bar-fill red" data-width="92"></div></div>
         </div>
         <div class="rpg-stat">
           <div class="rpg-stat-row">
             <span class="rpg-stat-name">🎨 UI/UX DESIGN (CHA)</span>
-            <span class="rpg-stat-val">95/100</span>
+            <span class="rpg-stat-val">CLASS S+ [SUPREME]</span>
           </div>
           <div class="rpg-bar-track"><div class="rpg-bar-fill blue" data-width="95"></div></div>
         </div>
         <div class="rpg-stat">
           <div class="rpg-stat-row">
             <span class="rpg-stat-name">🗄️ BACKEND &amp; FIREBASE (STR)</span>
-            <span class="rpg-stat-val">88/100</span>
+            <span class="rpg-stat-val">CLASS A [HEAVYWEIGHT]</span>
           </div>
           <div class="rpg-bar-track"><div class="rpg-bar-fill yellow" data-width="88"></div></div>
         </div>
         <div class="rpg-stat">
           <div class="rpg-stat-row">
             <span class="rpg-stat-name">🧠 DEEP LEARNING (INT)</span>
-            <span class="rpg-stat-val">90/100</span>
+            <span class="rpg-stat-val">CLASS S [GENIUS]</span>
           </div>
           <div class="rpg-bar-track"><div class="rpg-bar-fill green" data-width="90"></div></div>
         </div>
         <div class="rpg-stat">
           <div class="rpg-stat-row">
             <span class="rpg-stat-name">💡 PRODUCT THINKING (WIS)</span>
-            <span class="rpg-stat-val">87/100</span>
+            <span class="rpg-stat-val">CLASS A [TACTICIAN]</span>
           </div>
           <div class="rpg-bar-track"><div class="rpg-bar-fill red" data-width="87"></div></div>
         </div>
         <div class="rpg-stat">
           <div class="rpg-stat-row">
             <span class="rpg-stat-name">🐍 PYTHON PROGRAMMING (LCK)</span>
-            <span class="rpg-stat-val">89/100</span>
+            <span class="rpg-stat-val">CLASS A+ [APEX SPEC]</span>
           </div>
           <div class="rpg-bar-track"><div class="rpg-bar-fill blue" data-width="89"></div></div>
         </div>
