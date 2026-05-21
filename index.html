@@ -66,7 +66,7 @@ input, textarea, select { font-family: var(--font-body); }
   position: fixed; top: 0; left: 0;
   pointer-events: none; z-index: 99999;
   transform: translate(-50%,-50%);
-  transition: transform 0.1s, width 0.2s, height 0.2s;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   mix-blend-mode: multiply;
 }
 #cursor.hover { width: 32px; height: 32px; background: var(--yellow); }
@@ -75,7 +75,7 @@ input, textarea, select { font-family: var(--font-body); }
   position: absolute; inset: -6px;
   border: 2px dashed var(--red);
   border-radius: 50%;
-  animation: cursorSpin 3s linear infinite;
+  animation: cursorSpin 6s linear infinite;
 }
 @keyframes cursorSpin { to { transform: rotate(360deg); } }
 
@@ -161,7 +161,7 @@ input, textarea, select { font-family: var(--font-body); }
 .action-burst {
   font-family: var(--font-bang);
   display: inline-block;
-  animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+  animation: popIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
   opacity: 0;
 }
 .action-burst.visible { opacity: 1; }
@@ -179,7 +179,7 @@ input, textarea, select { font-family: var(--font-body); }
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   overflow: hidden;
-  transition: opacity 0.6s ease;
+  transition: opacity 1.5s ease-in-out;
 }
 #loader.fade-out { opacity: 0; pointer-events: none; }
 
@@ -212,7 +212,7 @@ input, textarea, select { font-family: var(--font-body); }
   text-shadow: 4px 4px 0 var(--red-dark);
   opacity: 0;
   transform: scale(0);
-  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+  transition: transform 1.0s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s;
   margin-bottom: 32px;
 }
 #loader-thwip.show { opacity: 1; transform: scale(1); }
@@ -221,7 +221,7 @@ input, textarea, select { font-family: var(--font-body); }
   width: min(360px, 80vw);
   margin-bottom: 24px;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 #health-bar-wrap.show { opacity: 1; }
 #health-bar-label {
@@ -244,7 +244,7 @@ input, textarea, select { font-family: var(--font-body); }
   height: 100%;
   width: 0%;
   background: linear-gradient(90deg, var(--red-dark), var(--red), var(--red-bright));
-  transition: width 0.1s linear;
+  transition: width 0.3s linear;
   position: relative;
 }
 #health-bar-fill::after {
@@ -262,7 +262,7 @@ input, textarea, select { font-family: var(--font-body); }
   letter-spacing: 5px;
   color: var(--white);
   opacity: 0;
-  transition: opacity 0.6s;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: center;
   line-height: 1.3;
 }
@@ -279,7 +279,7 @@ input, textarea, select { font-family: var(--font-body); }
   position: absolute; inset: 0;
   background: #040408;
   clip-path: circle(0% at 50% 50%);
-  transition: clip-path 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: clip-path 1.8s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
   z-index: 2;
 }
@@ -290,7 +290,7 @@ input, textarea, select { font-family: var(--font-body); }
     100% 0%, 60% 8%, 80% 0%, 40% 5%,
     20% 0%, 0% 0%
   );
-  transition: clip-path 0.6s cubic-bezier(0.4, 0, 0.6, 1);
+  transition: clip-path 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 #symbiote.gone { display: none; }
 
@@ -359,7 +359,7 @@ input, textarea, select { font-family: var(--font-body); }
   padding: 6px 14px;
   border: 2px solid transparent;
   border-radius: 3px;
-  transition: all 0.2s;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .nav-links a:hover, .nav-links a.active {
   color: var(--yellow);
@@ -376,7 +376,7 @@ input, textarea, select { font-family: var(--font-body); }
   border: 3px solid var(--yellow);
   border-radius: 3px;
   box-shadow: 3px 3px 0 var(--red-dark);
-  transition: all 0.2s;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
 }
 .nav-cta:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--red-dark); }
@@ -386,7 +386,7 @@ input, textarea, select { font-family: var(--font-body); }
 }
 .hamburger span {
   width: 24px; height: 3px; background: var(--white);
-  display: block; transition: all 0.3s; border-radius: 2px;
+  display: block; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 2px;
 }
 .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); background: var(--red); }
 .hamburger.open span:nth-child(2) { opacity: 0; }
@@ -416,11 +416,11 @@ section { position: relative; z-index: 1; }
 /* Reveal animation */
 .reveal {
   opacity: 0; transform: translateY(30px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .reveal.visible { opacity: 1; transform: none; }
-.reveal-left  { opacity: 0; transform: translateX(-30px); transition: opacity 0.6s, transform 0.6s; }
-.reveal-right { opacity: 0; transform: translateX(30px);  transition: opacity 0.6s, transform 0.6s; }
+.reveal-left  { opacity: 0; transform: translateX(-30px); transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.reveal-right { opacity: 0; transform: translateX(30px);  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .reveal-left.visible, .reveal-right.visible { opacity: 1; transform: none; }
 
 /* ══════════════════════════════════════════════════
@@ -502,7 +502,7 @@ section { position: relative; z-index: 1; }
   padding: 12px 28px;
   border: var(--border);
   display: inline-flex; align-items: center; gap: 8px;
-  transition: all 0.2s;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   text-transform: uppercase;
 }
@@ -526,7 +526,7 @@ section { position: relative; z-index: 1; }
 }
 /* Pumpkin bomb hover on btn-primary */
 .btn-primary-comic:hover {
-  animation: pumpkinBomb 0.5s ease forwards;
+  animation: pumpkinBomb 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 @keyframes pumpkinBomb {
   0%  { box-shadow: 5px 5px 0 var(--black); }
@@ -550,9 +550,14 @@ section { position: relative; z-index: 1; }
   -webkit-text-stroke: 2px var(--black);
   text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
 }
-.a-word.commit  { color: var(--yellow); font-size: clamp(1.5rem,3vw,2.5rem); top: 12%; right: 5%;  transform: rotate(8deg); }
-.a-word.deploy  { color: white;         font-size: clamp(1rem,2vw,1.8rem);   bottom: 18%; right: 8%; transform: rotate(-5deg); }
-.a-word.debug   { color: var(--yellow); font-size: clamp(1.2rem,2.5vw,2rem); top: 55%;    right: 2%; transform: rotate(12deg); }
+.a-word.commit  { --r: 8deg;  color: var(--yellow); font-size: clamp(1.5rem,3vw,2.5rem); top: 12%; right: 5%;  transform: rotate(var(--r)); }
+.a-word.deploy  { --r: -5deg; color: white;         font-size: clamp(1rem,2vw,1.8rem);   bottom: 18%; right: 8%; transform: rotate(var(--r)); }
+.a-word.debug   { --r: 12deg; color: var(--yellow); font-size: clamp(1.2rem,2.5vw,2rem); top: 55%;    right: 2%; transform: rotate(var(--r)); }
+
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0) rotate(var(--r)); }
+  50% { transform: translateY(-15px) rotate(calc(var(--r) + 2deg)); }
+}
 
 /* Hero right - Spider-Man */
 .hero-right {
@@ -583,7 +588,7 @@ section { position: relative; z-index: 1; }
   object-fit: contain;
   mix-blend-mode: screen;
   filter: url(#spideyWarpFilter) drop-shadow(0 0 15px rgba(227,30,36,0.3));
-  transition: transform 0.2s ease-out;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
 canvas.spidey-img-cutout {
@@ -602,19 +607,19 @@ canvas.spidey-img-cutout {
   z-index: 5;
   opacity: 0;
   transform-origin: bottom center;
-  transition: opacity 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .spidey-sense-halo.alert {
   opacity: 1 !important;
 }
 .spidey-sense-halo.alert .arc-inner {
-  animation: senseWobbleInner 0.12s linear infinite;
+  animation: senseWobbleInner 0.24s linear infinite;
 }
 .spidey-sense-halo.alert .arc-mid {
-  animation: senseWobbleMid 0.12s linear infinite reverse;
+  animation: senseWobbleMid 0.24s linear infinite reverse;
 }
 .spidey-sense-halo.alert .arc-outer {
-  animation: senseWobbleOuter 0.16s linear infinite;
+  animation: senseWobbleOuter 0.32s linear infinite;
 }
 
 @keyframes senseWobbleInner {
@@ -632,7 +637,7 @@ canvas.spidey-img-cutout {
 
 /* Character warning micro-shake vibration */
 .spidey-character.vibrate {
-  animation: spideyVibrate 0.08s linear infinite !important;
+  animation: spideyVibrate 0.16s linear infinite !important;
 }
 @keyframes spideyVibrate {
   0%, 100% { transform: translate(0, 0) rotate(0deg); }
@@ -658,7 +663,7 @@ canvas.spidey-img-cutout {
      0px 4px 10px rgba(0,0,0,0.85);
   letter-spacing: 2px;
   transform-origin: center;
-  animation: thwipPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: thwipPop 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes thwipPop {
@@ -865,7 +870,7 @@ canvas.spidey-img-cutout {
 .rpg-bar-fill {
   height: 100%;
   width: 0%;
-  transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
+  transition: width 2.8s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
 }
 .rpg-bar-fill.red    { background: linear-gradient(90deg, var(--red-dark), var(--red)); }
@@ -912,7 +917,7 @@ canvas.spidey-img-cutout {
 .villain-card {
   border: 4px solid var(--black);
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   cursor: default;
 }
@@ -924,7 +929,7 @@ canvas.spidey-img-cutout {
 .card-goblin:hover {
   transform: translate(-4px,-4px) rotate(-1deg);
   box-shadow: 10px 10px 0 #002200, 0 0 30px rgba(0,204,68,0.5);
-  animation: goblinShake 0.3s ease;
+  animation: goblinShake 0.6s ease;
 }
 @keyframes goblinShake {
   0%,100% { transform: translate(-4px,-4px) rotate(-1deg); }
@@ -939,7 +944,7 @@ canvas.spidey-img-cutout {
 .card-venom:hover {
   transform: translate(-4px,-4px);
   box-shadow: 10px 10px 0 #222, 0 0 40px rgba(255,255,255,0.2);
-  animation: venomWrithe 0.4s ease;
+  animation: venomWrithe 0.8s ease;
 }
 @keyframes venomWrithe {
   0%,100% { border-radius: 0; }
@@ -954,7 +959,7 @@ canvas.spidey-img-cutout {
 .card-electro:hover {
   transform: translate(-4px,-4px);
   box-shadow: 10px 10px 0 #000c22, 0 0 40px rgba(255,238,0,0.6);
-  animation: electroShock 0.2s ease infinite;
+  animation: electroShock 0.4s ease infinite;
 }
 @keyframes electroShock {
   0%,100% { transform: translate(-4px,-4px); }
@@ -968,7 +973,7 @@ canvas.spidey-img-cutout {
 .card-ock:hover {
   transform: translate(-4px,-4px) rotate(0.5deg);
   box-shadow: 10px 10px 0 #0a0300, 0 0 30px rgba(255,107,0,0.5);
-  animation: ockRotate 0.5s ease;
+  animation: ockRotate 1.0s ease;
 }
 @keyframes ockRotate {
   0%  { transform: translate(-4px,-4px) rotate(0.5deg); }
@@ -1065,7 +1070,7 @@ canvas.spidey-img-cutout {
   letter-spacing: 3px;
   -webkit-text-stroke: 2px var(--black);
   transform: rotate(15deg) scale(0);
-  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s;
   opacity: 0;
   z-index: 10;
   pointer-events: none;
@@ -1109,7 +1114,7 @@ canvas.spidey-img-cutout {
   border: 3px solid rgba(255,255,255,0.2);
   color: rgba(255,255,255,0.5);
   background: transparent;
-  transition: all 0.2s;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   text-transform: uppercase;
 }
 .filter-badge:hover, .filter-badge.active {
@@ -1128,7 +1133,7 @@ canvas.spidey-img-cutout {
   background: #111;
   border: 3px solid rgba(255,255,255,0.1);
   position: relative;
-  transition: all 0.25s;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
 }
 .mission-card::before {
@@ -1208,7 +1213,7 @@ canvas.spidey-img-cutout {
   letter-spacing: 2px;
   padding: 6px 14px;
   border: 2px solid;
-  transition: all 0.2s;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   text-transform: uppercase;
 }
 .mission-link.gh { color: var(--white); border-color: rgba(255,255,255,0.3); }
@@ -1299,7 +1304,7 @@ canvas.spidey-img-cutout {
   padding: 22px;
   position: relative;
   box-shadow: var(--shadow);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .battle-card:hover {
   transform: translate(-3px,-3px);
@@ -1364,7 +1369,7 @@ canvas.spidey-img-cutout {
   height: 100%;
   background: linear-gradient(90deg, var(--red-dark), var(--red));
   width: 0%;
-  transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
+  transition: width 2.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .battle-tags { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -1422,7 +1427,7 @@ canvas.spidey-img-cutout {
   padding: 28px;
   box-shadow: var(--shadow);
   position: relative;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
 }
 .fan-letter::before {
@@ -1545,7 +1550,7 @@ canvas.spidey-img-cutout {
     rgba(227,30,36,0.04) 21deg,
     transparent 36deg
   );
-  animation: signalRotate 6s ease-in-out infinite alternate;
+  animation: signalRotate 12s ease-in-out infinite alternate;
   pointer-events: none;
 }
 @keyframes signalRotate {
@@ -1577,7 +1582,7 @@ canvas.spidey-img-cutout {
   padding: 18px 20px;
   display: flex; align-items: center; gap: 16px;
   background: rgba(255,255,255,0.03);
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), background 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .contact-info-item:hover {
   border-color: var(--red);
@@ -1615,7 +1620,7 @@ a.contact-info-val:hover { color: var(--yellow); }
   border: 3px solid rgba(255,255,255,0.2);
   color: rgba(255,255,255,0.6);
   background: transparent;
-  transition: all 0.2s;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   text-transform: uppercase;
 }
 .social-chip:hover {
@@ -1657,7 +1662,7 @@ a.contact-info-val:hover { color: var(--yellow); }
   font-size: 0.95rem;
   font-weight: 700;
   outline: none;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), background 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .form-input:focus {
   border-color: var(--red);
@@ -1676,7 +1681,7 @@ textarea.form-input { resize: vertical; min-height: 110px; }
   color: var(--yellow);
   border: var(--border);
   box-shadow: 5px 5px 0 var(--red-dark);
-  transition: all 0.2s;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   text-transform: uppercase;
   margin-top: 8px;
 }
@@ -1742,7 +1747,7 @@ footer {
   font-size: 0.85rem;
   letter-spacing: 2px;
   color: rgba(255,255,255,0.35);
-  transition: color 0.2s;
+  transition: color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .footer-links a:hover { color: var(--red); }
 .footer-copy {
@@ -1751,7 +1756,7 @@ footer {
   font-weight: 700;
   letter-spacing: 1px;
 }
-.footer-copy a { color: var(--red); }
+.footer-copy a { color: var(--red); transition: color 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
 .footer-copy a:hover { color: var(--yellow); }
 
 /* ══════════════════════════════════════════════════
@@ -1870,47 +1875,47 @@ footer {
       <rect x="160" y="110" width="180" height="38" rx="12"
             stroke="#E31E24" stroke-width="3"
             stroke-dasharray="460" stroke-dashoffset="460" class="ws-draw"
-            style="animation-delay:0.2s" filter="url(#glow)"/>
+            style="animation-delay:0.4s" filter="url(#glow)"/>
       <!-- Cartridge slot -->
       <rect x="192" y="94" width="116" height="20" rx="6"
             stroke="#E31E24" stroke-width="2.5"
             stroke-dasharray="280" stroke-dashoffset="280" class="ws-draw"
-            style="animation-delay:0.7s"/>
+            style="animation-delay:1.4s"/>
       <!-- Nozzle -->
       <path d="M 238 94 L 250 64 L 262 94"
             stroke="#CC0000" stroke-width="2.5" stroke-linejoin="round"
             stroke-dasharray="80" stroke-dashoffset="80" class="ws-draw"
-            style="animation-delay:1s"/>
+            style="animation-delay:2.0s"/>
       <!-- Web strands shooting out -->
       <path d="M 250 62 Q 340 20 460 -10" stroke="white" stroke-width="1.8" opacity="0.7"
             stroke-dasharray="260" stroke-dashoffset="260" class="ws-draw"
-            style="animation-delay:1.2s"/>
+            style="animation-delay:2.4s"/>
       <path d="M 250 62 Q 380 30 500 10" stroke="white" stroke-width="1.2" opacity="0.5"
             stroke-dasharray="280" stroke-dashoffset="280" class="ws-draw"
-            style="animation-delay:1.35s"/>
+            style="animation-delay:2.7s"/>
       <path d="M 250 62 Q 160 20 40 -10" stroke="white" stroke-width="1.5" opacity="0.6"
             stroke-dasharray="240" stroke-dashoffset="240" class="ws-draw"
-            style="animation-delay:1.2s"/>
+            style="animation-delay:2.4s"/>
       <!-- Web circle graphic (spider symbol) -->
       <circle cx="250" cy="175" r="28"
               stroke="#E31E24" stroke-width="2.5"
               stroke-dasharray="176" stroke-dashoffset="176" class="ws-draw"
-              style="animation-delay:1.5s" filter="url(#glow)"/>
+              style="animation-delay:3.0s" filter="url(#glow)"/>
       <!-- Spider legs on symbol -->
       <line x1="222" y1="167" x2="200" y2="155" stroke="#E31E24" stroke-width="1.5"
-            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:1.8s"/>
+            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:3.6s"/>
       <line x1="222" y1="175" x2="198" y2="175" stroke="#E31E24" stroke-width="1.5"
-            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:1.85s"/>
+            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:3.7s"/>
       <line x1="222" y1="183" x2="200" y2="195" stroke="#E31E24" stroke-width="1.5"
-            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:1.9s"/>
+            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:3.8s"/>
       <line x1="278" y1="167" x2="300" y2="155" stroke="#E31E24" stroke-width="1.5"
-            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:1.8s"/>
+            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:3.6s"/>
       <line x1="278" y1="175" x2="302" y2="175" stroke="#E31E24" stroke-width="1.5"
-            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:1.85s"/>
+            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:3.7s"/>
       <line x1="278" y1="183" x2="300" y2="195" stroke="#E31E24" stroke-width="1.5"
-            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:1.9s"/>
+            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:3.8s"/>
       <ellipse cx="250" cy="172" rx="10" ry="7" stroke="#E31E24" stroke-width="1.5"
-               stroke-dasharray="54" stroke-dashoffset="54" class="ws-draw" style="animation-delay:2s"/>
+               stroke-dasharray="54" stroke-dashoffset="54" class="ws-draw" style="animation-delay:4.0s"/>
     </svg>
 
     <div id="loader-thwip">THWIP!</div>
@@ -1941,7 +1946,7 @@ footer {
 <!-- Web Stroke CSS animation -->
 <style>
 .ws-draw {
-  animation: drawStroke 0.6s ease forwards;
+  animation: drawStroke 1.8s ease forwards;
 }
 @keyframes drawStroke {
   to { stroke-dashoffset: 0; }
@@ -1960,6 +1965,7 @@ footer {
       <span class="spider-icon"></span>HOMI-DEV
     </a>
     <ul class="nav-links" id="navLinks">
+      <li><a href="#hero"     class="nav-link">Home</a></li>
       <li><a href="#origin"   class="nav-link">Origin</a></li>
       <li><a href="#powers"   class="nav-link">Powers</a></li>
       <li><a href="#missions" class="nav-link">Missions</a></li>
@@ -2866,43 +2872,43 @@ const symbiote     = document.getElementById('symbiote');
 
 function runLoader() {
   // Stage 1: SVG strokes draw (already animating via CSS)
-  // Stage 2: THWIP! after 1.8s
-  setTimeout(() => { thwip.classList.add('show'); }, 1900);
+  // Stage 2: THWIP! after 4.8s
+  setTimeout(() => { thwip.classList.add('show'); }, 4800);
 
-  // Stage 3: Health bar 2.4s → 4.2s
+  // Stage 3: Health bar 5.8s → 9.4s
   setTimeout(() => {
     hbWrap.classList.add('show');
     let pct = 0;
     const iv = setInterval(() => {
-      pct = Math.min(pct + 1.5, 100);
+      pct = Math.min(pct + 0.5, 100);
       hbFill.style.width = pct + '%';
       hbPct.textContent  = Math.round(pct) + '%';
       if (pct >= 100) clearInterval(iv);
     }, 18);
-  }, 2400);
+  }, 5800);
 
   // Stage 4: Tagline fades in
-  setTimeout(() => { loaderTag.classList.add('show'); }, 4300);
+  setTimeout(() => { loaderTag.classList.add('show'); }, 9800);
 
   // Stage 5: Symbiote spreads
   setTimeout(() => {
-    symbiote.style.transition = 'clip-path 1s cubic-bezier(0.4,0,0.2,1)';
+    symbiote.style.transition = 'clip-path 2.2s cubic-bezier(0.16, 1, 0.3, 1)';
     symbiote.classList.add('spread');
-  }, 5000);
+  }, 10800);
 
   // Stage 6: Symbiote rips away
   setTimeout(() => {
-    symbiote.style.transition = 'clip-path 0.7s cubic-bezier(0.4,0,0.6,1)';
+    symbiote.style.transition = 'clip-path 1.6s cubic-bezier(0.16, 1, 0.3, 1)';
     symbiote.classList.remove('spread');
     symbiote.classList.add('rip');
     loader.classList.add('fade-out');
-  }, 5900);
+  }, 13500);
 
   // Stage 7: Loader gone, start hero counters
   setTimeout(() => {
     loader.style.display = 'none';
     animateCounters();
-  }, 6700);
+  }, 15500);
 }
 
 // Fallback if fonts don't load
@@ -2917,12 +2923,18 @@ function animateCounters() {
   document.querySelectorAll('.hero-stat-num').forEach(el => {
     const target = parseInt(el.dataset.target, 10);
     let curr = 0;
-    const step = Math.max(1, Math.ceil(target / 35));
+    const duration = 2500; // 2.5s duration
+    const interval = 30; // 30ms updates
+    const step = (target / duration) * interval;
     const iv = setInterval(() => {
-      curr = Math.min(curr + step, target);
-      el.textContent = curr;
-      if (curr >= target) clearInterval(iv);
-    }, 40);
+      curr += step;
+      if (curr >= target) {
+        el.textContent = target;
+        clearInterval(iv);
+      } else {
+        el.textContent = Math.round(curr);
+      }
+    }, interval);
   });
 }
 
@@ -3029,9 +3041,9 @@ let spideyPhys = {
   angle: 0, vAngle: 0
 };
 
-const POLE_SPRING = 0.04;    // restorative stiffness of the traffic light pole
-const POLE_DAMPING = 0.88;    // energy loss of the metal pole
-const WEB_TENSION = 0.0006;   // pull force of the spider web on the character
+const POLE_SPRING = 0.015;   // restorative stiffness of the traffic light pole
+const POLE_DAMPING = 0.94;    // energy loss of the metal pole
+const WEB_TENSION = 0.0003;   // pull force of the spider web on the character
 const MAX_DISPLACEMENT = 120; // maximum deflection in px
 const CLICK_IMPULSE = 35;     // physical pull strength on click
 
@@ -3041,15 +3053,77 @@ let globalMouseY = window.innerHeight / 2;
 let mouseInHero = false;
 let clickActive = false;
 let lastClickTime = 0;
+let heroInView = true;
 
 // ─── THREE.JS 3D SPIDERMAN RENDERING ENGINE ───────────────────────
 let scene, camera, renderer, spideyMesh, mixer, clock;
 let projectedHandX = 0;
 let projectedHandY = 0;
-const spideyCanvasElement = document.getElementById('spideyCanvas');
+let spideyCanvasElement = document.getElementById('spideyCanvas');
 
-if (spideyCanvasElement) {
-  clock = new THREE.Clock();
+function dispose3D() {
+  if (renderer) {
+    try {
+      if (scene) {
+        scene.traverse(object => {
+          if (object.isMesh) {
+            if (object.geometry) object.geometry.dispose();
+            if (object.material) {
+              if (Array.isArray(object.material)) {
+                object.material.forEach(mat => mat.dispose());
+              } else {
+                object.material.dispose();
+              }
+            }
+          }
+        });
+      }
+      renderer.dispose();
+    } catch (e) {
+      console.warn("Failed to dispose 3D resources:", e);
+    }
+  }
+}
+
+function recreateSpideyCanvas() {
+  console.log("Recreating Spidey Canvas to force WebGL context recovery...");
+  const oldCanvas = document.getElementById('spideyCanvas');
+  if (!oldCanvas) return;
+
+  const parent = oldCanvas.parentNode;
+  if (!parent) return;
+
+  const newCanvas = document.createElement('canvas');
+  newCanvas.id = 'spideyCanvas';
+  newCanvas.className = 'spidey-img-cutout';
+  
+  // Replace in DOM
+  parent.replaceChild(newCanvas, oldCanvas);
+  
+  // Update global reference
+  spideyCanvasElement = newCanvas;
+
+  // Re-register context lost/restored on new canvas
+  spideyCanvasElement.addEventListener('webglcontextlost', (e) => {
+    e.preventDefault();
+    console.warn("WebGL Context Lost on new canvas. Recreating canvas to recover...");
+    if (heroInView) {
+      recreateSpideyCanvas();
+    }
+  }, false);
+
+  spideyCanvasElement.addEventListener('webglcontextrestored', () => {
+    console.log("WebGL Context Restored successfully. Reinitializing scene elements...");
+    reinit3D();
+  }, false);
+
+  // Initialize
+  reinit3D();
+}
+
+function reinit3D() {
+  dispose3D();
+
   // 1. Scene Setup
   scene = new THREE.Scene();
   
@@ -3066,6 +3140,14 @@ if (spideyCanvasElement) {
   });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
+
+  const w = spideyCanvasElement.clientWidth;
+  const h = spideyCanvasElement.clientHeight;
+  if (w > 0 && h > 0) {
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
   
   // 4. Stylized Comic Rim Lighting
   const ambientLight = new THREE.AmbientLight(0xfff9f0, 1.3); // Warm paper ambient
@@ -3091,6 +3173,8 @@ if (spideyCanvasElement) {
   scene.add(topLight);
   
   // 5. Load GLTF 3D Model
+  spideyMesh = null;
+  mixer = null;
   const gltfLoader = new THREE.GLTFLoader();
   gltfLoader.load(
     'spiderman.glb',
@@ -3126,7 +3210,7 @@ if (spideyCanvasElement) {
       
       scene.add(spideyMesh);
       
-      // Animation Mixer if pre-baked animations exist (Meshy AI generates idle animations)
+      // Animation Mixer if pre-baked animations exist
       if (gltf.animations && gltf.animations.length > 0) {
         mixer = new THREE.AnimationMixer(spideyMesh);
         const action = mixer.clipAction(gltf.animations[0]);
@@ -3138,6 +3222,25 @@ if (spideyCanvasElement) {
       console.error('An error happened loading the 3D model:', error);
     }
   );
+}
+
+if (spideyCanvasElement) {
+  clock = new THREE.Clock();
+  reinit3D();
+
+  // Handle WebGL Context Loss & Restoration
+  spideyCanvasElement.addEventListener('webglcontextlost', (e) => {
+    e.preventDefault();
+    console.warn("WebGL Context Lost. Recreating canvas to recover...");
+    if (heroInView) {
+      recreateSpideyCanvas();
+    }
+  }, false);
+
+  spideyCanvasElement.addEventListener('webglcontextrestored', () => {
+    console.log("WebGL Context Restored successfully. Reinitializing scene elements...");
+    reinit3D();
+  }, false);
 
   // Initialize loop
   animate3D();
@@ -3146,7 +3249,7 @@ if (spideyCanvasElement) {
 function resize3DCanvas() {
   const w = spideyCanvasElement.clientWidth;
   const h = spideyCanvasElement.clientHeight;
-  if (spideyCanvasElement.width !== w || spideyCanvasElement.height !== h) {
+  if (w > 0 && h > 0 && (spideyCanvasElement.width !== w || spideyCanvasElement.height !== h)) {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
@@ -3156,10 +3259,25 @@ function resize3DCanvas() {
 function animate3D() {
   requestAnimationFrame(animate3D);
   
+  if (!heroInView) {
+    return; // Pause rendering when hero section is out of viewport
+  }
+
+  // Double check WebGL context loss dynamically
+  if (renderer && renderer.getContext() && renderer.getContext().isContextLost()) {
+    console.warn("WebGL context lost detected in animation loop. Recreating canvas...");
+    recreateSpideyCanvas();
+    return;
+  }
+  
   const delta = clock.getDelta();
   if (mixer) mixer.update(delta);
   
   if (spideyMesh) {
+    // Validate globalMouseX / globalMouseY
+    if (isNaN(globalMouseX) || typeof globalMouseX !== 'number') globalMouseX = window.innerWidth / 2;
+    if (isNaN(globalMouseY) || typeof globalMouseY !== 'number') globalMouseY = window.innerHeight / 2;
+
     const heroRect = heroSec.getBoundingClientRect();
     const mX = globalMouseX - heroRect.left;
     const mY = globalMouseY - heroRect.top;
@@ -3168,20 +3286,30 @@ function animate3D() {
     let targetRotY = 0;
     
     if (mouseInHero) {
-      const normX = (mX / heroRect.width) - 0.5;
-      const normY = (mY / heroRect.height) - 0.5;
+      const heroWidth = heroRect.width || 1;
+      const heroHeight = heroRect.height || 1;
+      const normX = (mX / heroWidth) - 0.5;
+      const normY = (mY / heroHeight) - 0.5;
       
       targetRotY = normX * 0.8; // look horizontally toward mouse
       targetRotX = normY * 0.4; // look vertically toward mouse
     } else {
       // Procedural breathing idle sway if mouse leaves the hero panel
-      targetRotY = Math.sin(Date.now() * 0.001) * 0.12;
-      targetRotX = Math.cos(Date.now() * 0.0012) * 0.04;
+      targetRotY = Math.sin(Date.now() * 0.0005) * 0.12;
+      targetRotX = Math.cos(Date.now() * 0.0006) * 0.04;
     }
     
+    // Ensure target rotations are valid numbers
+    if (isNaN(targetRotY)) targetRotY = 0;
+    if (isNaN(targetRotX)) targetRotX = 0;
+
+    // Reset rotations to 0 if they somehow became NaN
+    if (isNaN(spideyMesh.rotation.y)) spideyMesh.rotation.y = 0;
+    if (isNaN(spideyMesh.rotation.x)) spideyMesh.rotation.x = 0;
+
     // Smooth damped rotation (lerping)
-    spideyMesh.rotation.y += (targetRotY - spideyMesh.rotation.y) * 0.05;
-    spideyMesh.rotation.x += (targetRotX - spideyMesh.rotation.x) * 0.05;
+    spideyMesh.rotation.y += (targetRotY - spideyMesh.rotation.y) * 0.02;
+    spideyMesh.rotation.x += (targetRotX - spideyMesh.rotation.x) * 0.02;
 
     // Project 3D hand coordinates to 2D screen space to position the web origin dynamically
     spideyMesh.updateMatrixWorld(true);
@@ -3213,8 +3341,8 @@ function animate3D() {
 // Verlet dynamic web rope nodes
 const ROPE_NODES_COUNT = 15;
 let ropeNodes = [];
-const ROPE_DAMPING = 0.95;
-const ROPE_GRAVITY = 0.35;
+const ROPE_DAMPING = 0.97;
+const ROPE_GRAVITY = 0.18;
 const CONSTRAINT_ITERATIONS = 8;
 
 function initRope(startX, startY) {
@@ -3443,11 +3571,14 @@ function updateAndDrawParticles() {
 let ropeInitialized = false;
 
 function updatePhysics() {
+  if (isNaN(globalMouseX) || typeof globalMouseX !== 'number') globalMouseX = window.innerWidth / 2;
+  if (isNaN(globalMouseY) || typeof globalMouseY !== 'number') globalMouseY = window.innerHeight / 2;
+
   const heroRect = heroSec.getBoundingClientRect();
   
   // Center of Spider-Man's hand inside hero coordinates
   let handX, handY;
-  if (projectedHandX > 0 && projectedHandY > 0) {
+  if (!isNaN(projectedHandX) && isFinite(projectedHandX) && !isNaN(projectedHandY) && isFinite(projectedHandY) && projectedHandX > 0 && projectedHandY > 0) {
     handX = projectedHandX;
     handY = projectedHandY;
   } else {
@@ -3474,6 +3605,14 @@ function updatePhysics() {
       pullFy = dy * WEB_TENSION;
     }
   }
+
+  // Guard spideyPhys state variables against NaN
+  if (isNaN(spideyPhys.x)) spideyPhys.x = 0;
+  if (isNaN(spideyPhys.y)) spideyPhys.y = 0;
+  if (isNaN(spideyPhys.vx)) spideyPhys.vx = 0;
+  if (isNaN(spideyPhys.vy)) spideyPhys.vy = 0;
+  if (isNaN(spideyPhys.angle)) spideyPhys.angle = 0;
+  if (isNaN(spideyPhys.vAngle)) spideyPhys.vAngle = 0;
 
   // 2. Spring restorative forces from the heavy metal pole
   const springFx = -spideyPhys.x * POLE_SPRING;
@@ -3510,9 +3649,11 @@ function updatePhysics() {
   }
   
   if (spideyImgCutout) {
+    const heroWidth = heroRect.width || 1;
+    const heroHeight = heroRect.height || 1;
     // 3D depth tilt when hovering
-    const mouseDepthX = mouseInHero ? (mX - heroRect.width / 2) * -0.015 : 0;
-    const mouseDepthY = mouseInHero ? (mY - heroRect.height / 2) * 0.015 : 0;
+    const mouseDepthX = mouseInHero ? (mX - heroWidth / 2) * -0.015 : 0;
+    const mouseDepthY = mouseInHero ? (mY - heroHeight / 2) * 0.015 : 0;
     spideyImgCutout.style.transform = `perspective(1200px) rotateX(${mouseDepthY}deg) rotateY(${mouseDepthX}deg) translateZ(30px)`;
   }
 
@@ -3531,7 +3672,7 @@ function updatePhysics() {
   // 6. Animate SVG Displacement Warp Filter (Flexing suit muscles)
   if (dispMap) {
     // Calculate warp amplitude: base breathing + physical movement velocity stress
-    let warpScale = Math.abs(Math.sin(time * 2.5)) * 1.8; // breathing warp
+    let warpScale = Math.abs(Math.sin(time * 1.25)) * 1.8; // breathing warp
     
     // Add velocity strain warping
     const speed = Math.sqrt(spideyPhys.vx * spideyPhys.vx + spideyPhys.vy * spideyPhys.vy);
@@ -3540,8 +3681,8 @@ function updatePhysics() {
     // click stretch effect
     if (clickActive) {
       const elapsed = Date.now() - lastClickTime;
-      if (elapsed < 300) {
-        warpScale += (1 - elapsed / 300) * 12.0; // strong deformation
+      if (elapsed < 600) {
+        warpScale += (1 - elapsed / 600) * 6.0; // softer, organic deformation
       } else {
         clickActive = false;
       }
@@ -3585,7 +3726,7 @@ function updatePhysics() {
         node.py = node.y;
 
         // Apply velocities + gravity + slight horizontal breeze oscillation
-        const wind = Math.sin(time * 6 + i) * 0.12;
+        const wind = Math.sin(time * 3 + i) * 0.12;
         node.x += vx + wind;
         node.y += vy + ROPE_GRAVITY;
       }
@@ -3660,7 +3801,7 @@ function updatePhysics() {
         const normalY = tangentX / len;
 
         // Wave oscillation wrapping around the nodes
-        const amp = Math.sin(time * 12 + i) * 6;
+        const amp = Math.sin(time * 6 + i) * 6;
         const ox = midX + normalX * amp;
         const oy = midY + normalY * amp;
 
@@ -3697,6 +3838,22 @@ window.addEventListener('scroll', () => {
     ? '0 4px 20px rgba(0,0,0,0.5)'
     : '';
   updateActiveNav();
+  if (window.scrollY > 100) {
+    mouseInHero = false;
+  }
+
+  // Active Viewport check to pause/resume WebGL rendering & recover context
+  const heroHeight = heroSec ? heroSec.offsetHeight : window.innerHeight;
+  const inView = window.scrollY < heroHeight + 50;
+  if (inView !== heroInView) {
+    heroInView = inView;
+    if (heroInView) {
+      console.log("Hero entered view. Verifying WebGL status...");
+      if (renderer && renderer.getContext() && renderer.getContext().isContextLost()) {
+        recreateSpideyCanvas();
+      }
+    }
+  }
 }, { passive: true });
 
 hamburger.addEventListener('click', () => {
@@ -3794,15 +3951,22 @@ document.querySelectorAll('.a-word').forEach((w, i) => {
   w.style.animation = `heroFloat ${3 + i * 0.7}s ease-in-out ${i * 0.5}s infinite`;
 });
 
-/* ─── SMOOTH scroll for logo ─────────────────────── */
-document.getElementById('nav-logo').addEventListener('click', e => {
-  e.preventDefault();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+/* ─── SMOOTH scroll for logo, Home nav link & Close mobile menu ──── */
+document.querySelectorAll('#nav-logo, a[href="#hero"]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    hamburger.classList.remove('open');
+    navLinks.classList.remove('open');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 });
 
 /* ─── GOBLIN PUMPKIN BOMB SOUND EFFECT text ──────── */
 document.querySelectorAll('.btn-primary-comic, .btn-comic').forEach(btn => {
-  btn.addEventListener('mouseenter', () => {
+  btn.addEventListener('mouseenter', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX || (rect.left + rect.width / 2);
+    const y = e.clientY || (rect.top + rect.height / 2);
     const fx = document.createElement('span');
     fx.textContent = ['💥 POW!','⚡ ZAP!','🎃 BAM!','💢 THWIP!'][Math.floor(Math.random()*4)];
     fx.style.cssText = `
@@ -3810,7 +3974,7 @@ document.querySelectorAll('.btn-primary-comic, .btn-comic').forEach(btn => {
       font-family:var(--font-bang);font-size:2rem;letter-spacing:3px;
       color:var(--yellow);-webkit-text-stroke:2px var(--black);
       animation:popIn 0.5s ease both, fxFade 0.8s ease 0.4s forwards;
-      left:${event.clientX}px;top:${event.clientY - 50}px;
+      left:${x}px;top:${y - 50}px;
     `;
     document.body.appendChild(fx);
     setTimeout(() => fx.remove(), 1200);
