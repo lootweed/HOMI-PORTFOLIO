@@ -1,0 +1,3020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Your Friendly Neighborhood Fullstack Developer — Homi's comic-book portfolio at thehomi.in">
+<meta property="og:title" content="THE AMAZING DEVELOPER | thehomi.in">
+<meta property="og:description" content="With great code comes great responsibility.">
+<title>THE AMAZING DEVELOPER | thehomi.in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════════════════════
+   VARIABLES & RESET
+══════════════════════════════════════════════════ */
+:root {
+  --red:         #E31E24;
+  --red-dark:    #9B0000;
+  --red-bright:  #FF2929;
+  --blue:        #0038A8;
+  --blue-dark:   #001A5E;
+  --blue-mid:    #0055CC;
+  --black:       #0A0A0A;
+  --white:       #F8F4EE;
+  --paper:       #FFF9F0;
+  --yellow:      #FFE640;
+  --goblin-g:    #00CC44;
+  --goblin-p:    #7700CC;
+  --venom-w:     #ECECEC;
+  --elec-y:      #FFEE00;
+  --elec-b:      #00AAFF;
+  --ock-o:       #FF6B00;
+  --font-bang:   'Bangers', cursive;
+  --font-body:   'Comic Neue', cursive;
+  --border:      4px solid var(--black);
+  --shadow:      6px 6px 0 var(--black);
+  --shadow-red:  6px 6px 0 var(--red-dark);
+  --shadow-blue: 6px 6px 0 var(--blue-dark);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body {
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--black);
+  overflow-x: hidden;
+  cursor: none;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { cursor: none; font-family: var(--font-body); border: none; }
+input, textarea, select { font-family: var(--font-body); }
+
+/* Custom cursor */
+#cursor {
+  width: 16px; height: 16px;
+  background: var(--red);
+  border: 2px solid var(--black);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 99999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s, width 0.2s, height 0.2s;
+  mix-blend-mode: multiply;
+}
+#cursor.hover { width: 32px; height: 32px; background: var(--yellow); }
+#cursor::after {
+  content: '';
+  position: absolute; inset: -6px;
+  border: 2px dashed var(--red);
+  border-radius: 50%;
+  animation: cursorSpin 3s linear infinite;
+}
+@keyframes cursorSpin { to { transform: rotate(360deg); } }
+
+/* ══════════════════════════════════════════════════
+   HALFTONE & COMIC HELPERS
+══════════════════════════════════════════════════ */
+.halftone-red {
+  background-color: var(--red);
+  background-image: radial-gradient(circle, rgba(0,0,0,0.18) 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+}
+.halftone-blue {
+  background-color: var(--blue);
+  background-image: radial-gradient(circle, rgba(0,0,0,0.18) 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+}
+.halftone-black {
+  background-color: var(--black);
+  background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+}
+.halftone-paper {
+  background-color: var(--paper);
+  background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1.5px, transparent 1.5px);
+  background-size: 8px 8px;
+}
+.comic-border {
+  border: var(--border);
+  box-shadow: var(--shadow);
+}
+.panel-caption {
+  font-family: var(--font-bang);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  background: var(--black);
+  color: var(--yellow);
+  padding: 4px 12px;
+  display: inline-block;
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 2;
+}
+.panel-caption.bottom-right {
+  top: auto; left: auto;
+  bottom: 0; right: 0;
+}
+.speech-bubble {
+  position: relative;
+  background: white;
+  border: 3px solid var(--black);
+  border-radius: 20px;
+  padding: 12px 20px;
+  font-family: var(--font-bang);
+}
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -16px; left: 24px;
+  border: 8px solid transparent;
+  border-top-color: var(--black);
+}
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -10px; left: 24px;
+  border: 8px solid transparent;
+  border-top-color: white;
+  z-index: 1;
+}
+.stamp {
+  font-family: var(--font-bang);
+  letter-spacing: 3px;
+  border: 4px solid;
+  padding: 6px 14px;
+  display: inline-block;
+  transform: rotate(-8deg);
+  opacity: 0.85;
+  text-transform: uppercase;
+}
+.stamp.red { color: var(--red); border-color: var(--red); }
+.stamp.blue { color: var(--blue); border-color: var(--blue); }
+.stamp.classified { color: var(--red-dark); border-color: var(--red-dark); font-size: 1.2rem; }
+.action-burst {
+  font-family: var(--font-bang);
+  display: inline-block;
+  animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+  opacity: 0;
+}
+.action-burst.visible { opacity: 1; }
+@keyframes popIn {
+  from { transform: scale(0) rotate(-20deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0deg);   opacity: 1; }
+}
+
+/* ══════════════════════════════════════════════════
+   LOADING SCREEN
+══════════════════════════════════════════════════ */
+#loader {
+  position: fixed; inset: 0; z-index: 10000;
+  background: var(--black);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  overflow: hidden;
+  transition: opacity 0.6s ease;
+}
+#loader.fade-out { opacity: 0; pointer-events: none; }
+
+#loader-panels {
+  position: absolute; inset: 0;
+  display: grid; grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 4px;
+  opacity: 0.07;
+}
+#loader-panels div { background: var(--red); }
+#loader-panels div:nth-child(even) { background: var(--blue); }
+
+#webShooterSvg {
+  width: min(420px, 90vw);
+  margin-bottom: 24px;
+  filter: drop-shadow(0 0 8px rgba(227,30,36,0.6));
+}
+
+#loader-text {
+  text-align: center;
+  color: var(--white);
+}
+#loader-thwip {
+  font-family: var(--font-bang);
+  font-size: clamp(3rem, 10vw, 7rem);
+  letter-spacing: 8px;
+  color: var(--yellow);
+  -webkit-text-stroke: 3px var(--red);
+  text-shadow: 4px 4px 0 var(--red-dark);
+  opacity: 0;
+  transform: scale(0);
+  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+  margin-bottom: 32px;
+}
+#loader-thwip.show { opacity: 1; transform: scale(1); }
+
+#health-bar-wrap {
+  width: min(360px, 80vw);
+  margin-bottom: 24px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#health-bar-wrap.show { opacity: 1; }
+#health-bar-label {
+  font-family: var(--font-bang);
+  font-size: 1rem;
+  letter-spacing: 3px;
+  color: var(--red);
+  margin-bottom: 6px;
+  display: flex; justify-content: space-between;
+}
+#health-bar-track {
+  height: 20px;
+  background: rgba(255,255,255,0.1);
+  border: 3px solid var(--red);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+#health-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--red-dark), var(--red), var(--red-bright));
+  transition: width 0.1s linear;
+  position: relative;
+}
+#health-bar-fill::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg, transparent 0px, transparent 8px,
+    rgba(255,255,255,0.2) 8px, rgba(255,255,255,0.2) 10px
+  );
+}
+
+#loader-tagline {
+  font-family: var(--font-bang);
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  letter-spacing: 5px;
+  color: var(--white);
+  opacity: 0;
+  transition: opacity 0.6s;
+  text-align: center;
+  line-height: 1.3;
+}
+#loader-tagline .line2 {
+  color: var(--red);
+  font-size: clamp(1.6rem, 5vw, 3rem);
+  display: block;
+  -webkit-text-stroke: 1px var(--yellow);
+}
+#loader-tagline.show { opacity: 1; }
+
+/* Symbiote overlay */
+#symbiote {
+  position: absolute; inset: 0;
+  background: #040408;
+  clip-path: circle(0% at 50% 50%);
+  transition: clip-path 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 2;
+}
+#symbiote.spread { clip-path: circle(150% at 50% 50%); }
+#symbiote.rip {
+  clip-path: polygon(
+    0% 0%, 100% 0%,
+    100% 0%, 60% 8%, 80% 0%, 40% 5%,
+    20% 0%, 0% 0%
+  );
+  transition: clip-path 0.6s cubic-bezier(0.4, 0, 0.6, 1);
+}
+#symbiote.gone { display: none; }
+
+/* Symbiote ink blobs */
+.ink-blob {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #1a1a2e, #040408);
+  animation: blobPulse 2s ease-in-out infinite alternate;
+}
+@keyframes blobPulse {
+  from { transform: scale(1) rotate(0deg); border-radius: 60% 40% 70% 30% / 50% 60% 40% 70%; }
+  to   { transform: scale(1.1) rotate(10deg); border-radius: 40% 60% 30% 70% / 60% 40% 70% 30%; }
+}
+
+/* ══════════════════════════════════════════════════
+   WEB CANVAS
+══════════════════════════════════════════════════ */
+#webCanvas {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+  opacity: 0.35;
+}
+
+/* ══════════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════════ */
+#navbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: var(--black);
+  border-bottom: 4px solid var(--red);
+  box-shadow: 0 4px 0 var(--red-dark);
+}
+.nav-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 0 24px;
+  display: flex; align-items: center;
+  height: 64px; gap: 8px;
+}
+.nav-logo {
+  font-family: var(--font-bang);
+  font-size: 1.6rem;
+  letter-spacing: 3px;
+  color: var(--yellow);
+  -webkit-text-stroke: 1px var(--red);
+  flex-shrink: 0;
+  position: relative;
+}
+.nav-logo .spider-icon {
+  display: inline-block;
+  width: 28px; height: 28px;
+  background: var(--red);
+  clip-path: polygon(50% 0%, 80% 15%, 100% 50%, 80% 85%, 50% 100%, 20% 85%, 0% 50%, 20% 15%);
+  vertical-align: middle;
+  margin-right: 6px;
+}
+.nav-links {
+  display: flex; list-style: none; gap: 4px; margin: 0 auto;
+}
+.nav-links a {
+  font-family: var(--font-bang);
+  font-size: 1rem;
+  letter-spacing: 2px;
+  color: var(--white);
+  padding: 6px 14px;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+.nav-links a:hover, .nav-links a.active {
+  color: var(--yellow);
+  border-color: var(--red);
+  background: rgba(227,30,36,0.15);
+}
+.nav-cta {
+  font-family: var(--font-bang);
+  font-size: 1rem;
+  letter-spacing: 2px;
+  padding: 8px 20px;
+  background: var(--red);
+  color: var(--white);
+  border: 3px solid var(--yellow);
+  border-radius: 3px;
+  box-shadow: 3px 3px 0 var(--red-dark);
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.nav-cta:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--red-dark); }
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  padding: 8px; margin-left: auto; background: none;
+}
+.hamburger span {
+  width: 24px; height: 3px; background: var(--white);
+  display: block; transition: all 0.3s; border-radius: 2px;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); background: var(--red); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); background: var(--red); }
+
+/* ══════════════════════════════════════════════════
+   SECTION COMMON
+══════════════════════════════════════════════════ */
+section { position: relative; z-index: 1; }
+.section-label {
+  font-family: var(--font-bang);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  letter-spacing: 4px;
+  line-height: 1;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.section-sub {
+  font-size: 1.1rem;
+  text-align: center;
+  color: rgba(0,0,0,0.6);
+  margin-bottom: 60px;
+  font-style: italic;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* Reveal animation */
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-left  { opacity: 0; transform: translateX(-30px); transition: opacity 0.6s, transform 0.6s; }
+.reveal-right { opacity: 0; transform: translateX(30px);  transition: opacity 0.6s, transform 0.6s; }
+.reveal-left.visible, .reveal-right.visible { opacity: 1; transform: none; }
+
+/* ══════════════════════════════════════════════════
+   1. HERO SPLASH
+══════════════════════════════════════════════════ */
+#hero {
+  min-height: 100vh;
+  padding-top: 64px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+.hero-left {
+  background: var(--red);
+  background-image: radial-gradient(circle, rgba(0,0,0,0.15) 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+  min-height: calc(100vh - 64px);
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 60px 40px 60px 60px;
+  border-right: 6px solid var(--black);
+  position: relative;
+  z-index: 2;
+}
+.hero-issue {
+  font-family: var(--font-bang);
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  color: var(--yellow);
+  background: var(--black);
+  display: inline-block;
+  padding: 4px 12px;
+  margin-bottom: 20px;
+  transform: rotate(-2deg);
+}
+.hero-title {
+  font-family: var(--font-bang);
+  font-size: clamp(3.5rem, 7vw, 7rem);
+  letter-spacing: 5px;
+  line-height: 0.95;
+  color: var(--white);
+  -webkit-text-stroke: 2px var(--black);
+  text-shadow: 5px 5px 0 var(--red-dark), 8px 8px 0 var(--black);
+  margin-bottom: 8px;
+}
+.hero-title .highlight {
+  color: var(--yellow);
+  -webkit-text-stroke: 2px var(--black);
+  display: block;
+}
+.hero-subtitle {
+  font-family: var(--font-bang);
+  font-size: clamp(1.2rem, 2.5vw, 2rem);
+  letter-spacing: 3px;
+  color: var(--black);
+  background: var(--yellow);
+  display: inline-block;
+  padding: 4px 12px;
+  margin-bottom: 32px;
+  transform: rotate(1deg);
+}
+.hero-desc {
+  font-size: 1.1rem;
+  color: rgba(248,244,238,0.9);
+  line-height: 1.7;
+  margin-bottom: 36px;
+  max-width: 480px;
+  font-weight: 700;
+}
+.hero-actions {
+  display: flex; gap: 16px; flex-wrap: wrap;
+}
+.btn-comic {
+  font-family: var(--font-bang);
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  padding: 12px 28px;
+  border: var(--border);
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+  position: relative;
+  text-transform: uppercase;
+}
+.btn-primary-comic {
+  background: var(--yellow);
+  color: var(--black);
+  box-shadow: 5px 5px 0 var(--black);
+}
+.btn-primary-comic:hover {
+  transform: translate(-3px,-3px);
+  box-shadow: 8px 8px 0 var(--black);
+}
+.btn-secondary-comic {
+  background: var(--blue);
+  color: var(--white);
+  box-shadow: 5px 5px 0 var(--blue-dark);
+}
+.btn-secondary-comic:hover {
+  transform: translate(-3px,-3px);
+  box-shadow: 8px 8px 0 var(--blue-dark);
+}
+/* Pumpkin bomb hover on btn-primary */
+.btn-primary-comic:hover {
+  animation: pumpkinBomb 0.5s ease forwards;
+}
+@keyframes pumpkinBomb {
+  0%  { box-shadow: 5px 5px 0 var(--black); }
+  20% { box-shadow: 5px 5px 0 var(--black), 0 0 20px 8px var(--goblin-g); }
+  50% { box-shadow: 5px 5px 0 var(--black), 0 0 40px 20px orange, 0 0 0 4px var(--yellow); }
+  80% { box-shadow: 5px 5px 0 var(--black), 0 0 20px 8px var(--goblin-g); }
+  100%{ box-shadow: 8px 8px 0 var(--black); }
+}
+
+/* Action words floating */
+.action-words {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.a-word {
+  font-family: var(--font-bang);
+  position: absolute;
+  letter-spacing: 3px;
+  -webkit-text-stroke: 2px var(--black);
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+}
+.a-word.commit  { color: var(--yellow); font-size: clamp(1.5rem,3vw,2.5rem); top: 12%; right: 5%;  transform: rotate(8deg); }
+.a-word.deploy  { color: white;         font-size: clamp(1rem,2vw,1.8rem);   bottom: 18%; right: 8%; transform: rotate(-5deg); }
+.a-word.debug   { color: var(--yellow); font-size: clamp(1.2rem,2.5vw,2rem); top: 55%;    right: 2%; transform: rotate(12deg); }
+.a-word.ship    { color: white;         font-size: clamp(1rem,2vw,1.6rem);   bottom: 30%; left: 5%;  transform: rotate(-10deg); }
+
+/* Hero right - Spider-Man */
+.hero-right {
+  background: var(--blue);
+  background-image: radial-gradient(circle, rgba(0,0,0,0.15) 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+  min-height: calc(100vh - 64px);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.spidey-wrap {
+  position: relative;
+  animation: heroFloat 3.5s ease-in-out infinite;
+  filter: drop-shadow(8px 12px 0 rgba(0,0,0,0.5));
+  width: min(380px, 85vw);
+}
+@keyframes heroFloat {
+  0%,100% { transform: translateY(0) rotate(-1deg); }
+  50%      { transform: translateY(-20px) rotate(1deg); }
+}
+.web-line-svg {
+  position: absolute;
+  top: 0; right: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+/* Hero stats bar */
+.hero-stats {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: var(--black);
+  border-top: 4px solid var(--red);
+  display: flex;
+  grid-column: 1/-1;
+}
+.hero-stat-item {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 10px;
+  border-right: 2px solid rgba(255,255,255,0.1);
+}
+.hero-stat-item:last-child { border-right: none; }
+.hero-stat-num {
+  font-family: var(--font-bang);
+  font-size: 2rem;
+  color: var(--yellow);
+  letter-spacing: 2px;
+}
+.hero-stat-label {
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  font-weight: 700;
+}
+
+/* ══════════════════════════════════════════════════
+   2. ORIGIN STORY
+══════════════════════════════════════════════════ */
+#origin {
+  padding: 80px 0 60px;
+  background: var(--paper);
+  border-top: 6px solid var(--black);
+  border-bottom: 6px solid var(--black);
+}
+.origin-header {
+  text-align: center;
+  margin-bottom: 48px;
+  position: relative;
+}
+.origin-header h2 {
+  font-family: var(--font-bang);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  letter-spacing: 4px;
+  color: var(--black);
+}
+.origin-header h2 span { color: var(--red); }
+.origin-header .issue-num {
+  font-family: var(--font-bang);
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  background: var(--black);
+  color: var(--yellow);
+  padding: 4px 12px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+/* 3-panel strip */
+.origin-panels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 60px;
+  border: var(--border);
+}
+.origin-panel {
+  border-right: 4px solid var(--black);
+  position: relative;
+  overflow: hidden;
+  min-height: 320px;
+  display: flex; flex-direction: column;
+}
+.origin-panel:last-child { border-right: none; }
+.origin-panel-bg {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.08;
+}
+.op-1 { background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%); }
+.op-2 { background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%); }
+.op-3 { background: linear-gradient(135deg, var(--black) 0%, #333 100%); }
+.origin-panel-header {
+  font-family: var(--font-bang);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  background: var(--black);
+  color: var(--yellow);
+  padding: 5px 12px;
+  position: relative; z-index: 2;
+}
+.op-1 .origin-panel-header { background: var(--red); color: var(--white); }
+.op-2 .origin-panel-header { background: var(--blue); color: var(--white); }
+.op-3 .origin-panel-header { background: var(--black); color: var(--yellow); }
+.origin-panel-body {
+  padding: 20px;
+  position: relative; z-index: 2;
+  flex: 1;
+  display: flex; flex-direction: column;
+}
+.op-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  display: inline-block;
+}
+.origin-panel-body h3 {
+  font-family: var(--font-bang);
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+.op-1 h3 { color: var(--red); }
+.op-2 h3 { color: var(--blue); }
+.op-3 h3 { color: var(--black); }
+.origin-panel-body p {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  font-weight: 700;
+  color: rgba(0,0,0,0.75);
+  flex: 1;
+}
+.panel-num {
+  font-family: var(--font-bang);
+  font-size: 3rem;
+  color: rgba(0,0,0,0.06);
+  position: absolute;
+  bottom: 10px; right: 15px;
+  line-height: 1;
+}
+
+/* RPG stats */
+.rpg-stats {
+  background: var(--black);
+  border: var(--border);
+  padding: 32px;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+.rpg-stats-header {
+  font-family: var(--font-bang);
+  font-size: 1.8rem;
+  letter-spacing: 4px;
+  color: var(--yellow);
+  text-align: center;
+  margin-bottom: 28px;
+  -webkit-text-stroke: 1px var(--red);
+}
+.rpg-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 40px;
+}
+.rpg-stat { }
+.rpg-stat-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.rpg-stat-name {
+  font-family: var(--font-bang);
+  font-size: 1rem;
+  letter-spacing: 2px;
+  color: var(--white);
+}
+.rpg-stat-val {
+  font-family: var(--font-bang);
+  font-size: 0.9rem;
+  color: var(--yellow);
+  letter-spacing: 1px;
+}
+.rpg-bar-track {
+  height: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.rpg-bar-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+.rpg-bar-fill.red    { background: linear-gradient(90deg, var(--red-dark), var(--red)); }
+.rpg-bar-fill.blue   { background: linear-gradient(90deg, var(--blue-dark), var(--blue-mid)); }
+.rpg-bar-fill.yellow { background: linear-gradient(90deg, #b38000, var(--yellow)); }
+.rpg-bar-fill.green  { background: linear-gradient(90deg, #005500, var(--goblin-g)); }
+.rpg-bar-fill::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    90deg, transparent 0, transparent 6px,
+    rgba(255,255,255,0.15) 6px, rgba(255,255,255,0.15) 8px
+  );
+}
+
+/* ══════════════════════════════════════════════════
+   3. POWERS & ABILITIES
+══════════════════════════════════════════════════ */
+#powers {
+  padding: 80px 0;
+  background: var(--white);
+  border-bottom: 6px solid var(--black);
+  position: relative;
+  overflow: hidden;
+}
+#powers::before {
+  content: 'ROGUES GALLERY';
+  font-family: var(--font-bang);
+  font-size: 18vw;
+  color: rgba(0,0,0,0.025);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  letter-spacing: 8px;
+  pointer-events: none;
+}
+.villain-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.villain-card {
+  border: 4px solid var(--black);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  cursor: default;
+}
+/* Green Goblin */
+.card-goblin {
+  background: linear-gradient(135deg, #0d0020 0%, #001800 100%);
+  box-shadow: 6px 6px 0 #002200;
+}
+.card-goblin:hover {
+  transform: translate(-4px,-4px) rotate(-1deg);
+  box-shadow: 10px 10px 0 #002200, 0 0 30px rgba(0,204,68,0.5);
+  animation: goblinShake 0.3s ease;
+}
+@keyframes goblinShake {
+  0%,100% { transform: translate(-4px,-4px) rotate(-1deg); }
+  25%      { transform: translate(-6px,-4px) rotate(-2deg); }
+  75%      { transform: translate(-3px,-5px) rotate(0deg); }
+}
+/* Venom */
+.card-venom {
+  background: linear-gradient(135deg, #000000 0%, #0d0d0d 100%);
+  box-shadow: 6px 6px 0 #222;
+}
+.card-venom:hover {
+  transform: translate(-4px,-4px);
+  box-shadow: 10px 10px 0 #222, 0 0 40px rgba(255,255,255,0.2);
+  animation: venomWrithe 0.4s ease;
+}
+@keyframes venomWrithe {
+  0%,100% { border-radius: 0; }
+  25%  { border-radius: 0 8px 0 8px; }
+  75%  { border-radius: 8px 0 8px 0; }
+}
+/* Electro */
+.card-electro {
+  background: linear-gradient(135deg, #001133 0%, #002244 100%);
+  box-shadow: 6px 6px 0 #000c22;
+}
+.card-electro:hover {
+  transform: translate(-4px,-4px);
+  box-shadow: 10px 10px 0 #000c22, 0 0 40px rgba(255,238,0,0.6);
+  animation: electroShock 0.2s ease infinite;
+}
+@keyframes electroShock {
+  0%,100% { transform: translate(-4px,-4px); }
+  50%      { transform: translate(-5px,-3px); }
+}
+/* Doc Ock */
+.card-ock {
+  background: linear-gradient(135deg, #1a0a00 0%, #0d0500 100%);
+  box-shadow: 6px 6px 0 #0a0300;
+}
+.card-ock:hover {
+  transform: translate(-4px,-4px) rotate(0.5deg);
+  box-shadow: 10px 10px 0 #0a0300, 0 0 30px rgba(255,107,0,0.5);
+  animation: ockRotate 0.5s ease;
+}
+@keyframes ockRotate {
+  0%  { transform: translate(-4px,-4px) rotate(0.5deg); }
+  25% { transform: translate(-4px,-4px) rotate(-0.5deg); }
+  75% { transform: translate(-4px,-4px) rotate(1deg); }
+  100%{ transform: translate(-4px,-4px) rotate(0.5deg); }
+}
+
+.villain-card-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 20px 24px;
+  border-bottom: 4px solid;
+  position: relative;
+}
+.card-goblin  .villain-card-header { border-color: var(--goblin-g); background: rgba(0,204,68,0.08); }
+.card-venom   .villain-card-header { border-color: var(--venom-w);  background: rgba(255,255,255,0.04); }
+.card-electro .villain-card-header { border-color: var(--elec-y);   background: rgba(255,238,0,0.06); }
+.card-ock     .villain-card-header { border-color: var(--ock-o);    background: rgba(255,107,0,0.08); }
+
+.villain-emoji { font-size: 2.8rem; line-height: 1; }
+.villain-title-wrap { }
+.villain-name {
+  font-family: var(--font-bang);
+  font-size: 1.6rem;
+  letter-spacing: 3px;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.card-goblin  .villain-name { color: var(--goblin-g); }
+.card-venom   .villain-name { color: var(--venom-w);  }
+.card-electro .villain-name { color: var(--elec-y);   }
+.card-ock     .villain-name { color: var(--ock-o);    }
+.villain-role {
+  font-size: 0.78rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: rgba(255,255,255,0.45);
+}
+.villain-power-badge {
+  margin-left: auto;
+  font-family: var(--font-bang);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border: 2px solid;
+  border-radius: 3px;
+}
+.card-goblin  .villain-power-badge { color: var(--goblin-g); border-color: var(--goblin-g); }
+.card-venom   .villain-power-badge { color: var(--venom-w);  border-color: var(--venom-w); }
+.card-electro .villain-power-badge { color: var(--elec-y);   border-color: var(--elec-y); }
+.card-ock     .villain-power-badge { color: var(--ock-o);    border-color: var(--ock-o); }
+
+.villain-card-body { padding: 20px 24px; }
+.villain-skill-list {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: 18px;
+}
+.villain-skill-list li {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.9rem; font-weight: 700;
+  color: rgba(255,255,255,0.85);
+}
+.villain-skill-list li::before {
+  content: '▸';
+  flex-shrink: 0;
+}
+.card-goblin  .villain-skill-list li::before { color: var(--goblin-g); }
+.card-venom   .villain-skill-list li::before { color: var(--venom-w); }
+.card-electro .villain-skill-list li::before { color: var(--elec-y); }
+.card-ock     .villain-skill-list li::before { color: var(--ock-o); }
+
+.villain-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.villain-tag {
+  font-family: var(--font-bang);
+  font-size: 0.78rem;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 3px;
+  color: rgba(255,255,255,0.6);
+  transition: all 0.2s;
+}
+.villain-card:hover .villain-tag { border-color: rgba(255,255,255,0.35); color: white; }
+
+/* Special hover FX word */
+.card-fx-word {
+  position: absolute;
+  top: -10px; right: 20px;
+  font-family: var(--font-bang);
+  font-size: 2.5rem;
+  letter-spacing: 3px;
+  -webkit-text-stroke: 2px var(--black);
+  transform: rotate(15deg) scale(0);
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+  opacity: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+.villain-card:hover .card-fx-word { transform: rotate(15deg) scale(1); opacity: 1; }
+.card-goblin  .card-fx-word { color: var(--goblin-g); }
+.card-venom   .card-fx-word { color: var(--venom-w); }
+.card-electro .card-fx-word { color: var(--elec-y); }
+.card-ock     .card-fx-word { color: var(--ock-o); }
+
+/* ══════════════════════════════════════════════════
+   4. HALL OF MISSIONS
+══════════════════════════════════════════════════ */
+#missions {
+  padding: 80px 0;
+  background: var(--black);
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 8px 8px;
+  border-bottom: 6px solid var(--red);
+}
+.missions-header { text-align: center; margin-bottom: 16px; }
+.missions-header h2 {
+  font-family: var(--font-bang);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  letter-spacing: 4px;
+  color: var(--yellow);
+  -webkit-text-stroke: 2px var(--red);
+}
+.missions-header p { color: rgba(248,244,238,0.5); font-size: 1rem; margin-bottom: 36px; }
+
+/* Filter */
+.mission-filter {
+  display: flex; gap: 8px; justify-content: center;
+  margin-bottom: 48px; flex-wrap: wrap;
+}
+.filter-badge {
+  font-family: var(--font-bang);
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  padding: 7px 18px;
+  border: 3px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.5);
+  background: transparent;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.filter-badge:hover, .filter-badge.active {
+  border-color: var(--red);
+  color: var(--yellow);
+  background: rgba(227,30,36,0.15);
+}
+
+/* Mission cards */
+.missions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+}
+.mission-card {
+  background: #111;
+  border: 3px solid rgba(255,255,255,0.1);
+  position: relative;
+  transition: all 0.25s;
+  overflow: hidden;
+}
+.mission-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--red);
+}
+.mission-card.cat-backend::before  { background: var(--blue); }
+.mission-card.cat-frontend::before { background: var(--goblin-g); }
+.mission-card.cat-devops::before   { background: var(--elec-y); }
+.mission-card:hover {
+  border-color: var(--red);
+  transform: translateY(-4px);
+  box-shadow: 0 0 30px rgba(227,30,36,0.25), 4px 4px 0 var(--red-dark);
+}
+.mission-card.hidden { display: none; }
+
+.mission-header {
+  background: rgba(255,255,255,0.03);
+  padding: 16px 20px;
+  border-bottom: 2px solid rgba(255,255,255,0.07);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.mission-id {
+  font-family: var(--font-bang);
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  color: var(--red);
+}
+.mission-status {
+  font-family: var(--font-bang);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  padding: 3px 10px;
+  border: 2px solid;
+  text-transform: uppercase;
+}
+.mission-status.complete { color: var(--goblin-g); border-color: var(--goblin-g); }
+.mission-status.ongoing  { color: var(--yellow);   border-color: var(--yellow); }
+
+.mission-body { padding: 20px; }
+.mission-icon { font-size: 2rem; margin-bottom: 10px; }
+.mission-title {
+  font-family: var(--font-bang);
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.mission-brief {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 18px;
+  font-weight: 700;
+}
+
+.mission-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 18px;
+}
+.mission-tag {
+  font-family: var(--font-bang);
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border: 2px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.5);
+}
+.mission-links {
+  display: flex; gap: 10px;
+}
+.mission-link {
+  font-family: var(--font-bang);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  padding: 6px 14px;
+  border: 2px solid;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.mission-link.gh { color: var(--white); border-color: rgba(255,255,255,0.3); }
+.mission-link.gh:hover { border-color: var(--white); background: rgba(255,255,255,0.1); }
+.mission-link.live { color: var(--yellow); border-color: var(--red); }
+.mission-link.live:hover { background: var(--red); color: var(--white); }
+
+.mission-stamp {
+  position: absolute;
+  bottom: 14px; right: 14px;
+  font-family: var(--font-bang);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: var(--red);
+  border: 2px solid var(--red);
+  padding: 3px 8px;
+  transform: rotate(-8deg);
+  opacity: 0.6;
+}
+
+/* ══════════════════════════════════════════════════
+   5. VILLAIN BATTLES (EXPERIENCE)
+══════════════════════════════════════════════════ */
+#battles {
+  padding: 80px 0;
+  background: var(--paper);
+  border-bottom: 6px solid var(--black);
+  position: relative;
+  overflow: hidden;
+}
+#battles::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(0,0,0,0.05) 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+  pointer-events: none;
+}
+.battles-header { text-align: center; margin-bottom: 64px; }
+.battles-header h2 {
+  font-family: var(--font-bang);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  letter-spacing: 4px;
+  color: var(--black);
+}
+.battles-header h2 span { color: var(--red); -webkit-text-stroke: 1px var(--red-dark); }
+.battles-header p { color: rgba(0,0,0,0.5); font-style: italic; }
+
+.battles-timeline {
+  max-width: 800px; margin: 0 auto;
+  position: relative;
+}
+.battles-timeline::before {
+  content: '';
+  position: absolute;
+  left: 30px; top: 0; bottom: 0;
+  width: 4px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--red) 0px, var(--red) 12px,
+    var(--black) 12px, var(--black) 24px
+  );
+  border-radius: 2px;
+}
+
+.battle-item {
+  display: flex; gap: 24px;
+  margin-bottom: 40px;
+  padding-left: 64px;
+  position: relative;
+}
+.battle-dot {
+  position: absolute;
+  left: 18px; top: 20px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--red);
+  border: 4px solid var(--black);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem;
+  z-index: 1;
+  box-shadow: 0 0 0 4px var(--paper);
+}
+.battle-card {
+  flex: 1;
+  border: var(--border);
+  background: var(--white);
+  padding: 22px;
+  position: relative;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.battle-card:hover {
+  transform: translate(-3px,-3px);
+  box-shadow: 9px 9px 0 var(--black);
+}
+
+.battle-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  flex-wrap: wrap; gap: 8px;
+  margin-bottom: 14px;
+}
+.battle-role {
+  font-family: var(--font-bang);
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  color: var(--black);
+  line-height: 1;
+}
+.battle-company {
+  font-family: var(--font-bang);
+  font-size: 1rem;
+  letter-spacing: 2px;
+  color: var(--red);
+}
+.battle-date {
+  font-family: var(--font-bang);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: var(--blue);
+  background: rgba(0,56,168,0.08);
+  border: 2px solid var(--blue);
+  padding: 4px 10px;
+}
+
+.battle-desc {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: rgba(0,0,0,0.65);
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+/* Boss health bar */
+.boss-bar-wrap { margin-bottom: 14px; }
+.boss-bar-label {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-bang);
+  font-size: 0.78rem;
+  letter-spacing: 2px;
+  color: rgba(0,0,0,0.5);
+  margin-bottom: 4px;
+}
+.boss-bar-label span:last-child { color: var(--red); }
+.boss-bar-track {
+  height: 10px;
+  background: rgba(0,0,0,0.08);
+  border: 2px solid var(--black);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.boss-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red-dark), var(--red));
+  width: 0%;
+  transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+.battle-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.battle-tag {
+  font-family: var(--font-bang);
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  background: rgba(0,0,0,0.06);
+  border: 2px solid rgba(0,0,0,0.15);
+  color: rgba(0,0,0,0.6);
+}
+
+.victory-stamp {
+  position: absolute;
+  top: 14px; right: -4px;
+  font-family: var(--font-bang);
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  color: var(--goblin-g);
+  border: 3px solid var(--goblin-g);
+  padding: 4px 10px;
+  transform: rotate(12deg);
+  background: white;
+}
+
+/* ══════════════════════════════════════════════════
+   6. FAN MAIL (TESTIMONIALS)
+══════════════════════════════════════════════════ */
+#fanmail {
+  padding: 80px 0;
+  background: var(--blue);
+  background-image: radial-gradient(circle, rgba(0,0,0,0.12) 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+  border-bottom: 6px solid var(--black);
+}
+.fanmail-header { text-align: center; margin-bottom: 60px; }
+.fanmail-header h2 {
+  font-family: var(--font-bang);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  letter-spacing: 4px;
+  color: var(--yellow);
+  -webkit-text-stroke: 2px var(--black);
+}
+.fanmail-header p { color: rgba(255,255,255,0.6); font-style: italic; }
+
+.fanmail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+.fan-letter {
+  background: #fffef5;
+  border: var(--border);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+}
+.fan-letter::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, var(--red) 0, var(--red) 8px, transparent 8px, transparent 16px);
+}
+.fan-letter:hover {
+  transform: rotate(1deg) translateY(-4px);
+  box-shadow: 10px 10px 0 var(--black);
+}
+.fan-letter:nth-child(even):hover { transform: rotate(-1deg) translateY(-4px); }
+
+.fan-letter-lines {
+  position: absolute; inset: 40px 0 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px, transparent 27px,
+    rgba(0,100,220,0.08) 27px, rgba(0,100,220,0.08) 29px
+  );
+  pointer-events: none;
+}
+.fan-postmark {
+  position: absolute;
+  top: 16px; right: 20px;
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  border: 3px solid var(--red);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  opacity: 0.6;
+}
+.fan-postmark-date {
+  font-family: var(--font-bang);
+  font-size: 0.55rem;
+  letter-spacing: 1px;
+  color: var(--red);
+  text-align: center;
+  line-height: 1.3;
+}
+.fan-body {
+  position: relative; z-index: 1;
+  font-style: italic;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: rgba(0,0,0,0.75);
+  margin-bottom: 24px;
+  font-weight: 700;
+}
+.fan-body::before {
+  content: '"';
+  font-family: var(--font-bang);
+  font-size: 3rem;
+  color: var(--red);
+  line-height: 0.8;
+  display: block;
+  margin-bottom: 8px;
+  position: relative; z-index: 1;
+}
+.fan-footer {
+  display: flex; align-items: center; gap: 12px;
+  position: relative; z-index: 1;
+}
+.fan-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 3px solid var(--black);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  background: var(--red);
+}
+.fan-name {
+  font-family: var(--font-bang);
+  font-size: 1rem;
+  letter-spacing: 2px;
+  color: var(--black);
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.fan-title {
+  font-size: 0.78rem;
+  color: rgba(0,0,0,0.45);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.fan-stars {
+  margin-left: auto;
+  color: var(--yellow);
+  font-size: 1rem;
+  -webkit-text-stroke: 1px var(--black);
+  letter-spacing: 2px;
+}
+
+/* ══════════════════════════════════════════════════
+   7. SIGNAL THE HERO (CONTACT)
+══════════════════════════════════════════════════ */
+#contact {
+  padding: 80px 0;
+  background: var(--black);
+  background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 8px 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Spider-Signal spotlight */
+.spider-signal {
+  position: absolute;
+  bottom: 0;
+  left: 50%; transform: translateX(-50%);
+  width: 600px; height: 400px;
+  background: conic-gradient(
+    from 270deg at 50% 100%,
+    transparent 0deg,
+    rgba(227,30,36,0.04) 15deg,
+    rgba(227,30,36,0.1) 18deg,
+    rgba(227,30,36,0.04) 21deg,
+    transparent 36deg
+  );
+  animation: signalRotate 6s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes signalRotate {
+  from { transform: translateX(-50%) rotate(-15deg); }
+  to   { transform: translateX(-50%) rotate(15deg); }
+}
+
+.contact-header { text-align: center; margin-bottom: 60px; position: relative; z-index: 2; }
+.contact-header h2 {
+  font-family: var(--font-bang);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  letter-spacing: 4px;
+  color: var(--yellow);
+  -webkit-text-stroke: 2px var(--red);
+}
+.contact-header p { color: rgba(255,255,255,0.45); font-style: italic; }
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 40px;
+  position: relative; z-index: 2;
+  align-items: start;
+}
+
+.contact-info-col { display: flex; flex-direction: column; gap: 16px; }
+.contact-info-item {
+  border: 3px solid rgba(255,255,255,0.1);
+  padding: 18px 20px;
+  display: flex; align-items: center; gap: 16px;
+  background: rgba(255,255,255,0.03);
+  transition: border-color 0.2s, background 0.2s;
+}
+.contact-info-item:hover {
+  border-color: var(--red);
+  background: rgba(227,30,36,0.08);
+}
+.contact-info-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  width: 44px; text-align: center;
+}
+.contact-info-text {}
+.contact-info-label {
+  font-family: var(--font-bang);
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.contact-info-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--white);
+}
+a.contact-info-val:hover { color: var(--yellow); }
+
+.contact-socials {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin-top: 8px;
+}
+.social-chip {
+  font-family: var(--font-bang);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  padding: 8px 16px;
+  border: 3px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.6);
+  background: transparent;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.social-chip:hover {
+  border-color: var(--red);
+  color: var(--yellow);
+  background: rgba(227,30,36,0.15);
+  transform: translateY(-2px);
+}
+
+/* Contact form */
+.contact-form {
+  border: var(--border);
+  background: rgba(255,255,255,0.03);
+  padding: 32px;
+}
+.contact-form-header {
+  font-family: var(--font-bang);
+  font-size: 1.5rem;
+  letter-spacing: 3px;
+  color: var(--yellow);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--red);
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.form-label {
+  font-family: var(--font-bang);
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+}
+.form-input {
+  background: rgba(255,255,255,0.05);
+  border: 3px solid rgba(255,255,255,0.1);
+  color: var(--white);
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.form-input:focus {
+  border-color: var(--red);
+  background: rgba(227,30,36,0.06);
+}
+.form-input::placeholder { color: rgba(255,255,255,0.2); }
+textarea.form-input { resize: vertical; min-height: 110px; }
+
+.form-submit {
+  width: 100%;
+  font-family: var(--font-bang);
+  font-size: 1.3rem;
+  letter-spacing: 4px;
+  padding: 14px;
+  background: var(--red);
+  color: var(--yellow);
+  border: var(--border);
+  box-shadow: 5px 5px 0 var(--red-dark);
+  transition: all 0.2s;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+.form-submit:hover {
+  transform: translate(-3px,-3px);
+  box-shadow: 8px 8px 0 var(--red-dark);
+  animation: pumpkinBomb 0.5s ease forwards;
+}
+.form-success-msg {
+  display: none;
+  font-family: var(--font-bang);
+  font-size: 1.2rem;
+  letter-spacing: 3px;
+  color: var(--goblin-g);
+  border: 3px solid var(--goblin-g);
+  padding: 12px;
+  text-align: center;
+  margin-top: 16px;
+}
+.form-success-msg.show { display: block; }
+
+/* ══════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════ */
+footer {
+  background: var(--black);
+  border-top: 4px solid var(--red);
+  padding: 36px 0;
+  position: relative; z-index: 1;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+}
+/* Web SVG pattern behind footer */
+.footer-web {
+  max-width: 300px; margin: 0 auto 24px;
+  opacity: 0.15;
+}
+.footer-logo {
+  font-family: var(--font-bang);
+  font-size: 2rem;
+  letter-spacing: 4px;
+  color: var(--yellow);
+  -webkit-text-stroke: 1px var(--red);
+  margin-bottom: 10px;
+}
+.footer-tagline {
+  font-family: var(--font-bang);
+  font-size: 1rem;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 20px;
+}
+.footer-links {
+  display: flex; gap: 20px; justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.footer-links a {
+  font-family: var(--font-bang);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.35);
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--red); }
+.footer-copy {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.2);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.footer-copy a { color: var(--red); }
+.footer-copy a:hover { color: var(--yellow); }
+
+/* ══════════════════════════════════════════════════
+   WEB SWING SECTION DIVIDERS
+══════════════════════════════════════════════════ */
+.web-divider {
+  height: 60px;
+  background: var(--black);
+  position: relative;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.web-divider-svg { width: 100%; height: 100%; }
+
+/* ══════════════════════════════════════════════════
+   MOBILE NAV
+══════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    top: 64px; left: 0; right: 0; bottom: 0;
+    background: var(--black);
+    align-items: center; justify-content: center;
+    gap: 20px;
+    z-index: 999;
+    border-top: 4px solid var(--red);
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { font-size: 1.8rem; }
+  .nav-cta { display: none; }
+  .hamburger { display: flex; }
+
+  #hero { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .hero-left { padding: 40px 24px; border-right: none; border-bottom: 6px solid var(--black); min-height: auto; }
+  .hero-stats { grid-column: 1; }
+  .a-word.commit { font-size: 1.2rem; }
+  .a-word.deploy, .a-word.debug, .a-word.ship { display: none; }
+
+  .origin-panels { grid-template-columns: 1fr; }
+  .origin-panel { border-right: none; border-bottom: 4px solid var(--black); }
+  .origin-panel:last-child { border-bottom: none; }
+  .rpg-grid { grid-template-columns: 1fr; }
+
+  .villain-grid { grid-template-columns: 1fr; }
+  .contact-layout { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+
+  .battle-item { padding-left: 50px; }
+  .battles-timeline::before { left: 18px; }
+  .battle-dot { left: 5px; }
+}
+
+@media (max-width: 480px) {
+  .container { padding: 0 16px; }
+  section { padding: 60px 0; }
+  .hero-title { font-size: 3rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── CURSOR ── -->
+<div id="cursor"></div>
+
+<!-- ══════════════════════════════════════════════════
+     LOADING SCREEN
+══════════════════════════════════════════════════ -->
+<div id="loader">
+  <!-- Dim comic grid panels in background -->
+  <div id="loader-panels">
+    <div></div><div></div><div></div><div></div>
+  </div>
+
+  <!-- Ink blobs -->
+  <div class="ink-blob" style="width:80px;height:80px;top:10%;left:15%;opacity:0.4;animation-delay:-1s"></div>
+  <div class="ink-blob" style="width:50px;height:50px;bottom:20%;right:20%;opacity:0.3;animation-delay:-2s"></div>
+  <div class="ink-blob" style="width:120px;height:100px;bottom:10%;left:30%;opacity:0.25;animation-delay:-0.5s"></div>
+
+  <div id="loader-content" style="position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;width:100%;padding:24px">
+
+    <!-- SVG Web Shooter Animation -->
+    <svg id="webShooterSvg" viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <defs>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- Wrist band -->
+      <rect x="160" y="110" width="180" height="38" rx="12"
+            stroke="#E31E24" stroke-width="3"
+            stroke-dasharray="460" stroke-dashoffset="460" class="ws-draw"
+            style="animation-delay:0.2s" filter="url(#glow)"/>
+      <!-- Cartridge slot -->
+      <rect x="192" y="94" width="116" height="20" rx="6"
+            stroke="#E31E24" stroke-width="2.5"
+            stroke-dasharray="280" stroke-dashoffset="280" class="ws-draw"
+            style="animation-delay:0.7s"/>
+      <!-- Nozzle -->
+      <path d="M 238 94 L 250 64 L 262 94"
+            stroke="#CC0000" stroke-width="2.5" stroke-linejoin="round"
+            stroke-dasharray="80" stroke-dashoffset="80" class="ws-draw"
+            style="animation-delay:1s"/>
+      <!-- Web strands shooting out -->
+      <path d="M 250 62 Q 340 20 460 -10" stroke="white" stroke-width="1.8" opacity="0.7"
+            stroke-dasharray="260" stroke-dashoffset="260" class="ws-draw"
+            style="animation-delay:1.2s"/>
+      <path d="M 250 62 Q 380 30 500 10" stroke="white" stroke-width="1.2" opacity="0.5"
+            stroke-dasharray="280" stroke-dashoffset="280" class="ws-draw"
+            style="animation-delay:1.35s"/>
+      <path d="M 250 62 Q 160 20 40 -10" stroke="white" stroke-width="1.5" opacity="0.6"
+            stroke-dasharray="240" stroke-dashoffset="240" class="ws-draw"
+            style="animation-delay:1.2s"/>
+      <!-- Web circle graphic (spider symbol) -->
+      <circle cx="250" cy="175" r="28"
+              stroke="#E31E24" stroke-width="2.5"
+              stroke-dasharray="176" stroke-dashoffset="176" class="ws-draw"
+              style="animation-delay:1.5s" filter="url(#glow)"/>
+      <!-- Spider legs on symbol -->
+      <line x1="222" y1="167" x2="200" y2="155" stroke="#E31E24" stroke-width="1.5"
+            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:1.8s"/>
+      <line x1="222" y1="175" x2="198" y2="175" stroke="#E31E24" stroke-width="1.5"
+            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:1.85s"/>
+      <line x1="222" y1="183" x2="200" y2="195" stroke="#E31E24" stroke-width="1.5"
+            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:1.9s"/>
+      <line x1="278" y1="167" x2="300" y2="155" stroke="#E31E24" stroke-width="1.5"
+            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:1.8s"/>
+      <line x1="278" y1="175" x2="302" y2="175" stroke="#E31E24" stroke-width="1.5"
+            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:1.85s"/>
+      <line x1="278" y1="183" x2="300" y2="195" stroke="#E31E24" stroke-width="1.5"
+            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:1.9s"/>
+      <ellipse cx="250" cy="172" rx="10" ry="7" stroke="#E31E24" stroke-width="1.5"
+               stroke-dasharray="54" stroke-dashoffset="54" class="ws-draw" style="animation-delay:2s"/>
+    </svg>
+
+    <div id="loader-thwip">THWIP!</div>
+
+    <div id="health-bar-wrap">
+      <div id="health-bar-label">
+        <span>LOADING HERO DATA...</span>
+        <span id="health-pct">0%</span>
+      </div>
+      <div id="health-bar-track">
+        <div id="health-bar-fill"></div>
+      </div>
+    </div>
+
+    <div id="loader-tagline">
+      YOUR FRIENDLY NEIGHBORHOOD
+      <span class="line2">FULLSTACK DEV</span>
+    </div>
+  </div>
+
+  <!-- Symbiote overlay (spreads then rips away) -->
+  <div id="symbiote">
+    <div class="ink-blob" style="width:300px;height:300px;top:30%;left:30%;opacity:0.6"></div>
+    <div class="ink-blob" style="width:200px;height:200px;top:10%;right:20%;opacity:0.5;animation-delay:-1.5s"></div>
+  </div>
+</div>
+
+<!-- Web Stroke CSS animation -->
+<style>
+.ws-draw {
+  animation: drawStroke 0.6s ease forwards;
+}
+@keyframes drawStroke {
+  to { stroke-dashoffset: 0; }
+}
+</style>
+
+<!-- ══ WEB CANVAS ══ -->
+<canvas id="webCanvas"></canvas>
+
+<!-- ══════════════════════════════════════════════════
+     NAVIGATION
+══════════════════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo" id="nav-logo">
+      <span class="spider-icon"></span>HOMI-DEV
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#origin"   class="nav-link">Origin</a></li>
+      <li><a href="#powers"   class="nav-link">Powers</a></li>
+      <li><a href="#missions" class="nav-link">Missions</a></li>
+      <li><a href="#battles"  class="nav-link">Battles</a></li>
+      <li><a href="#fanmail"  class="nav-link">Fan Mail</a></li>
+      <li><a href="#contact"  class="nav-link">Signal</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta" id="hire-btn">HIRE ME!</a>
+    <button class="hamburger" id="hamburger" aria-label="menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════
+     1. HERO SPLASH
+══════════════════════════════════════════════════ -->
+<section id="hero">
+  <!-- Left panel: text -->
+  <div class="hero-left">
+    <div class="action-words" aria-hidden="true">
+      <span class="a-word commit">COMMIT!</span>
+      <span class="a-word deploy">DEPLOY!</span>
+      <span class="a-word debug">DEBUG!</span>
+      <span class="a-word ship">SHIP IT!</span>
+    </div>
+
+    <div class="hero-issue">THE AMAZING DEVELOPER · ISSUE #001 · thehomi.in</div>
+    <h1 class="hero-title">
+      HOMI
+      <span class="highlight">FULLSTACK</span>
+    </h1>
+    <div class="hero-subtitle">WITH GREAT CODE COMES GREAT RESPONSIBILITY</div>
+    <p class="hero-desc">
+      Your Friendly Neighborhood Fullstack Developer — slinging React hooks,
+      spinning Node.js webs &amp; scaling cloud architectures across the multiverse.
+    </p>
+    <div class="hero-actions">
+      <a href="#missions" class="btn-comic btn-primary-comic" id="view-missions-btn">
+        <span>⚡</span> VIEW MISSIONS
+      </a>
+      <a href="#contact" class="btn-comic btn-secondary-comic" id="signal-btn">
+        <span>🕷️</span> SIGNAL ME
+      </a>
+    </div>
+  </div>
+
+  <!-- Right panel: Spider-Man SVG figure -->
+  <div class="hero-right">
+    <div class="spidey-wrap">
+      <!-- Spider-Man Image Frame -->
+      <div class="comic-border" style="overflow: hidden; background: var(--black); border-radius: 6px; line-height: 0; transform: rotate(-2deg);">
+        <img src="spiderman.png" alt="Spider-Man" style="width: 100%; height: auto; display: block; object-fit: cover;">
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats bar stretching full width -->
+  <div class="hero-stats" style="grid-column:1/-1">
+    <div class="hero-stat-item">
+      <div class="hero-stat-num" data-target="50">0</div>
+      <div class="hero-stat-label">MISSIONS COMPLETED</div>
+    </div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-num" data-target="3">0</div>
+      <div class="hero-stat-label">YEARS IN THE FIELD</div>
+    </div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-num" data-target="20">0</div>
+      <div class="hero-stat-label">CLIENTS SAVED</div>
+    </div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-num" data-target="5">0</div>
+      <div class="hero-stat-label">VILLAINS DEFEATED</div>
+    </div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-num" data-target="99">0</div>
+      <div class="hero-stat-label">% UPTIME</div>
+    </div>
+  </div>
+</section>
+
+<!-- Web swing divider -->
+<div class="web-divider" aria-hidden="true">
+  <svg class="web-divider-svg" viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M0,30 Q100,5 200,30 Q300,55 400,30 Q500,5 600,30 Q700,55 800,30 Q900,5 1000,30 Q1100,55 1200,30"
+          stroke="rgba(227,30,36,0.4)" stroke-width="2" fill="none"/>
+    <path d="M0,40 Q150,10 300,40 Q450,70 600,40 Q750,10 900,40 Q1050,70 1200,40"
+          stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none"/>
+    <!-- Web attach dots -->
+    <circle cx="0"    cy="30" r="3" fill="#E31E24"/>
+    <circle cx="200"  cy="30" r="3" fill="#E31E24"/>
+    <circle cx="400"  cy="30" r="3" fill="#E31E24"/>
+    <circle cx="600"  cy="30" r="3" fill="#E31E24"/>
+    <circle cx="800"  cy="30" r="3" fill="#E31E24"/>
+    <circle cx="1000" cy="30" r="3" fill="#E31E24"/>
+    <circle cx="1200" cy="30" r="3" fill="#E31E24"/>
+  </svg>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     2. ORIGIN STORY
+══════════════════════════════════════════════════ -->
+<section id="origin">
+  <div class="container">
+    <div class="origin-header reveal">
+      <div class="issue-num">CHAPTER 1 · ORIGIN STORY</div>
+      <h2>THE <span>BITE</span> THAT CHANGED EVERYTHING</h2>
+      <p class="section-sub">Three panels. One origin. Infinite possibilities.</p>
+    </div>
+
+    <div class="origin-panels comic-border reveal">
+      <!-- Panel 1 -->
+      <div class="origin-panel op-1">
+        <div class="origin-panel-bg" style="background:radial-gradient(circle at 30% 50%,rgba(227,30,36,0.15),transparent)"></div>
+        <div class="origin-panel-header">PANEL 1 · "THE DISCOVERY"</div>
+        <div class="origin-panel-body">
+          <span class="op-icon">🕷️</span>
+          <h3>The Radioactive Bug</h3>
+          <p>
+            It started with a curiosity — a late-night encounter with a glowing laptop screen.
+            That one HTML page changed everything. I wrote my first <code style="background:rgba(0,0,0,0.15);padding:1px 5px;border-radius:3px">alert("Hello World")</code> and
+            was <em>immediately bitten</em> by the web development bug.
+          </p>
+          <div class="speech-bubble" style="margin-top:16px;font-size:0.85rem;max-width:220px">
+            "With great code comes great responsibility!"
+          </div>
+        </div>
+        <div class="panel-num">1</div>
+      </div>
+
+      <!-- Panel 2 -->
+      <div class="origin-panel op-2">
+        <div class="origin-panel-header">PANEL 2 · "THE TRAINING"</div>
+        <div class="origin-panel-body">
+          <span class="op-icon">📚</span>
+          <h3>The Daily Grind</h3>
+          <p>
+            Like any hero, I trained relentlessly — DSA, system design, full-stack bootcamps
+            at midnight. Every bug was a villain defeated. Every PR merged was a city saved.
+            Stack Overflow was my Uncle Ben.
+          </p>
+          <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+            <span style="background:rgba(0,56,168,0.2);border:2px solid var(--blue);color:#fff;font-family:var(--font-bang);font-size:0.75rem;letter-spacing:1px;padding:3px 8px">B.Tech CS</span>
+            <span style="background:rgba(0,56,168,0.2);border:2px solid var(--blue);color:#fff;font-family:var(--font-bang);font-size:0.75rem;letter-spacing:1px;padding:3px 8px">MERN Stack</span>
+            <span style="background:rgba(0,56,168,0.2);border:2px solid var(--blue);color:#fff;font-family:var(--font-bang);font-size:0.75rem;letter-spacing:1px;padding:3px 8px">Open Source</span>
+          </div>
+        </div>
+        <div class="panel-num">2</div>
+      </div>
+
+      <!-- Panel 3 -->
+      <div class="origin-panel op-3">
+        <div class="origin-panel-header">PANEL 3 · "THE EMERGENCE"</div>
+        <div class="origin-panel-body">
+          <span class="op-icon">⚡</span>
+          <h3>The Hero Emerges</h3>
+          <p>
+            Today I architect fullstack systems for real clients — from pixel-perfect UIs to
+            battle-hardened APIs. Based in India 🇮🇳, available worldwide. My code
+            never sleeps so your app never goes down.
+          </p>
+          <div style="margin-top:auto;padding-top:16px">
+            <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-bang);color:var(--goblin-g);letter-spacing:2px;font-size:0.9rem">
+              <span style="width:8px;height:8px;border-radius:50%;background:var(--goblin-g);display:inline-block;animation:blink2 1.5s ease infinite"></span>
+              AVAILABLE FOR MISSIONS
+            </div>
+          </div>
+        </div>
+        <div class="panel-num">3</div>
+      </div>
+    </div>
+    <style>@keyframes blink2 { 0%,100%{opacity:1}50%{opacity:0.3} }</style>
+
+    <!-- RPG Stat bars -->
+    <div class="rpg-stats reveal" style="margin-top:24px">
+      <div class="rpg-stats-header">⚡ HERO STAT SHEET ⚡</div>
+      <div class="rpg-grid">
+        <div class="rpg-stat">
+          <div class="rpg-stat-row">
+            <span class="rpg-stat-name">🕸️ FRONTEND DEX</span>
+            <span class="rpg-stat-val">92/100</span>
+          </div>
+          <div class="rpg-bar-track"><div class="rpg-bar-fill red" data-width="92"></div></div>
+        </div>
+        <div class="rpg-stat">
+          <div class="rpg-stat-row">
+            <span class="rpg-stat-name">🖤 BACKEND STR</span>
+            <span class="rpg-stat-val">88/100</span>
+          </div>
+          <div class="rpg-bar-track"><div class="rpg-bar-fill blue" data-width="88"></div></div>
+        </div>
+        <div class="rpg-stat">
+          <div class="rpg-stat-row">
+            <span class="rpg-stat-name">🗄️ DATABASE INT</span>
+            <span class="rpg-stat-val">85/100</span>
+          </div>
+          <div class="rpg-bar-track"><div class="rpg-bar-fill yellow" data-width="85"></div></div>
+        </div>
+        <div class="rpg-stat">
+          <div class="rpg-stat-row">
+            <span class="rpg-stat-name">☁️ DEVOPS WIS</span>
+            <span class="rpg-stat-val">80/100</span>
+          </div>
+          <div class="rpg-bar-track"><div class="rpg-bar-fill green" data-width="80"></div></div>
+        </div>
+        <div class="rpg-stat">
+          <div class="rpg-stat-row">
+            <span class="rpg-stat-name">🎨 UI/UX CHA</span>
+            <span class="rpg-stat-val">87/100</span>
+          </div>
+          <div class="rpg-bar-track"><div class="rpg-bar-fill red" data-width="87"></div></div>
+        </div>
+        <div class="rpg-stat">
+          <div class="rpg-stat-row">
+            <span class="rpg-stat-name">🔒 SECURITY LCK</span>
+            <span class="rpg-stat-val">82/100</span>
+          </div>
+          <div class="rpg-bar-track"><div class="rpg-bar-fill blue" data-width="82"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Web swing divider -->
+<div class="web-divider" style="background:var(--paper)" aria-hidden="true">
+  <svg class="web-divider-svg" viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M0,20 Q200,50 400,20 Q600,-10 800,20 Q1000,50 1200,20" stroke="rgba(0,0,0,0.2)" stroke-width="2" fill="none"/>
+    <circle cx="0"    cy="20" r="3" fill="#0038A8"/>
+    <circle cx="400"  cy="20" r="3" fill="#0038A8"/>
+    <circle cx="800"  cy="20" r="3" fill="#0038A8"/>
+    <circle cx="1200" cy="20" r="3" fill="#0038A8"/>
+  </svg>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     3. POWERS & ABILITIES
+══════════════════════════════════════════════════ -->
+<section id="powers">
+  <div class="container">
+    <div class="reveal" style="text-align:center;margin-bottom:48px">
+      <div class="issue-num" style="font-family:var(--font-bang);font-size:0.85rem;letter-spacing:3px;background:var(--black);color:var(--yellow);padding:4px 12px;display:inline-block;margin-bottom:8px">CHAPTER 2 · ROGUES GALLERY</div>
+      <h2 class="section-label">POWERS &amp; <span style="color:var(--red)">ABILITIES</span></h2>
+      <p class="section-sub">Each villain represents a domain I've mastered in battle.</p>
+    </div>
+
+    <div class="villain-grid">
+
+      <!-- GREEN GOBLIN — Frontend -->
+      <div class="villain-card card-goblin reveal-left" id="card-goblin">
+        <div class="card-fx-word">CHAOS!</div>
+        <div class="villain-card-header">
+          <div class="villain-emoji">🎃</div>
+          <div class="villain-title-wrap">
+            <div class="villain-name">GREEN GOBLIN</div>
+            <div class="villain-role">DOMAIN: CREATIVE FRONTEND</div>
+          </div>
+          <div class="villain-power-badge">POWER LVL 92</div>
+        </div>
+        <div class="villain-card-body">
+          <ul class="villain-skill-list">
+            <li>React / Next.js — Glider of UI precision</li>
+            <li>TypeScript — Serum of type safety</li>
+            <li>Framer Motion / GSAP — Pumpkin bomb animations</li>
+            <li>Tailwind CSS — Chaotic but beautiful styling</li>
+            <li>Vue.js — Green alternative arsenal</li>
+          </ul>
+          <div class="villain-tags">
+            <span class="villain-tag">React</span>
+            <span class="villain-tag">Next.js</span>
+            <span class="villain-tag">TypeScript</span>
+            <span class="villain-tag">GSAP</span>
+            <span class="villain-tag">Tailwind</span>
+            <span class="villain-tag">Vue</span>
+            <span class="villain-tag">Figma</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VENOM — Backend -->
+      <div class="villain-card card-venom reveal-right" id="card-venom">
+        <div class="card-fx-word" style="color:white">LETHAL!</div>
+        <div class="villain-card-header">
+          <div class="villain-emoji">🖤</div>
+          <div class="villain-title-wrap">
+            <div class="villain-name">VENOM</div>
+            <div class="villain-role">DOMAIN: DARK BACKEND POWER</div>
+          </div>
+          <div class="villain-power-badge">POWER LVL 88</div>
+        </div>
+        <div class="villain-card-body">
+          <ul class="villain-skill-list">
+            <li>Node.js / Express — The symbiote host</li>
+            <li>NestJS — We Are structured architecture</li>
+            <li>GraphQL — Feeding on data efficiently</li>
+            <li>REST APIs — Classic predatory endpoints</li>
+            <li>WebSockets — Real-time tendrils</li>
+          </ul>
+          <div class="villain-tags">
+            <span class="villain-tag">Node.js</span>
+            <span class="villain-tag">Express</span>
+            <span class="villain-tag">NestJS</span>
+            <span class="villain-tag">GraphQL</span>
+            <span class="villain-tag">REST</span>
+            <span class="villain-tag">Socket.io</span>
+            <span class="villain-tag">JWT</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ELECTRO — DevOps/Cloud -->
+      <div class="villain-card card-electro reveal-left" id="card-electro">
+        <div class="card-fx-word" style="color:var(--elec-y)">ZAP!</div>
+        <div class="villain-card-header">
+          <div class="villain-emoji">⚡</div>
+          <div class="villain-title-wrap">
+            <div class="villain-name">ELECTRO</div>
+            <div class="villain-role">DOMAIN: DEVOPS / CLOUD</div>
+          </div>
+          <div class="villain-power-badge">POWER LVL 80</div>
+        </div>
+        <div class="villain-card-body">
+          <ul class="villain-skill-list">
+            <li>AWS EC2 / S3 / Lambda — Electric cloud grid</li>
+            <li>Docker / K8s — Containerized lightning</li>
+            <li>GitHub Actions / CI/CD — Automated shocks</li>
+            <li>Nginx / Vercel / Railway — Power delivery</li>
+            <li>Linux — The power grid itself</li>
+          </ul>
+          <div class="villain-tags">
+            <span class="villain-tag">AWS</span>
+            <span class="villain-tag">Docker</span>
+            <span class="villain-tag">K8s</span>
+            <span class="villain-tag">CI/CD</span>
+            <span class="villain-tag">Nginx</span>
+            <span class="villain-tag">Vercel</span>
+            <span class="villain-tag">Linux</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOC OCK — Databases -->
+      <div class="villain-card card-ock reveal-right" id="card-ock">
+        <div class="card-fx-word" style="color:var(--ock-o)">CRUSH!</div>
+        <div class="villain-card-header">
+          <div class="villain-emoji">🐙</div>
+          <div class="villain-title-wrap">
+            <div class="villain-name">DOC OCK</div>
+            <div class="villain-role">DOMAIN: DATABASES</div>
+          </div>
+          <div class="villain-power-badge">POWER LVL 85</div>
+        </div>
+        <div class="villain-card-body">
+          <ul class="villain-skill-list">
+            <li>MongoDB — Flexible mechanical arm #1</li>
+            <li>PostgreSQL — Relational tentacle #2</li>
+            <li>Redis — Blazing fast arm #3</li>
+            <li>Prisma / Mongoose — ORM tentacles #4</li>
+            <li>ElasticSearch — Reaching everywhere</li>
+          </ul>
+          <div class="villain-tags">
+            <span class="villain-tag">MongoDB</span>
+            <span class="villain-tag">PostgreSQL</span>
+            <span class="villain-tag">Redis</span>
+            <span class="villain-tag">Prisma</span>
+            <span class="villain-tag">Mongoose</span>
+            <span class="villain-tag">MySQL</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     4. HALL OF MISSIONS
+══════════════════════════════════════════════════ -->
+<section id="missions">
+  <div class="container">
+    <div class="missions-header reveal">
+      <div style="font-family:var(--font-bang);font-size:0.85rem;letter-spacing:3px;background:var(--red);color:var(--white);padding:4px 12px;display:inline-block;margin-bottom:8px">CHAPTER 3 · CLASSIFIED FILES</div>
+      <h2>HALL OF <span style="color:var(--red);-webkit-text-stroke:2px var(--yellow)">MISSIONS</span></h2>
+      <p>SHIELD-approved project dossiers. Eyes only.</p>
+    </div>
+
+    <div class="mission-filter reveal">
+      <button class="filter-badge active" data-filter="all" id="filter-all">ALL MISSIONS</button>
+      <button class="filter-badge" data-filter="fullstack" id="filter-fs">FULLSTACK</button>
+      <button class="filter-badge" data-filter="frontend" id="filter-fe">FRONTEND</button>
+      <button class="filter-badge" data-filter="backend"  id="filter-be">BACKEND</button>
+      <button class="filter-badge" data-filter="devops"   id="filter-do">DEVOPS</button>
+    </div>
+
+    <div class="missions-grid" id="missionsGrid">
+
+      <article class="mission-card cat-fullstack reveal" id="mission-shopflow">
+        <div class="mission-header">
+          <span class="mission-id">MISSION #001 · FULLSTACK</span>
+          <span class="mission-status complete">COMPLETE</span>
+        </div>
+        <div class="mission-body">
+          <div class="mission-icon">🛒</div>
+          <h3 class="mission-title">SHOPFLOW</h3>
+          <p class="mission-brief">Full-featured e-commerce platform. Real-time inventory, Razorpay payments, admin analytics dashboard. Deployed across 3 regions.</p>
+          <div class="mission-tags">
+            <span class="mission-tag">Next.js</span><span class="mission-tag">Node.js</span>
+            <span class="mission-tag">MongoDB</span><span class="mission-tag">Redis</span>
+            <span class="mission-tag">Razorpay</span>
+          </div>
+          <div class="mission-links">
+            <a href="#" class="mission-link gh" id="m1-gh">GITHUB</a>
+            <a href="#" class="mission-link live" id="m1-live">LIVE ↗</a>
+          </div>
+        </div>
+        <div class="mission-stamp">CLASSIFIED</div>
+      </article>
+
+      <article class="mission-card cat-fullstack reveal" id="mission-devhub" style="--before-bg:var(--blue)">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--blue)"></div>
+        <div class="mission-header">
+          <span class="mission-id" style="color:var(--blue-mid)">MISSION #002 · FULLSTACK</span>
+          <span class="mission-status ongoing">FEATURED</span>
+        </div>
+        <div class="mission-body">
+          <div class="mission-icon">👥</div>
+          <h3 class="mission-title">DEVHUB</h3>
+          <p class="mission-brief">Real-time developer collaboration: live code sharing, WebRTC pair-programming, PR reviews. Serves 500+ daily active devs.</p>
+          <div class="mission-tags">
+            <span class="mission-tag">React</span><span class="mission-tag">NestJS</span>
+            <span class="mission-tag">WebRTC</span><span class="mission-tag">PostgreSQL</span>
+            <span class="mission-tag">Docker</span>
+          </div>
+          <div class="mission-links">
+            <a href="#" class="mission-link gh" id="m2-gh">GITHUB</a>
+            <a href="#" class="mission-link live" id="m2-live">LIVE ↗</a>
+          </div>
+        </div>
+        <div class="mission-stamp" style="color:var(--blue);border-color:var(--blue)">TOP SECRET</div>
+      </article>
+
+      <article class="mission-card cat-frontend reveal" id="mission-analytix">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--goblin-g)"></div>
+        <div class="mission-header">
+          <span class="mission-id" style="color:var(--goblin-g)">MISSION #003 · FRONTEND</span>
+          <span class="mission-status complete">COMPLETE</span>
+        </div>
+        <div class="mission-body">
+          <div class="mission-icon">📊</div>
+          <h3 class="mission-title">ANALYTIX DASHBOARD</h3>
+          <p class="mission-brief">Animated SaaS analytics dashboard with D3.js charts, dark/light mode, PDF exports. 35% improvement in client decision speed.</p>
+          <div class="mission-tags">
+            <span class="mission-tag">React</span><span class="mission-tag">TypeScript</span>
+            <span class="mission-tag">D3.js</span><span class="mission-tag">Recharts</span>
+          </div>
+          <div class="mission-links">
+            <a href="#" class="mission-link gh" id="m3-gh">GITHUB</a>
+            <a href="#" class="mission-link live" id="m3-live">LIVE ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="mission-card cat-backend reveal" id="mission-fluxapi">
+        <div class="mission-header">
+          <span class="mission-id">MISSION #004 · BACKEND</span>
+          <span class="mission-status complete">COMPLETE</span>
+        </div>
+        <div class="mission-body">
+          <div class="mission-icon">🔌</div>
+          <h3 class="mission-title">FLUXAPI GATEWAY</h3>
+          <p class="mission-brief">High-performance microservices API gateway with rate-limiting, JWT auth, service discovery. Handles 50k req/min.</p>
+          <div class="mission-tags">
+            <span class="mission-tag">Node.js</span><span class="mission-tag">Redis</span>
+            <span class="mission-tag">Docker</span><span class="mission-tag">Nginx</span><span class="mission-tag">JWT</span>
+          </div>
+          <div class="mission-links">
+            <a href="#" class="mission-link gh" id="m4-gh">GITHUB</a>
+            <a href="#" class="mission-link live" id="m4-live">DOCS ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="mission-card cat-fullstack reveal" id="mission-chat">
+        <div class="mission-header">
+          <span class="mission-id">MISSION #005 · FULLSTACK</span>
+          <span class="mission-status ongoing">LIVE</span>
+        </div>
+        <div class="mission-body">
+          <div class="mission-icon">💬</div>
+          <h3 class="mission-title">CHATSPHERE</h3>
+          <p class="mission-brief">WhatsApp-style encrypted messaging with file sharing, voice messages, group chats. E2E encryption with Socket.io backbone.</p>
+          <div class="mission-tags">
+            <span class="mission-tag">React</span><span class="mission-tag">Socket.io</span>
+            <span class="mission-tag">Express</span><span class="mission-tag">MongoDB</span>
+          </div>
+          <div class="mission-links">
+            <a href="#" class="mission-link gh" id="m5-gh">GITHUB</a>
+            <a href="#" class="mission-link live" id="m5-live">LIVE ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="mission-card cat-devops reveal" id="mission-infra">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--elec-y)"></div>
+        <div class="mission-header">
+          <span class="mission-id" style="color:var(--elec-y)">MISSION #006 · DEVOPS</span>
+          <span class="mission-status complete">COMPLETE</span>
+        </div>
+        <div class="mission-body">
+          <div class="mission-icon">🚀</div>
+          <h3 class="mission-title">ZERO-DOWN DEPLOY</h3>
+          <p class="mission-brief">Built full CI/CD pipeline with blue-green deployments, auto-scaling Kubernetes cluster, and 99.99% uptime SLA for a fintech startup.</p>
+          <div class="mission-tags">
+            <span class="mission-tag">AWS</span><span class="mission-tag">K8s</span>
+            <span class="mission-tag">Terraform</span><span class="mission-tag">GitHub Actions</span>
+          </div>
+          <div class="mission-links">
+            <a href="#" class="mission-link gh" id="m6-gh">GITHUB</a>
+            <a href="#" class="mission-link live" id="m6-live">CASE STUDY ↗</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     5. VILLAIN BATTLES (EXPERIENCE)
+══════════════════════════════════════════════════ -->
+<section id="battles">
+  <div class="container">
+    <div class="battles-header reveal">
+      <div style="font-family:var(--font-bang);font-size:0.85rem;letter-spacing:3px;background:var(--red);color:var(--white);padding:4px 12px;display:inline-block;margin-bottom:8px">CHAPTER 4 · BATTLE HISTORY</div>
+      <h2>VILLAIN <span>BATTLES</span></h2>
+      <p class="section-sub">Every job was a boss fight. Here's my win record.</p>
+    </div>
+
+    <div class="battles-timeline">
+
+      <div class="battle-item reveal" id="battle-1">
+        <div class="battle-dot">⚡</div>
+        <div class="battle-card">
+          <div class="victory-stamp">VICTORY!</div>
+          <div class="battle-top">
+            <div>
+              <div class="battle-role">Senior Fullstack Developer</div>
+              <div class="battle-company">🏢 TechNova Solutions</div>
+            </div>
+            <div class="battle-date">2023 — PRESENT</div>
+          </div>
+          <p class="battle-desc">
+            Defeated the "Scalability Villain" by architecting a multi-tenant SaaS platform for 10,000+ users.
+            Reduced API latency 40% and mentored 3 junior devs in the ways of clean code.
+          </p>
+          <div class="boss-bar-wrap">
+            <div class="boss-bar-label">
+              <span>XP GAINED</span>
+              <span>+9500 XP</span>
+            </div>
+            <div class="boss-bar-track">
+              <div class="boss-bar-fill" data-width="95"></div>
+            </div>
+          </div>
+          <div class="battle-tags">
+            <span class="battle-tag">React</span>
+            <span class="battle-tag">Node.js</span>
+            <span class="battle-tag">AWS</span>
+            <span class="battle-tag">PostgreSQL</span>
+            <span class="battle-tag">Microservices</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="battle-item reveal" id="battle-2">
+        <div class="battle-dot">🕸️</div>
+        <div class="battle-card">
+          <div class="victory-stamp">VICTORY!</div>
+          <div class="battle-top">
+            <div>
+              <div class="battle-role">Fullstack Developer</div>
+              <div class="battle-company">🎨 Pixelcraft Studio</div>
+            </div>
+            <div class="battle-date">2022 — 2023</div>
+          </div>
+          <p class="battle-desc">
+            Took down 12 client project "villains" — all delivered on time, 98% client satisfaction.
+            Specialized in performance optimization — cutting bundle sizes and lighthouse scores dramatically.
+          </p>
+          <div class="boss-bar-wrap">
+            <div class="boss-bar-label">
+              <span>XP GAINED</span>
+              <span>+7200 XP</span>
+            </div>
+            <div class="boss-bar-track">
+              <div class="boss-bar-fill" data-width="72"></div>
+            </div>
+          </div>
+          <div class="battle-tags">
+            <span class="battle-tag">Next.js</span>
+            <span class="battle-tag">Express</span>
+            <span class="battle-tag">MongoDB</span>
+            <span class="battle-tag">Docker</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="battle-item reveal" id="battle-3">
+        <div class="battle-dot">🕷️</div>
+        <div class="battle-card">
+          <div class="victory-stamp" style="color:var(--blue);border-color:var(--blue)">VICTORY!</div>
+          <div class="battle-top">
+            <div>
+              <div class="battle-role">Frontend Developer Intern</div>
+              <div class="battle-company">🚀 StartupX India</div>
+            </div>
+            <div class="battle-date">2021 — 2022</div>
+          </div>
+          <p class="battle-desc">
+            Origin story begins. Defeated "The Legacy Codebase" monster by building responsive
+            UI components and integrating REST APIs. Improved page load time 35% through
+            code-splitting and lazy loading.
+          </p>
+          <div class="boss-bar-wrap">
+            <div class="boss-bar-label">
+              <span>XP GAINED</span>
+              <span>+5000 XP</span>
+            </div>
+            <div class="boss-bar-track">
+              <div class="boss-bar-fill" data-width="50"></div>
+            </div>
+          </div>
+          <div class="battle-tags">
+            <span class="battle-tag">React</span>
+            <span class="battle-tag">JavaScript</span>
+            <span class="battle-tag">CSS3</span>
+            <span class="battle-tag">REST APIs</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     6. FAN MAIL (TESTIMONIALS)
+══════════════════════════════════════════════════ -->
+<section id="fanmail">
+  <div class="container">
+    <div class="fanmail-header reveal">
+      <div style="font-family:var(--font-bang);font-size:0.85rem;letter-spacing:3px;background:var(--yellow);color:var(--black);padding:4px 12px;display:inline-block;margin-bottom:8px">CHAPTER 5 · READER MAIL</div>
+      <h2>FAN MAIL</h2>
+      <p class="section-sub">Messages from citizens of the web. No filter, no edits.</p>
+    </div>
+
+    <div class="fanmail-grid">
+
+      <div class="fan-letter reveal-left" id="testimonial-1">
+        <div class="fan-letter-lines"></div>
+        <div class="fan-postmark">
+          <div class="fan-postmark-date">MAY<br>2025<br>✦</div>
+        </div>
+        <div class="fan-body">
+          Homi delivered our entire e-commerce platform 2 weeks early.
+          The code was so clean I actually cried. Our conversion rate jumped
+          28% in the first month. Absolute hero behavior.
+        </div>
+        <div class="fan-footer">
+          <div class="fan-avatar">🦸</div>
+          <div>
+            <div class="fan-name">ARJUN MEHTA</div>
+            <div class="fan-title">CEO · ShopFlow Inc.</div>
+          </div>
+          <div class="fan-stars">★★★★★</div>
+        </div>
+      </div>
+
+      <div class="fan-letter reveal" id="testimonial-2" style="transform:rotate(1deg)">
+        <div class="fan-letter-lines"></div>
+        <div class="fan-postmark">
+          <div class="fan-postmark-date">JAN<br>2025<br>✦</div>
+        </div>
+        <div class="fan-body">
+          We needed someone to handle both the React frontend AND the Node backend.
+          Homi didn't just handle it — he made it 10x better than we imagined.
+          Our API is a work of art now.
+        </div>
+        <div class="fan-footer">
+          <div class="fan-avatar" style="background:var(--blue)">💼</div>
+          <div>
+            <div class="fan-name">PRIYA SHARMA</div>
+            <div class="fan-title">CTO · Pixelcraft Studio</div>
+          </div>
+          <div class="fan-stars">★★★★★</div>
+        </div>
+      </div>
+
+      <div class="fan-letter reveal-right" id="testimonial-3" style="transform:rotate(-1deg)">
+        <div class="fan-letter-lines"></div>
+        <div class="fan-postmark">
+          <div class="fan-postmark-date">OCT<br>2024<br>✦</div>
+        </div>
+        <div class="fan-body">
+          Our startup needed a full DevOps overhaul overnight. Homi set up
+          the entire Kubernetes cluster, CI/CD pipeline and monitoring in 48 hours.
+          Man has super powers. No other explanation.
+        </div>
+        <div class="fan-footer">
+          <div class="fan-avatar" style="background:var(--goblin-g)">🚀</div>
+          <div>
+            <div class="fan-name">RAVI KRISHNAN</div>
+            <div class="fan-title">Founder · TechNova</div>
+          </div>
+          <div class="fan-stars">★★★★★</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     7. SIGNAL THE HERO (CONTACT)
+══════════════════════════════════════════════════ -->
+<section id="contact">
+  <div class="spider-signal" aria-hidden="true"></div>
+  <!-- Second spotlight slightly offset -->
+  <div class="spider-signal" aria-hidden="true"
+       style="left:40%;animation-direction:reverse;opacity:0.5;animation-duration:8s"></div>
+
+  <div class="container">
+    <div class="contact-header reveal">
+      <div style="font-family:var(--font-bang);font-size:0.85rem;letter-spacing:3px;background:var(--red);color:var(--white);padding:4px 12px;display:inline-block;margin-bottom:8px">CHAPTER 6 · SEND THE SIGNAL</div>
+      <h2>🕷️ SIGNAL THE HERO</h2>
+      <p>Shine the Spider-Signal. I will respond within 24 hours or the city burns.</p>
+    </div>
+
+    <div class="contact-layout">
+      <!-- Info column -->
+      <div class="contact-info-col reveal-left">
+        <div class="contact-info-item" id="contact-email">
+          <div class="contact-info-icon">📧</div>
+          <div class="contact-info-text">
+            <div class="contact-info-label">EMAIL CHANNEL</div>
+            <a href="mailto:hello@thehomi.in" class="contact-info-val">hello@thehomi.in</a>
+          </div>
+        </div>
+        <div class="contact-info-item" id="contact-location">
+          <div class="contact-info-icon">📍</div>
+          <div class="contact-info-text">
+            <div class="contact-info-label">BASE OF OPERATIONS</div>
+            <span class="contact-info-val">India 🇮🇳 · Available Worldwide</span>
+          </div>
+        </div>
+        <div class="contact-info-item" id="contact-avail">
+          <div class="contact-info-icon">🟢</div>
+          <div class="contact-info-text">
+            <div class="contact-info-label">STATUS</div>
+            <span class="contact-info-val" style="color:#4ade80">ON PATROL · AVAILABLE NOW</span>
+          </div>
+        </div>
+        <div class="contact-info-item" id="contact-domain">
+          <div class="contact-info-icon">🌐</div>
+          <div class="contact-info-text">
+            <div class="contact-info-label">DOMAIN</div>
+            <a href="https://thehomi.in" class="contact-info-val">thehomi.in</a>
+          </div>
+        </div>
+
+        <div class="contact-socials">
+          <a href="https://github.com"    class="social-chip" id="social-gh"  target="_blank" rel="noopener">GITHUB</a>
+          <a href="https://linkedin.com"  class="social-chip" id="social-li"  target="_blank" rel="noopener">LINKEDIN</a>
+          <a href="https://twitter.com"   class="social-chip" id="social-tw"  target="_blank" rel="noopener">TWITTER/X</a>
+          <a href="https://dev.to"        class="social-chip" id="social-dev" target="_blank" rel="noopener">DEV.TO</a>
+        </div>
+
+        <!-- Spider-Signal icon decoration -->
+        <div style="margin-top:32px;text-align:center;opacity:0.2">
+          <svg viewBox="0 0 120 120" width="100" xmlns="http://www.w3.org/2000/svg" fill="none">
+            <circle cx="60" cy="60" r="55" stroke="var(--red)" stroke-width="4"/>
+            <circle cx="60" cy="60" r="35" stroke="var(--red)" stroke-width="3"/>
+            <!-- Spider in center -->
+            <ellipse cx="60" cy="62" rx="12" ry="8" fill="var(--red)" opacity="0.8"/>
+            <ellipse cx="60" cy="50" rx="7" ry="5" fill="var(--red)" opacity="0.8"/>
+            <line x1="48" y1="59" x2="30" y2="50" stroke="var(--red)" stroke-width="2.5" opacity="0.8"/>
+            <line x1="48" y1="63" x2="28" y2="63" stroke="var(--red)" stroke-width="2.5" opacity="0.8"/>
+            <line x1="48" y1="68" x2="30" y2="76" stroke="var(--red)" stroke-width="2.5" opacity="0.8"/>
+            <line x1="72" y1="59" x2="90" y2="50" stroke="var(--red)" stroke-width="2.5" opacity="0.8"/>
+            <line x1="72" y1="63" x2="92" y2="63" stroke="var(--red)" stroke-width="2.5" opacity="0.8"/>
+            <line x1="72" y1="68" x2="90" y2="76" stroke="var(--red)" stroke-width="2.5" opacity="0.8"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="contact-form reveal-right" id="contactFormPanel">
+        <div class="contact-form-header">📡 INCOMING TRANSMISSION</div>
+        <form id="contactForm" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="f-name">HERO NAME</label>
+              <input class="form-input" type="text" id="f-name" name="name" placeholder="Peter Parker" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-email">SECRET EMAIL</label>
+              <input class="form-input" type="email" id="f-email" name="email" placeholder="hero@shield.gov" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="f-subject">MISSION TYPE</label>
+            <input class="form-input" type="text" id="f-subject" name="subject" placeholder="New Fullstack Mission" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="f-message">MISSION BRIEFING</label>
+            <textarea class="form-input" id="f-message" name="message" rows="5"
+                      placeholder="Describe the villain... I mean, the project..." required></textarea>
+          </div>
+          <button type="submit" class="form-submit" id="submit-btn">
+            🕷️ FIRE THE SIGNAL!
+          </button>
+          <div class="form-success-msg" id="successMsg">
+            ✅ SIGNAL RECEIVED! YOUR FRIENDLY NEIGHBORHOOD DEV IS ON THE WAY!
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════ -->
+<footer id="footer">
+  <div class="footer-inner">
+    <svg class="footer-web" viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <!-- Spider web SVG -->
+      <line x1="150" y1="0"   x2="150" y2="150" stroke="white" stroke-width="0.8"/>
+      <line x1="0"   y1="75"  x2="300" y2="75"  stroke="white" stroke-width="0.8"/>
+      <line x1="0"   y1="0"   x2="300" y2="150" stroke="white" stroke-width="0.6"/>
+      <line x1="300" y1="0"   x2="0"   y2="150" stroke="white" stroke-width="0.6"/>
+      <line x1="75"  y1="0"   x2="75"  y2="150" stroke="white" stroke-width="0.4"/>
+      <line x1="225" y1="0"   x2="225" y2="150" stroke="white" stroke-width="0.4"/>
+      <ellipse cx="150" cy="75" rx="30"  ry="18"  stroke="white" stroke-width="0.6"/>
+      <ellipse cx="150" cy="75" rx="65"  ry="40"  stroke="white" stroke-width="0.6"/>
+      <ellipse cx="150" cy="75" rx="100" ry="62"  stroke="white" stroke-width="0.5"/>
+      <ellipse cx="150" cy="75" rx="140" ry="72"  stroke="white" stroke-width="0.4"/>
+      <!-- Spider -->
+      <circle cx="150" cy="75" r="6" fill="white" opacity="0.8"/>
+      <line x1="140" y1="72" x2="125" y2="65" stroke="white" stroke-width="1" opacity="0.8"/>
+      <line x1="140" y1="75" x2="123" y2="75" stroke="white" stroke-width="1" opacity="0.8"/>
+      <line x1="160" y1="72" x2="175" y2="65" stroke="white" stroke-width="1" opacity="0.8"/>
+      <line x1="160" y1="75" x2="177" y2="75" stroke="white" stroke-width="1" opacity="0.8"/>
+    </svg>
+    <div class="footer-logo">🕷️ HOMI-DEV 🕷️</div>
+    <div class="footer-tagline">WITH GREAT CODE COMES GREAT RESPONSIBILITY</div>
+    <div class="footer-links">
+      <a href="#origin">Origin</a>
+      <a href="#powers">Powers</a>
+      <a href="#missions">Missions</a>
+      <a href="#battles">Battles</a>
+      <a href="#fanmail">Fan Mail</a>
+      <a href="#contact">Signal</a>
+    </div>
+    <p class="footer-copy">
+      © 2026 Homi · <a href="https://thehomi.in">thehomi.in</a> ·
+      No spiders were harmed in the making of this portfolio.
+      Built with ❤️ + ☕ somewhere in India.
+    </p>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ─── CUSTOM CURSOR ─────────────────────────────── */
+const cur = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top  = e.clientY + 'px';
+});
+document.querySelectorAll('a,button,.villain-card,.mission-card,.fan-letter,.filter-badge').forEach(el => {
+  el.addEventListener('mouseenter', () => cur.classList.add('hover'));
+  el.addEventListener('mouseleave', () => cur.classList.remove('hover'));
+});
+
+/* ─── LOADING SCREEN SEQUENCE ───────────────────── */
+const loader       = document.getElementById('loader');
+const thwip        = document.getElementById('loader-thwip');
+const hbWrap       = document.getElementById('health-bar-wrap');
+const hbFill       = document.getElementById('health-bar-fill');
+const hbPct        = document.getElementById('health-pct');
+const loaderTag    = document.getElementById('loader-tagline');
+const symbiote     = document.getElementById('symbiote');
+
+function runLoader() {
+  // Stage 1: SVG strokes draw (already animating via CSS)
+  // Stage 2: THWIP! after 1.8s
+  setTimeout(() => { thwip.classList.add('show'); }, 1900);
+
+  // Stage 3: Health bar 2.4s → 4.2s
+  setTimeout(() => {
+    hbWrap.classList.add('show');
+    let pct = 0;
+    const iv = setInterval(() => {
+      pct = Math.min(pct + 1.5, 100);
+      hbFill.style.width = pct + '%';
+      hbPct.textContent  = Math.round(pct) + '%';
+      if (pct >= 100) clearInterval(iv);
+    }, 18);
+  }, 2400);
+
+  // Stage 4: Tagline fades in
+  setTimeout(() => { loaderTag.classList.add('show'); }, 4300);
+
+  // Stage 5: Symbiote spreads
+  setTimeout(() => {
+    symbiote.style.transition = 'clip-path 1s cubic-bezier(0.4,0,0.2,1)';
+    symbiote.classList.add('spread');
+  }, 5000);
+
+  // Stage 6: Symbiote rips away
+  setTimeout(() => {
+    symbiote.style.transition = 'clip-path 0.7s cubic-bezier(0.4,0,0.6,1)';
+    symbiote.classList.remove('spread');
+    symbiote.classList.add('rip');
+    loader.classList.add('fade-out');
+  }, 5900);
+
+  // Stage 7: Loader gone, start hero counters
+  setTimeout(() => {
+    loader.style.display = 'none';
+    animateCounters();
+  }, 6700);
+}
+
+// Fallback if fonts don't load
+if (document.fonts) {
+  document.fonts.ready.then(runLoader);
+} else {
+  setTimeout(runLoader, 300);
+}
+
+/* ─── HERO STAT COUNTERS ────────────────────────── */
+function animateCounters() {
+  document.querySelectorAll('.hero-stat-num').forEach(el => {
+    const target = parseInt(el.dataset.target, 10);
+    let curr = 0;
+    const step = Math.max(1, Math.ceil(target / 35));
+    const iv = setInterval(() => {
+      curr = Math.min(curr + step, target);
+      el.textContent = curr;
+      if (curr >= target) clearInterval(iv);
+    }, 40);
+  });
+}
+
+/* ─── WEB CANVAS PARTICLES ──────────────────────── */
+const canvas = document.getElementById('webCanvas');
+const ctx    = canvas.getContext('2d');
+let nodes    = [];
+let mousePos = { x: 0, y: 0 };
+const NODE_COUNT = 60;
+
+function resizeCanvas() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', () => { resizeCanvas(); });
+
+document.addEventListener('mousemove', e => {
+  mousePos.x = e.clientX;
+  mousePos.y = e.clientY;
+});
+
+class WebNode {
+  constructor() { this.reset(); }
+  reset() {
+    this.x    = Math.random() * canvas.width;
+    this.y    = Math.random() * canvas.height;
+    this.vx   = (Math.random() - 0.5) * 0.5;
+    this.vy   = (Math.random() - 0.5) * 0.5;
+    this.size = Math.random() * 2 + 0.8;
+    this.isRed = Math.random() > 0.5;
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x < 0 || this.x > canvas.width)  this.vx *= -1;
+    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = this.isRed ? 'rgba(227,30,36,0.5)' : 'rgba(0,56,168,0.4)';
+    ctx.fill();
+  }
+}
+
+nodes = Array.from({ length: NODE_COUNT }, () => new WebNode());
+
+function drawWebStrands() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Connect nearby nodes with web strands
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx   = nodes[i].x - nodes[j].x;
+      const dy   = nodes[i].y - nodes[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 140) {
+        const alpha = 0.18 * (1 - dist / 140);
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(227,30,36,${alpha})`;
+        ctx.lineWidth = 0.6;
+        ctx.moveTo(nodes[i].x, nodes[i].y);
+        ctx.lineTo(nodes[j].x, nodes[j].y);
+        ctx.stroke();
+      }
+    }
+    // Connect to mouse position
+    const mdx  = nodes[i].x - mousePos.x;
+    const mdy  = nodes[i].y - mousePos.y;
+    const mdist = Math.sqrt(mdx*mdx + mdy*mdy);
+    if (mdist < 180) {
+      const alpha = 0.35 * (1 - mdist / 180);
+      ctx.beginPath();
+      ctx.strokeStyle = `rgba(255,230,64,${alpha})`;
+      ctx.lineWidth = 1;
+      ctx.moveTo(nodes[i].x, nodes[i].y);
+      ctx.lineTo(mousePos.x, mousePos.y);
+      ctx.stroke();
+    }
+    nodes[i].update();
+    nodes[i].draw();
+  }
+  requestAnimationFrame(drawWebStrands);
+}
+drawWebStrands();
+
+/* ─── NAVBAR ─────────────────────────────────────── */
+const navbar  = document.getElementById('navbar');
+const hamburger = document.getElementById('hamburger');
+const navLinks  = document.getElementById('navLinks');
+const navLinksA = navLinks.querySelectorAll('a');
+
+window.addEventListener('scroll', () => {
+  navbar.style.boxShadow = window.scrollY > 20
+    ? '0 4px 20px rgba(0,0,0,0.5)'
+    : '';
+  updateActiveNav();
+}, { passive: true });
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  navLinks.classList.toggle('open');
+});
+navLinksA.forEach(a => {
+  a.addEventListener('click', () => {
+    hamburger.classList.remove('open');
+    navLinks.classList.remove('open');
+  });
+});
+
+function updateActiveNav() {
+  const secs = document.querySelectorAll('section[id]');
+  let curr = '';
+  secs.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) curr = s.id;
+  });
+  navLinksA.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + curr);
+  });
+}
+
+/* ─── INTERSECTION OBSERVER (REVEAL + BARS) ──────── */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    el.classList.add('visible');
+
+    // RPG bars
+    el.querySelectorAll('.rpg-bar-fill[data-width]').forEach(bar => {
+      setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 200);
+    });
+    // Boss bars
+    el.querySelectorAll('.boss-bar-fill[data-width]').forEach(bar => {
+      setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 300);
+    });
+    // Action burst words
+    el.querySelectorAll('.action-burst').forEach((b, i) => {
+      setTimeout(() => {
+        b.style.opacity = '1';
+        b.style.animation = `popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) ${i*0.15}s both`;
+      }, i * 150);
+    });
+
+    io.unobserve(el);
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll(
+  '.reveal, .reveal-left, .reveal-right, .battle-item, .rpg-stats, .origin-panels'
+).forEach(el => io.observe(el));
+
+/* ─── PROJECT FILTER ─────────────────────────────── */
+document.querySelectorAll('.filter-badge').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-badge').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    document.querySelectorAll('.mission-card').forEach(card => {
+      const match = f === 'all' || card.classList.contains('cat-' + f);
+      card.classList.toggle('hidden', !match);
+    });
+  });
+});
+
+/* ─── CONTACT FORM ───────────────────────────────── */
+const form       = document.getElementById('contactForm');
+const submitBtn  = document.getElementById('submit-btn');
+const successMsg = document.getElementById('successMsg');
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const name    = document.getElementById('f-name').value.trim();
+  const email   = document.getElementById('f-email').value.trim();
+  const message = document.getElementById('f-message').value.trim();
+  if (!name || !email || !message) return;
+
+  submitBtn.textContent = '⏳ SWINGING TO YOUR INBOX...';
+  submitBtn.disabled = true;
+
+  setTimeout(() => {
+    form.reset();
+    submitBtn.textContent = '🕷️ FIRE THE SIGNAL!';
+    submitBtn.disabled = false;
+    successMsg.classList.add('show');
+    setTimeout(() => successMsg.classList.remove('show'), 6000);
+  }, 1800);
+});
+
+/* ─── HERO ACTION WORDS random float animation ───── */
+document.querySelectorAll('.a-word').forEach((w, i) => {
+  w.style.animation = `heroFloat ${3 + i * 0.7}s ease-in-out ${i * 0.5}s infinite`;
+});
+
+/* ─── SMOOTH scroll for logo ─────────────────────── */
+document.getElementById('nav-logo').addEventListener('click', e => {
+  e.preventDefault();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* ─── GOBLIN PUMPKIN BOMB SOUND EFFECT text ──────── */
+document.querySelectorAll('.btn-primary-comic, .btn-comic').forEach(btn => {
+  btn.addEventListener('mouseenter', () => {
+    const fx = document.createElement('span');
+    fx.textContent = ['💥 POW!','⚡ ZAP!','🎃 BAM!','💢 THWIP!'][Math.floor(Math.random()*4)];
+    fx.style.cssText = `
+      position:fixed;pointer-events:none;z-index:9999;
+      font-family:var(--font-bang);font-size:2rem;letter-spacing:3px;
+      color:var(--yellow);-webkit-text-stroke:2px var(--black);
+      animation:popIn 0.5s ease both, fxFade 0.8s ease 0.4s forwards;
+      left:${event.clientX}px;top:${event.clientY - 50}px;
+    `;
+    document.body.appendChild(fx);
+    setTimeout(() => fx.remove(), 1200);
+  });
+});
+
+// fxFade keyframe
+const fxStyle = document.createElement('style');
+fxStyle.textContent = `@keyframes fxFade { to { opacity:0; transform:translateY(-30px) rotate(15deg); } }`;
+document.head.appendChild(fxStyle);
+</script>
+</body>
+</html>
