@@ -1999,7 +1999,7 @@ footer {
       </div>
 
       <!-- Interactive Web Origin (Coordinate anchor corresponding to Spidey's right web-shooting hand) -->
-      <div class="web-origin" style="position: absolute; bottom: 82%; left: 78%; width: 1px; height: 1px; z-index: 10; pointer-events: none;"></div>
+      <div class="web-origin" style="position: absolute; top: 18%; left: 78%; width: 1px; height: 1px; z-index: 10; pointer-events: none;"></div>
       
       <!-- Spider-Man Interactive Character (Seamless screen cutout) -->
       <div class="spidey-character">
@@ -3030,6 +3030,8 @@ let lastClickTime = 0;
 
 // ─── THREE.JS 3D SPIDERMAN RENDERING ENGINE ───────────────────────
 let scene, camera, renderer, spideyMesh, mixer, clock;
+let projectedHandX = 0;
+let projectedHandY = 0;
 const spideyCanvasElement = document.getElementById('spideyCanvas');
 
 if (spideyCanvasElement) {
@@ -3166,6 +3168,29 @@ function animate3D() {
     // Smooth damped rotation (lerping)
     spideyMesh.rotation.y += (targetRotY - spideyMesh.rotation.y) * 0.05;
     spideyMesh.rotation.x += (targetRotX - spideyMesh.rotation.x) * 0.05;
+
+    // Project 3D hand coordinates to 2D screen space to position the web origin dynamically
+    spideyMesh.updateMatrixWorld(true);
+    // Position of the outstretched hand in the local space of spiderman.glb (right hand, forward & right)
+    const localHand = new THREE.Vector3(0.85, 0.38, 0.80);
+    const worldHand = localHand.clone().applyMatrix4(spideyMesh.matrixWorld);
+    const projectedHand = worldHand.project(camera);
+    
+    const canvasRect = spideyCanvasElement.getBoundingClientRect();
+    const canvasX = (projectedHand.x * 0.5 + 0.5) * canvasRect.width;
+    const canvasY = (projectedHand.y * -0.5 + 0.5) * canvasRect.height;
+    
+    // Position the DOM indicator so clicks and popup elements align perfectly
+    if (webNodeMarker) {
+      webNodeMarker.style.bottom = 'auto';
+      webNodeMarker.style.left = `${canvasX}px`;
+      webNodeMarker.style.top = `${canvasY}px`;
+    }
+    
+    // Set global coordinates relative to the hero section for the physics loop
+    const heroRect = heroSec.getBoundingClientRect();
+    projectedHandX = canvasRect.left - heroRect.left + canvasX;
+    projectedHandY = canvasRect.top - heroRect.top + canvasY;
   }
   
   resize3DCanvas();
@@ -3218,9 +3243,15 @@ function triggerWebShoot(targetX, targetY) {
   const clickY = targetY - heroRect.top;
 
   // Retrieve hand position relative to the hero section
-  const markerRect = webNodeMarker.getBoundingClientRect();
-  const handX = markerRect.left - heroRect.left + markerRect.width / 2;
-  const handY = markerRect.top - heroRect.top + markerRect.height / 2;
+  let handX, handY;
+  if (projectedHandX > 0 && projectedHandY > 0) {
+    handX = projectedHandX;
+    handY = projectedHandY;
+  } else {
+    const markerRect = webNodeMarker.getBoundingClientRect();
+    handX = markerRect.left - heroRect.left + markerRect.width / 2;
+    handY = markerRect.top - heroRect.top + markerRect.height / 2;
+  }
 
   // Calculate direction vector
   const dx = clickX - handX;
@@ -3244,7 +3275,7 @@ function triggerWebShoot(targetX, targetY) {
   lastClickTime = Date.now();
 
   // Create comic text "THWIP!" popup at the wrist
-  createThwipPopup(markerRect.left - heroRect.left, markerRect.top - heroRect.top);
+  createThwipPopup(handX, handY);
 
   // Spawn visual impact particles at target coordinates
   createWebImpactParticles(clickX, clickY);
@@ -3266,9 +3297,15 @@ function triggerWebShoot(targetX, targetY) {
 
 function getDistanceToSpidey() {
   const heroRect = heroSec.getBoundingClientRect();
-  const markerRect = webNodeMarker.getBoundingClientRect();
-  const spideyCenterX = markerRect.left + markerRect.width / 2;
-  const spideyCenterY = markerRect.top + markerRect.height / 2;
+  let spideyCenterX, spideyCenterY;
+  if (projectedHandX > 0 && projectedHandY > 0) {
+    spideyCenterX = heroRect.left + projectedHandX;
+    spideyCenterY = heroRect.top + projectedHandY;
+  } else {
+    const markerRect = webNodeMarker.getBoundingClientRect();
+    spideyCenterX = markerRect.left + markerRect.width / 2;
+    spideyCenterY = markerRect.top + markerRect.height / 2;
+  }
   const dx = globalMouseX - spideyCenterX;
   const dy = globalMouseY - spideyCenterY;
   return Math.sqrt(dx * dx + dy * dy);
@@ -3365,11 +3402,17 @@ let ropeInitialized = false;
 
 function updatePhysics() {
   const heroRect = heroSec.getBoundingClientRect();
-  const markerRect = webNodeMarker.getBoundingClientRect();
   
   // Center of Spider-Man's hand inside hero coordinates
-  const handX = markerRect.left - heroRect.left + markerRect.width / 2;
-  const handY = markerRect.top - heroRect.top + markerRect.height / 2;
+  let handX, handY;
+  if (projectedHandX > 0 && projectedHandY > 0) {
+    handX = projectedHandX;
+    handY = projectedHandY;
+  } else {
+    const markerRect = webNodeMarker.getBoundingClientRect();
+    handX = markerRect.left - heroRect.left + markerRect.width / 2;
+    handY = markerRect.top - heroRect.top + markerRect.height / 2;
+  }
 
   // Mouse relative to hero section
   const mX = globalMouseX - heroRect.left;
@@ -3467,9 +3510,8 @@ function updatePhysics() {
   // 7. Dynamic Verlet Web Rope
   if (webNodeMarker && strandGlow && strandCore && strandSpiral) {
     // Current coordinate of Spider-Man's hand
-    const originRect = webNodeMarker.getBoundingClientRect();
-    const curHandX = originRect.left - heroRect.left + originRect.width / 2;
-    const curHandY = originRect.top - heroRect.top + originRect.height / 2;
+    const curHandX = handX;
+    const curHandY = handY;
 
     if (mouseInHero) {
       strandGlow.style.display = 'block';
