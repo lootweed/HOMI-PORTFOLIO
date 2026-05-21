@@ -1852,7 +1852,13 @@ footer {
 <!-- ══════════════════════════════════════════════════
      1. HERO SPLASH
 ══════════════════════════════════════════════════ -->
-<section id="hero">
+<section id="hero" style="position: relative;">
+  <!-- Real-time Web Strand SVG Overlay -->
+  <svg id="heroWebSvg" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 99; pointer-events: none;">
+    <path id="webStrandGlow" d="" stroke="rgba(0, 170, 255, 0.4)" stroke-width="8" fill="none" stroke-linecap="round" />
+    <path id="webStrandCore" d="" stroke="rgba(255, 255, 255, 0.95)" stroke-width="3.5" fill="none" stroke-linecap="round" />
+    <path id="webStrandSpiral" d="" stroke="rgba(255, 255, 255, 0.7)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-dasharray="4 6" />
+  </svg>
   <!-- Left panel: text -->
   <div class="hero-left">
     <div class="action-words" aria-hidden="true">
@@ -1882,12 +1888,15 @@ footer {
     </div>
   </div>
 
-  <!-- Right panel: Spider-Man SVG figure -->
-  <div class="hero-right">
-    <div class="spidey-wrap">
-      <!-- Spider-Man Image Frame -->
-      <div class="comic-border" style="overflow: hidden; background: var(--black); border-radius: 6px; line-height: 0; transform: rotate(-2deg);">
-        <img src="spiderman.png" alt="Spider-Man" style="width: 100%; height: auto; display: block; object-fit: cover;">
+  <!-- Right panel: Spider-Man Interactive Frame -->
+  <div class="hero-right" style="perspective: 1200px;">
+    <div class="spidey-wrap" style="transform-style: preserve-3d; position: relative;">
+      <!-- Interactive Web Origin (Where the web shoots from Spider-Man's hand) -->
+      <div class="web-origin" style="position: absolute; bottom: 26%; left: 46%; width: 1px; height: 1px; z-index: 10; pointer-events: none;"></div>
+      
+      <!-- Spider-Man Image Frame with 3D Parallax Tilt -->
+      <div class="spidey-3d-card comic-border" style="overflow: hidden; background: var(--black); border-radius: 8px; line-height: 0; transform: rotate(-2.5deg); transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94); transform-style: preserve-3d; will-change: transform;">
+        <img src="spiderman.png" alt="Spider-Man" style="width: 100%; height: auto; display: block; object-fit: cover; transform: translateZ(24px) scale(1.06); transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform;">
       </div>
     </div>
   </div>
@@ -2879,6 +2888,132 @@ function drawWebStrands() {
   requestAnimationFrame(drawWebStrands);
 }
 drawWebStrands();
+
+/* ─── INTERACTIVE SPIDER-MAN 3D PARALLAX & REALTIME WEB-SHOOTER ─── */
+const heroSec = document.getElementById('hero');
+const spideyCard = document.querySelector('.spidey-3d-card');
+const spideyImg = spideyCard ? spideyCard.querySelector('img') : null;
+const webNodeMarker = document.querySelector('.web-origin');
+const strandGlow = document.getElementById('webStrandGlow');
+const strandCore = document.getElementById('webStrandCore');
+const strandSpiral = document.getElementById('webStrandSpiral');
+
+let lastMouseX = window.innerWidth / 2;
+let lastMouseY = window.innerHeight / 2;
+let targetCardX = 0, targetCardY = 0;
+let currentCardX = 0, currentCardY = 0;
+
+// Track mouse position over the whole hero section
+if (heroSec) {
+  heroSec.addEventListener('mousemove', e => {
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+
+    const rect = heroSec.getBoundingClientRect();
+    // Normalize coordinates (-0.5 to 0.5)
+    const normX = (e.clientX - rect.left) / rect.width - 0.5;
+    const normY = (e.clientY - rect.top) / rect.height - 0.5;
+
+    // Set target rotation angles (max 22deg tilt for high quality feel)
+    targetCardX = -normY * 22;
+    targetCardY = normX * 22;
+  });
+
+  heroSec.addEventListener('mouseleave', () => {
+    targetCardX = 0;
+    targetCardY = 0;
+  });
+}
+
+function updateWebShooter() {
+  // Smoothly interpolate the 3D card rotation (lerp)
+  currentCardX += (targetCardX - currentCardX) * 0.12;
+  currentCardY += (targetCardY - currentCardY) * 0.12;
+
+  if (spideyCard) {
+    spideyCard.style.transform = `perspective(1200px) rotateX(${currentCardX}deg) rotateY(${currentCardY}deg) rotateZ(-2.5deg)`;
+  }
+  if (spideyImg) {
+    // Parallax shift for the image itself to create 3D depth
+    spideyImg.style.transform = `translateZ(24px) translateX(${-currentCardY * 0.4}px) translateY(${currentCardX * 0.4}px) scale(1.06)`;
+  }
+
+  // Update the real-time web strand coordinates
+  if (heroSec && webNodeMarker && strandGlow && strandCore && strandSpiral) {
+    const heroRect = heroSec.getBoundingClientRect();
+    const markerRect = webNodeMarker.getBoundingClientRect();
+
+    // Coordinates of Spider-Man's hand relative to the hero section
+    const oX = markerRect.left - heroRect.left + markerRect.width / 2;
+    const oY = markerRect.top - heroRect.top + markerRect.height / 2;
+
+    // Mouse coordinates relative to the hero section
+    const mX = lastMouseX - heroRect.left;
+    const mY = lastMouseY - heroRect.top;
+
+    // Check if mouse is hovering in hero area, draw if it is, otherwise hide
+    const isMouseInHero = lastMouseX >= heroRect.left && lastMouseX <= heroRect.right &&
+                         lastMouseY >= heroRect.top && lastMouseY <= heroRect.bottom;
+
+    if (isMouseInHero) {
+      // Draw beautiful sagging quadratic Bezier curves for the web strand
+      const dx = mX - oX;
+      const dy = mY - oY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      // Calculate natural sagging (tension): less sag when stretched
+      const sag = Math.max(5, 50 - dist * 0.06);
+      const midX = (oX + mX) / 2;
+      const midY = (oY + mY) / 2 + sag;
+
+      // Primary paths
+      const pathData = `M ${oX} ${oY} Q ${midX} ${midY} ${mX} ${mY}`;
+      strandGlow.style.display = 'block';
+      strandCore.style.display = 'block';
+      strandSpiral.style.display = 'block';
+      
+      strandGlow.setAttribute('d', pathData);
+      strandCore.setAttribute('d', pathData);
+
+      // Create a coiled spiral web string wrapping around the core
+      let spiralPath = `M ${oX} ${oY}`;
+      const steps = 15;
+      for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        // Quadratic bezier formula
+        const x = (1 - t) * (1 - t) * oX + 2 * (1 - t) * t * midX + t * t * mX;
+        const y = (1 - t) * (1 - t) * oY + 2 * (1 - t) * t * midY + t * t * mY;
+
+        // Normal vector for spiral wave offset
+        const nextT = (i + 0.1) / steps;
+        const nextX = (1 - nextT) * (1 - nextT) * oX + 2 * (1 - nextT) * nextT * midX + nextT * nextT * mX;
+        const nextY = (1 - nextT) * (1 - nextT) * oY + 2 * (1 - nextT) * nextT * midY + nextT * nextT * mY;
+
+        const tangentX = nextX - x;
+        const tangentY = nextY - y;
+        const length = Math.sqrt(tangentX * tangentX + tangentY * tangentY);
+        const normalX = -tangentY / length;
+        const normalY = tangentX / length;
+
+        // Oscillating wave offset
+        const offsetAmp = Math.sin(t * Math.PI * 6) * 5;
+        const ox = x + normalX * offsetAmp;
+        const oy = y + normalY * offsetAmp;
+
+        spiralPath += ` L ${ox} ${oy}`;
+      }
+      strandSpiral.setAttribute('d', spiralPath);
+    } else {
+      strandGlow.style.display = 'none';
+      strandCore.style.display = 'none';
+      strandSpiral.style.display = 'none';
+    }
+  }
+
+  requestAnimationFrame(updateWebShooter);
+}
+// Start the animation loop
+updateWebShooter();
 
 /* ─── NAVBAR ─────────────────────────────────────── */
 const navbar  = document.getElementById('navbar');
