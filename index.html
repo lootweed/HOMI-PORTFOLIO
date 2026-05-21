@@ -553,9 +553,9 @@ section { position: relative; z-index: 1; }
 
 /* Hero right - Spider-Man */
 .hero-right {
-  background: var(--blue);
-  background-image: radial-gradient(circle, rgba(0,0,0,0.15) 1.5px, transparent 1.5px);
-  background-size: 10px 10px;
+  background: #090810;
+  background-image: radial-gradient(circle, rgba(227,30,36,0.18) 2px, transparent 2px), radial-gradient(circle, rgba(255,255,255,0.06) 1.5px, transparent 1.5px);
+  background-size: 20px 20px, 10px 10px;
   min-height: calc(100vh - 64px);
   display: flex; align-items: center; justify-content: center;
   position: relative;
@@ -563,20 +563,104 @@ section { position: relative; z-index: 1; }
 }
 .spidey-wrap {
   position: relative;
-  animation: heroFloat 3.5s ease-in-out infinite;
-  filter: drop-shadow(8px 12px 0 rgba(0,0,0,0.5));
-  width: min(380px, 85vw);
+  width: min(440px, 85vw);
+  transform-style: preserve-3d;
+  will-change: transform;
 }
-@keyframes heroFloat {
-  0%,100% { transform: translateY(0) rotate(-1deg); }
-  50%      { transform: translateY(-20px) rotate(1deg); }
+.spidey-character {
+  transform-style: preserve-3d;
+  will-change: transform;
+  display: block;
 }
-.web-line-svg {
+.spidey-img-cutout {
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  mix-blend-mode: screen;
+  filter: url(#spideyWarpFilter) drop-shadow(0 0 15px rgba(227,30,36,0.3));
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+}
+
+/* Spider-Sense alert halo elements */
+.spidey-sense-halo {
   position: absolute;
-  top: 0; right: 0;
-  width: 100%; height: 100%;
+  top: 6%;
+  left: 20%;
+  width: 100px;
+  height: 60px;
   pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transform-origin: bottom center;
+  transition: opacity 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
+.spidey-sense-halo.alert {
+  opacity: 1 !important;
+}
+.spidey-sense-halo.alert .arc-inner {
+  animation: senseWobbleInner 0.12s linear infinite;
+}
+.spidey-sense-halo.alert .arc-mid {
+  animation: senseWobbleMid 0.12s linear infinite reverse;
+}
+.spidey-sense-halo.alert .arc-outer {
+  animation: senseWobbleOuter 0.16s linear infinite;
+}
+
+@keyframes senseWobbleInner {
+  0%, 100% { transform: translate(0, 0) scale(1); stroke: #ffe600; }
+  50%      { transform: translate(-2px, -1px) scale(1.06); stroke: #ff3300; }
+}
+@keyframes senseWobbleMid {
+  0%, 100% { transform: translate(0, 0) scale(1); stroke: #ff3300; }
+  50%      { transform: translate(2px, 1px) scale(0.96); stroke: #ffffff; }
+}
+@keyframes senseWobbleOuter {
+  0%, 100% { transform: translate(0, 0) scale(1); stroke: #ffe600; }
+  50%      { transform: translate(-1px, 2px) scale(1.1); stroke: #ff3300; }
+}
+
+/* Character warning micro-shake vibration */
+.spidey-character.vibrate {
+  animation: spideyVibrate 0.08s linear infinite !important;
+}
+@keyframes spideyVibrate {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25%      { transform: translate(-1.5px, 1px) rotate(-0.4deg); }
+  50%      { transform: translate(1px, -1.5px) rotate(0.4deg); }
+  75%      { transform: translate(-1px, -1px) rotate(-0.2deg); }
+}
+
+/* Comic action 'THWIP!' word popups */
+.thwip-popup {
+  position: absolute;
+  z-index: 100;
+  pointer-events: none;
+  font-family: 'Outfit', 'Impact', 'Arial Black', sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: var(--yellow);
+  text-shadow: 
+    -3px -3px 0 #000,  
+     3px -3px 0 #000,
+    -3px  3px 0 #000,
+     3px  3px 0 #000,
+     0px 4px 10px rgba(0,0,0,0.85);
+  letter-spacing: 2px;
+  transform-origin: center;
+  animation: thwipPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes thwipPop {
+  0% { transform: scale(0.2) rotate(-15deg); opacity: 0; }
+  30% { transform: scale(1.25) rotate(8deg); opacity: 1; }
+  75% { transform: scale(1) rotate(-4deg); opacity: 1; }
+  100% { transform: scale(0.75) rotate(12deg) translateY(-50px); opacity: 0; }
+}
+
 
 /* Hero stats bar */
 .hero-stats {
@@ -1888,15 +1972,34 @@ footer {
     </div>
   </div>
 
-  <!-- Right panel: Spider-Man Interactive Frame -->
+  <!-- Right panel: Spider-Man Seamless Interactive Character -->
   <div class="hero-right" style="perspective: 1200px;">
-    <div class="spidey-wrap" style="transform-style: preserve-3d; position: relative;">
-      <!-- Interactive Web Origin (Where the web shoots from Spider-Man's hand) -->
-      <div class="web-origin" style="position: absolute; bottom: 26%; left: 46%; width: 1px; height: 1px; z-index: 10; pointer-events: none;"></div>
+    <!-- SVG displacement warp filter definition for 2.5D muscle flexing -->
+    <svg style="position: absolute; width: 0; height: 0; pointer-events: none; z-index: -1;" aria-hidden="true">
+      <defs>
+        <filter id="spideyWarpFilter">
+          <feTurbulence type="fractalNoise" baseFrequency="0.01 0.015" numOctaves="2" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" id="spideyDisplacement" />
+        </filter>
+      </defs>
+    </svg>
+
+    <div class="spidey-wrap">
+      <!-- Spider-Sense Halo Overlay (Radiating comic warning squiggles above Spidey's head) -->
+      <div class="spidey-sense-halo">
+        <svg viewBox="0 0 100 60" style="width: 100%; height: 100%; overflow: visible;">
+          <path class="sense-arc arc-inner" d="M 20 40 Q 50 15 80 40" fill="none" stroke="#ffe600" stroke-width="3" stroke-linecap="round" />
+          <path class="sense-arc arc-mid" d="M 10 30 Q 50 0 90 30" fill="none" stroke="#ff3300" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="3 3" />
+          <path class="sense-arc arc-outer" d="M 0 20 Q 50 -15 100 20" fill="none" stroke="#ffe600" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <!-- Interactive Web Origin (Coordinate anchor corresponding to Spidey's right web-shooting hand) -->
+      <div class="web-origin" style="position: absolute; bottom: 82%; left: 78%; width: 1px; height: 1px; z-index: 10; pointer-events: none;"></div>
       
-      <!-- Spider-Man Image Frame with 3D Parallax Tilt -->
-      <div class="spidey-3d-card comic-border" style="overflow: hidden; background: var(--black); border-radius: 8px; line-height: 0; transform: rotate(-2.5deg); transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94); transform-style: preserve-3d; will-change: transform;">
-        <img src="spiderman.png" alt="Spider-Man" style="width: 100%; height: auto; display: block; object-fit: cover; transform: translateZ(24px) scale(1.06); transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform;">
+      <!-- Spider-Man Interactive Character (Seamless screen cutout) -->
+      <div class="spidey-character">
+        <img src="spiderman.png" alt="Spider-Man" class="spidey-img-cutout">
       </div>
     </div>
   </div>
@@ -2889,131 +2992,467 @@ function drawWebStrands() {
 }
 drawWebStrands();
 
-/* ─── INTERACTIVE SPIDER-MAN 3D PARALLAX & REALTIME WEB-SHOOTER ─── */
+/* ─── INTERACTIVE SPIDER-MAN ADVANCED PHYSICS ENGINE & VERLET WEB-SHOOTER ─── */
 const heroSec = document.getElementById('hero');
-const spideyCard = document.querySelector('.spidey-3d-card');
-const spideyImg = spideyCard ? spideyCard.querySelector('img') : null;
+const spideyWrap = document.querySelector('.spidey-wrap');
+const spideyCharacter = document.querySelector('.spidey-character');
+const spideyImgCutout = document.querySelector('.spidey-img-cutout');
 const webNodeMarker = document.querySelector('.web-origin');
 const strandGlow = document.getElementById('webStrandGlow');
 const strandCore = document.getElementById('webStrandCore');
 const strandSpiral = document.getElementById('webStrandSpiral');
+const spideyHalo = document.querySelector('.spidey-sense-halo');
+const dispMap = document.getElementById('spideyDisplacement');
 
-let lastMouseX = window.innerWidth / 2;
-let lastMouseY = window.innerHeight / 2;
-let targetCardX = 0, targetCardY = 0;
-let currentCardX = 0, currentCardY = 0;
+// Core Physics Variables
+let spideyPhys = {
+  x: 0, y: 0,
+  vx: 0, vy: 0,
+  angle: 0, vAngle: 0
+};
 
-// Track mouse position over the whole hero section
+const POLE_SPRING = 0.04;    // restorative stiffness of the traffic light pole
+const POLE_DAMPING = 0.88;    // energy loss of the metal pole
+const WEB_TENSION = 0.0006;   // pull force of the spider web on the character
+const MAX_DISPLACEMENT = 120; // maximum deflection in px
+const CLICK_IMPULSE = 35;     // physical pull strength on click
+
+// Mouse coordinates relative to viewport
+let globalMouseX = window.innerWidth / 2;
+let globalMouseY = window.innerHeight / 2;
+let mouseInHero = false;
+let clickActive = false;
+let lastClickTime = 0;
+
+// Verlet dynamic web rope nodes
+const ROPE_NODES_COUNT = 15;
+let ropeNodes = [];
+const ROPE_DAMPING = 0.95;
+const ROPE_GRAVITY = 0.35;
+const CONSTRAINT_ITERATIONS = 8;
+
+function initRope(startX, startY) {
+  ropeNodes = [];
+  for (let i = 0; i < ROPE_NODES_COUNT; i++) {
+    ropeNodes.push({
+      x: startX,
+      y: startY,
+      px: startX,
+      py: startY
+    });
+  }
+}
+
+// Track mouse positioning
 if (heroSec) {
-  heroSec.addEventListener('mousemove', e => {
-    lastMouseX = e.clientX;
-    lastMouseY = e.clientY;
-
-    const rect = heroSec.getBoundingClientRect();
-    // Normalize coordinates (-0.5 to 0.5)
-    const normX = (e.clientX - rect.left) / rect.width - 0.5;
-    const normY = (e.clientY - rect.top) / rect.height - 0.5;
-
-    // Set target rotation angles (max 22deg tilt for high quality feel)
-    targetCardX = -normY * 22;
-    targetCardY = normX * 22;
+  heroSec.addEventListener('mousemove', (e) => {
+    globalMouseX = e.clientX;
+    globalMouseY = e.clientY;
+    mouseInHero = true;
   });
 
   heroSec.addEventListener('mouseleave', () => {
-    targetCardX = 0;
-    targetCardY = 0;
+    mouseInHero = false;
+  });
+
+  heroSec.addEventListener('click', (e) => {
+    // Only shoot if we clicked in the hero section and not on existing CTA buttons
+    if (e.target.closest('.hero-actions') || e.target.closest('.nav-links') || e.target.closest('#hamburger') || e.target.closest('#hire-btn')) return;
+
+    triggerWebShoot(e.clientX, e.clientY);
   });
 }
 
-function updateWebShooter() {
-  // Smoothly interpolate the 3D card rotation (lerp)
-  currentCardX += (targetCardX - currentCardX) * 0.12;
-  currentCardY += (targetCardY - currentCardY) * 0.12;
+// Spawns comic popup text and particles
+function triggerWebShoot(targetX, targetY) {
+  const heroRect = heroSec.getBoundingClientRect();
+  const clickX = targetX - heroRect.left;
+  const clickY = targetY - heroRect.top;
 
-  if (spideyCard) {
-    spideyCard.style.transform = `perspective(1200px) rotateX(${currentCardX}deg) rotateY(${currentCardY}deg) rotateZ(-2.5deg)`;
-  }
-  if (spideyImg) {
-    // Parallax shift for the image itself to create 3D depth
-    spideyImg.style.transform = `translateZ(24px) translateX(${-currentCardY * 0.4}px) translateY(${currentCardX * 0.4}px) scale(1.06)`;
-  }
+  // Retrieve hand position relative to the hero section
+  const markerRect = webNodeMarker.getBoundingClientRect();
+  const handX = markerRect.left - heroRect.left + markerRect.width / 2;
+  const handY = markerRect.top - heroRect.top + markerRect.height / 2;
 
-  // Update the real-time web strand coordinates
-  if (heroSec && webNodeMarker && strandGlow && strandCore && strandSpiral) {
-    const heroRect = heroSec.getBoundingClientRect();
-    const markerRect = webNodeMarker.getBoundingClientRect();
+  // Calculate direction vector
+  const dx = clickX - handX;
+  const dy = clickY - handY;
+  const dist = Math.sqrt(dx * dx + dy * dy);
 
-    // Coordinates of Spider-Man's hand relative to the hero section
-    const oX = markerRect.left - heroRect.left + markerRect.width / 2;
-    const oY = markerRect.top - heroRect.top + markerRect.height / 2;
+  if (dist < 10) return;
 
-    // Mouse coordinates relative to the hero section
-    const mX = lastMouseX - heroRect.left;
-    const mY = lastMouseY - heroRect.top;
+  // Apply visual recoil force (yank Spider-Man toward the click)
+  const impulseX = (dx / dist) * CLICK_IMPULSE;
+  const impulseY = (dy / dist) * CLICK_IMPULSE * 0.7; // slightly damp vertical recoil
+  
+  spideyPhys.vx += impulseX;
+  spideyPhys.vy += impulseY;
+  
+  // Also twist Spider-Man on click!
+  spideyPhys.vAngle += (dx / dist) * 15;
 
-    // Check if mouse is hovering in hero area, draw if it is, otherwise hide
-    const isMouseInHero = lastMouseX >= heroRect.left && lastMouseX <= heroRect.right &&
-                         lastMouseY >= heroRect.top && lastMouseY <= heroRect.bottom;
+  // Set click active flag for high warping scale
+  clickActive = true;
+  lastClickTime = Date.now();
 
-    if (isMouseInHero) {
-      // Draw beautiful sagging quadratic Bezier curves for the web strand
-      const dx = mX - oX;
-      const dy = mY - oY;
-      const dist = Math.sqrt(dx * dx + dy * dy);
+  // Create comic text "THWIP!" popup at the wrist
+  createThwipPopup(markerRect.left - heroRect.left, markerRect.top - heroRect.top);
 
-      // Calculate natural sagging (tension): less sag when stretched
-      const sag = Math.max(5, 50 - dist * 0.06);
-      const midX = (oX + mX) / 2;
-      const midY = (oY + mY) / 2 + sag;
+  // Spawn visual impact particles at target coordinates
+  createWebImpactParticles(clickX, clickY);
 
-      // Primary paths
-      const pathData = `M ${oX} ${oY} Q ${midX} ${midY} ${mX} ${mY}`;
-      strandGlow.style.display = 'block';
-      strandCore.style.display = 'block';
-      strandSpiral.style.display = 'block';
-      
-      strandGlow.setAttribute('d', pathData);
-      strandCore.setAttribute('d', pathData);
-
-      // Create a coiled spiral web string wrapping around the core
-      let spiralPath = `M ${oX} ${oY}`;
-      const steps = 15;
-      for (let i = 1; i <= steps; i++) {
-        const t = i / steps;
-        // Quadratic bezier formula
-        const x = (1 - t) * (1 - t) * oX + 2 * (1 - t) * t * midX + t * t * mX;
-        const y = (1 - t) * (1 - t) * oY + 2 * (1 - t) * t * midY + t * t * mY;
-
-        // Normal vector for spiral wave offset
-        const nextT = (i + 0.1) / steps;
-        const nextX = (1 - nextT) * (1 - nextT) * oX + 2 * (1 - nextT) * nextT * midX + nextT * nextT * mX;
-        const nextY = (1 - nextT) * (1 - nextT) * oY + 2 * (1 - nextT) * nextT * midY + nextT * nextT * mY;
-
-        const tangentX = nextX - x;
-        const tangentY = nextY - y;
-        const length = Math.sqrt(tangentX * tangentX + tangentY * tangentY);
-        const normalX = -tangentY / length;
-        const normalY = tangentX / length;
-
-        // Oscillating wave offset
-        const offsetAmp = Math.sin(t * Math.PI * 6) * 5;
-        const ox = x + normalX * offsetAmp;
-        const oy = y + normalY * offsetAmp;
-
-        spiralPath += ` L ${ox} ${oy}`;
+  // Trigger brief Spider-Sense alert crackle
+  if (spideyHalo && spideyCharacter) {
+    spideyHalo.classList.add('alert');
+    spideyCharacter.classList.add('vibrate');
+    setTimeout(() => {
+      // Clear alert if mouse is not close
+      const mdist = getDistanceToSpidey();
+      if (mdist > 250) {
+        spideyHalo.classList.remove('alert');
+        spideyCharacter.classList.remove('vibrate');
       }
-      strandSpiral.setAttribute('d', spiralPath);
-    } else {
-      strandGlow.style.display = 'none';
-      strandCore.style.display = 'none';
-      strandSpiral.style.display = 'none';
+    }, 600);
+  }
+}
+
+function getDistanceToSpidey() {
+  const heroRect = heroSec.getBoundingClientRect();
+  const markerRect = webNodeMarker.getBoundingClientRect();
+  const spideyCenterX = markerRect.left + markerRect.width / 2;
+  const spideyCenterY = markerRect.top + markerRect.height / 2;
+  const dx = globalMouseX - spideyCenterX;
+  const dy = globalMouseY - spideyCenterY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function createThwipPopup(x, y) {
+  const popup = document.createElement('div');
+  popup.className = 'thwip-popup';
+  popup.style.left = `${x - 40}px`;
+  popup.style.top = `${y - 45}px`;
+  popup.innerText = 'THWIP!';
+  
+  // Random slight rotation
+  const rot = (Math.random() - 0.5) * 20;
+  popup.style.transform = `rotate(${rot}deg)`;
+  
+  heroSec.appendChild(popup);
+  setTimeout(() => {
+    popup.remove();
+  }, 500);
+}
+
+// Particle System Container
+let particles = [];
+const particleCanvas = document.createElement('canvas');
+particleCanvas.style.position = 'absolute';
+particleCanvas.style.inset = '0';
+particleCanvas.style.width = '100%';
+particleCanvas.style.height = '100%';
+particleCanvas.style.pointerEvents = 'none';
+particleCanvas.style.zIndex = '98';
+if (heroSec) {
+  heroSec.insertBefore(particleCanvas, document.getElementById('heroWebSvg'));
+}
+
+const pCtx = particleCanvas.getContext('2d');
+
+function resizeParticleCanvas() {
+  if (heroSec) {
+    particleCanvas.width = heroSec.offsetWidth;
+    particleCanvas.height = heroSec.offsetHeight;
+  }
+}
+window.addEventListener('resize', resizeParticleCanvas);
+resizeParticleCanvas();
+
+function createWebImpactParticles(x, y) {
+  const pCount = 18;
+  for (let i = 0; i < pCount; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 2 + Math.random() * 6;
+    particles.push({
+      x: x,
+      y: y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 1.5, // slightly upward gravity counter
+      radius: 2 + Math.random() * 4,
+      color: i % 2 === 0 ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 170, 255, 0.8)',
+      alpha: 1.0,
+      decay: 0.02 + Math.random() * 0.03
+    });
+  }
+}
+
+function updateAndDrawParticles() {
+  pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.12; // slow gravity drop
+    p.vx *= 0.98; // friction
+    p.alpha -= p.decay;
+
+    if (p.alpha <= 0) {
+      particles.splice(i, 1);
+      continue;
+    }
+
+    pCtx.save();
+    pCtx.globalAlpha = p.alpha;
+    pCtx.beginPath();
+    pCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    pCtx.fillStyle = p.color;
+    pCtx.shadowBlur = 6;
+    pCtx.shadowColor = p.color;
+    pCtx.fill();
+    pCtx.restore();
+  }
+}
+
+// Primary Animation Loop
+let ropeInitialized = false;
+
+function updatePhysics() {
+  const heroRect = heroSec.getBoundingClientRect();
+  const markerRect = webNodeMarker.getBoundingClientRect();
+  
+  // Center of Spider-Man's hand inside hero coordinates
+  const handX = markerRect.left - heroRect.left + markerRect.width / 2;
+  const handY = markerRect.top - heroRect.top + markerRect.height / 2;
+
+  // Mouse relative to hero section
+  const mX = globalMouseX - heroRect.left;
+  const mY = globalMouseY - heroRect.top;
+
+  // 1. Calc distance from hand to mouse for Web Pull force
+  let pullFx = 0;
+  let pullFy = 0;
+  
+  if (mouseInHero) {
+    const dx = mX - handX;
+    const dy = mY - handY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    if (dist > 50) {
+      pullFx = dx * WEB_TENSION * 1.5;
+      pullFy = dy * WEB_TENSION;
     }
   }
 
-  requestAnimationFrame(updateWebShooter);
+  // 2. Spring restorative forces from the heavy metal pole
+  const springFx = -spideyPhys.x * POLE_SPRING;
+  const springFy = -spideyPhys.y * POLE_SPRING;
+
+  // 3. Organic breathing driver force
+  const time = Date.now() * 0.0015;
+  const breatheFx = Math.sin(time * 1.6) * 0.08;
+  const breatheFy = Math.cos(time * 0.8) * 0.14;
+
+  // 4. Euler Integration
+  const ax = springFx + pullFx + breatheFx;
+  const ay = springFy + pullFy + breatheFy;
+
+  spideyPhys.vx = (spideyPhys.vx + ax) * POLE_DAMPING;
+  spideyPhys.vy = (spideyPhys.vy + ay) * POLE_DAMPING;
+
+  spideyPhys.x += spideyPhys.vx;
+  spideyPhys.y += spideyPhys.vy;
+
+  // Clamp deflection to prevent clipping off the panel
+  spideyPhys.x = Math.max(-MAX_DISPLACEMENT, Math.min(MAX_DISPLACEMENT, spideyPhys.x));
+  spideyPhys.y = Math.max(-MAX_DISPLACEMENT * 0.6, Math.min(MAX_DISPLACEMENT * 0.6, spideyPhys.y));
+
+  // Update Spiderman Rotation (tilt slightly into the movement + mouse scroll sway)
+  const targetAngle = spideyPhys.x * 0.16 + (mouseInHero ? (mX - handX) * 0.03 : 0);
+  spideyPhys.vAngle = (spideyPhys.vAngle + (targetAngle - spideyPhys.angle) * 0.02) * POLE_DAMPING;
+  spideyPhys.angle += spideyPhys.vAngle;
+
+  // Apply actual transforms to Spider-Man
+  if (spideyWrap) {
+    // 3D Parallax offset and tilt based on real physics displacement
+    spideyWrap.style.transform = `translate3d(${spideyPhys.x}px, ${spideyPhys.y}px, 0) rotate(${spideyPhys.angle}deg)`;
+  }
+  
+  if (spideyImgCutout) {
+    // 3D depth tilt when hovering
+    const mouseDepthX = mouseInHero ? (mX - heroRect.width / 2) * -0.015 : 0;
+    const mouseDepthY = mouseInHero ? (mY - heroRect.height / 2) * 0.015 : 0;
+    spideyImgCutout.style.transform = `perspective(1200px) rotateX(${mouseDepthY}deg) rotateY(${mouseDepthX}deg) translateZ(30px)`;
+  }
+
+  // 5. Update Spider-Sense Indicator
+  const mdist = getDistanceToSpidey();
+  if (spideyHalo && spideyCharacter) {
+    if (mouseInHero && mdist < 260) {
+      spideyHalo.classList.add('alert');
+      spideyCharacter.classList.add('vibrate');
+    } else if (!clickActive || (Date.now() - lastClickTime > 600)) {
+      spideyHalo.classList.remove('alert');
+      spideyCharacter.classList.remove('vibrate');
+    }
+  }
+
+  // 6. Animate SVG Displacement Warp Filter (Flexing suit muscles)
+  if (dispMap) {
+    // Calculate warp amplitude: base breathing + physical movement velocity stress
+    let warpScale = Math.abs(Math.sin(time * 2.5)) * 1.8; // breathing warp
+    
+    // Add velocity strain warping
+    const speed = Math.sqrt(spideyPhys.vx * spideyPhys.vx + spideyPhys.vy * spideyPhys.vy);
+    warpScale += speed * 0.8;
+
+    // click stretch effect
+    if (clickActive) {
+      const elapsed = Date.now() - lastClickTime;
+      if (elapsed < 300) {
+        warpScale += (1 - elapsed / 300) * 12.0; // strong deformation
+      } else {
+        clickActive = false;
+      }
+    }
+    dispMap.setAttribute('scale', warpScale.toFixed(2));
+  }
+
+  // 7. Dynamic Verlet Web Rope
+  if (webNodeMarker && strandGlow && strandCore && strandSpiral) {
+    // Current coordinate of Spider-Man's hand
+    const originRect = webNodeMarker.getBoundingClientRect();
+    const curHandX = originRect.left - heroRect.left + originRect.width / 2;
+    const curHandY = originRect.top - heroRect.top + originRect.height / 2;
+
+    if (mouseInHero) {
+      strandGlow.style.display = 'block';
+      strandCore.style.display = 'block';
+      strandSpiral.style.display = 'block';
+
+      // Initialize rope nodes on first web creation
+      if (!ropeInitialized) {
+        initRope(curHandX, curHandY);
+        ropeInitialized = true;
+      }
+
+      // Solve Verlet integration steps
+      // Node 0 is hand, Node N-1 is cursor
+      ropeNodes[0].x = curHandX;
+      ropeNodes[0].y = curHandY;
+      ropeNodes[ROPE_NODES_COUNT - 1].x = mX;
+      ropeNodes[ROPE_NODES_COUNT - 1].y = mY;
+
+      // Verlet physics step for each intermediate node
+      for (let i = 1; i < ROPE_NODES_COUNT - 1; i++) {
+        const node = ropeNodes[i];
+        
+        // Verlet velocity
+        const vx = (node.x - node.px) * ROPE_DAMPING;
+        const vy = (node.y - node.py) * ROPE_DAMPING;
+
+        node.px = node.x;
+        node.py = node.y;
+
+        // Apply velocities + gravity + slight horizontal breeze oscillation
+        const wind = Math.sin(time * 6 + i) * 0.12;
+        node.x += vx + wind;
+        node.y += vy + ROPE_GRAVITY;
+      }
+
+      // Solve distance constraints
+      // Target segment length is proportional to direct line length
+      const directDx = mX - curHandX;
+      const directDy = mY - curHandY;
+      const directDist = Math.sqrt(directDx * directDx + directDy * directDy);
+      const segmentLength = directDist / (ROPE_NODES_COUNT - 1);
+
+      for (let k = 0; k < CONSTRAINT_ITERATIONS; k++) {
+        // First node (hand) and last node (mouse) are pinned!
+        ropeNodes[0].x = curHandX;
+        ropeNodes[0].y = curHandY;
+        ropeNodes[ROPE_NODES_COUNT - 1].x = mX;
+        ropeNodes[ROPE_NODES_COUNT - 1].y = mY;
+
+        for (let i = 0; i < ROPE_NODES_COUNT - 1; i++) {
+          const n1 = ropeNodes[i];
+          const n2 = ropeNodes[i + 1];
+
+          const dx = n2.x - n1.x;
+          const dy = n2.y - n1.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
+          const diff = segmentLength - dist;
+          
+          // Elastic spring multiplier: softer stretch in middle
+          const percent = (diff / dist) * 0.5;
+          const ox = dx * percent;
+          const oy = dy * percent;
+
+          if (i > 0) {
+            n1.x -= ox;
+            n1.y -= oy;
+          }
+          if (i + 1 < ROPE_NODES_COUNT - 1) {
+            n2.x += ox;
+            n2.y += oy;
+          }
+        }
+      }
+
+      // Render the web path through the simulated Verlet nodes
+      // We will build a beautiful smooth spline path
+      let pathData = `M ${ropeNodes[0].x} ${ropeNodes[0].y}`;
+      
+      // We can use a quadratic curve between midpoints for supreme smoothness
+      for (let i = 1; i < ROPE_NODES_COUNT - 2; i++) {
+        const xc = (ropeNodes[i].x + ropeNodes[i + 1].x) / 2;
+        const yc = (ropeNodes[i].y + ropeNodes[i + 1].y) / 2;
+        pathData += ` Q ${ropeNodes[i].x} ${ropeNodes[i].y} ${xc} ${yc}`;
+      }
+      // Curve to the final pinned mouse coordinate
+      pathData += ` Q ${ropeNodes[ROPE_NODES_COUNT - 2].x} ${ropeNodes[ROPE_NODES_COUNT - 2].y} ${ropeNodes[ROPE_NODES_COUNT - 1].x} ${ropeNodes[ROPE_NODES_COUNT - 1].y}`;
+
+      strandGlow.setAttribute('d', pathData);
+      strandCore.setAttribute('d', pathData);
+
+      // Create a coiled web spiral path wrapping around the dynamic core
+      let spiralPath = `M ${ropeNodes[0].x} ${ropeNodes[0].y}`;
+      for (let i = 1; i < ROPE_NODES_COUNT; i++) {
+        const n1 = ropeNodes[i - 1];
+        const n2 = ropeNodes[i];
+        const midX = (n1.x + n2.x) / 2;
+        const midY = (n1.y + n2.y) / 2;
+
+        const tangentX = n2.x - n1.x;
+        const tangentY = n2.y - n1.y;
+        const len = Math.sqrt(tangentX * tangentX + tangentY * tangentY) || 0.1;
+        const normalX = -tangentY / len;
+        const normalY = tangentX / len;
+
+        // Wave oscillation wrapping around the nodes
+        const amp = Math.sin(time * 12 + i) * 6;
+        const ox = midX + normalX * amp;
+        const oy = midY + normalY * amp;
+
+        spiralPath += ` Q ${ox} ${oy} ${n2.x} ${n2.y}`;
+      }
+      strandSpiral.setAttribute('d', spiralPath);
+
+    } else {
+      // Hide the web when mouse is not in hero area
+      strandGlow.style.display = 'none';
+      strandCore.style.display = 'none';
+      strandSpiral.style.display = 'none';
+      ropeInitialized = false;
+    }
+  }
+
+  // 8. Update canvas-based particles
+  updateAndDrawParticles();
+
+  requestAnimationFrame(updatePhysics);
 }
-// Start the animation loop
-updateWebShooter();
+
+// Start the physics loop
+updatePhysics();
 
 /* ─── NAVBAR ─────────────────────────────────────── */
 const navbar  = document.getElementById('navbar');
