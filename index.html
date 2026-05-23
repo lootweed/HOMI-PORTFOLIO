@@ -3387,6 +3387,7 @@ function updateWebCursorPhysics() {
   // 3. Calculate cursor velocity for dynamic tilt (sway)
   const vx = curX - lastCurX;
   const vy = curY - lastCurY;
+  const speed = Math.sqrt(vx * vx + vy * vy);
   
   // Tilt proportional to horizontal movement speed, capped at +/- 15 degrees
   let targetTilt = vx * 0.45;
