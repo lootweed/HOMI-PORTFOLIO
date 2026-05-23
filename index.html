@@ -79,7 +79,10 @@ input, textarea, select { font-family: var(--font-body); }
   overflow: visible;
 }
 /* Styles for web tip SVG elements */
-#cursor .web-core,
+#cursor .web-core {
+  stroke: #ffffff;
+  transition: stroke 0.3s ease, filter 0.3s ease;
+}
 #cursor .web-fiber {
   stroke: #ffffff;
   transition: stroke 0.3s ease, filter 0.3s ease;
@@ -93,6 +96,105 @@ input, textarea, select { font-family: var(--font-body); }
 }
 #cursor .web-cross {
   stroke: rgba(255,255,255,0.7);
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+/* Animated wiggles for the frayed fibers (gentle breathing sway) */
+#cursor .web-fiber-1 {
+  transform-origin: 15px 20px;
+  animation: fiberWiggle1 3.5s ease-in-out infinite alternate;
+}
+#cursor .web-fiber-2 {
+  transform-origin: 15px 20px;
+  animation: fiberWiggle2 4.0s ease-in-out infinite alternate;
+}
+#cursor .web-fiber-3 {
+  transform-origin: 15px 20px;
+  animation: fiberWiggle3 3.0s ease-in-out infinite alternate;
+}
+#cursor .web-fiber-4 {
+  transform-origin: 15px 20px;
+  animation: fiberWiggle2 4.2s ease-in-out infinite alternate-reverse;
+}
+#cursor .web-fiber-5 {
+  transform-origin: 15px 20px;
+  animation: fiberWiggle1 3.8s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes fiberWiggle1 {
+  0% { transform: rotate(-3.5deg) scaleY(0.94); }
+  100% { transform: rotate(3.5deg) scaleY(1.06); }
+}
+@keyframes fiberWiggle2 {
+  0% { transform: rotate(2.5deg) scaleX(0.96); }
+  100% { transform: rotate(-2.5deg) scaleX(1.04); }
+}
+@keyframes fiberWiggle3 {
+  0% { transform: rotate(-1.8deg); }
+  100% { transform: rotate(1.8deg); }
+}
+
+/* Pulsing radioactive web core */
+#cursor .web-core-glow {
+  fill: #00f5ff;
+  opacity: 0.8;
+  transition: fill 0.3s, opacity 0.3s;
+  animation: corePulse 1.6s ease-in-out infinite alternate;
+}
+@keyframes corePulse {
+  0% { fill: #00ffff; opacity: 0.65; filter: drop-shadow(0 0 2px #00ffff); }
+  100% { fill: #ffffff; opacity: 1; filter: drop-shadow(0 0 6px #00ffff) drop-shadow(0 0 10px #00e5ff); }
+}
+
+/* Click grasping/nozzle pinch reaction */
+#cursor.active .web-fiber-1 {
+  animation: none;
+  transform: rotate(14deg) scaleY(0.85);
+  transition: transform 0.12s cubic-bezier(0.19, 1, 0.22, 1);
+}
+#cursor.active .web-fiber-2 {
+  animation: none;
+  transform: rotate(8deg);
+  transition: transform 0.12s cubic-bezier(0.19, 1, 0.22, 1);
+}
+#cursor.active .web-fiber-3 {
+  animation: none;
+  transform: scaleX(0.6);
+  transition: transform 0.12s cubic-bezier(0.19, 1, 0.22, 1);
+}
+#cursor.active .web-fiber-4 {
+  animation: none;
+  transform: rotate(-8deg);
+  transition: transform 0.12s cubic-bezier(0.19, 1, 0.22, 1);
+}
+#cursor.active .web-fiber-5 {
+  animation: none;
+  transform: rotate(-14deg) scaleY(0.85);
+  transition: transform 0.12s cubic-bezier(0.19, 1, 0.22, 1);
+}
+#cursor.active .web-cross {
+  transform: scale(0.6);
+  transform-origin: 15px 20px;
+  opacity: 0.25;
+}
+
+/* Active clicked state glow change */
+#cursor.active .web-core,
+#cursor.active .web-fiber {
+  stroke: #00f5ff;
+  filter: drop-shadow(0 0 4px #00e5ff);
+}
+
+/* Pulse flash state (when a traveling web pulse hits the tip) */
+#cursor.pulse-flash .web-core-glow {
+  fill: #ffffff;
+  opacity: 1;
+  filter: drop-shadow(0 0 10px #00ffff) drop-shadow(0 0 18px #ffffff);
+}
+#cursor.pulse-flash .web-core,
+#cursor.pulse-flash .web-fiber {
+  stroke: #00f5ff;
+  filter: drop-shadow(0 0 6px #00ffff);
 }
 
 /* Hover style modifications */
@@ -2105,16 +2207,19 @@ footer {
       <!-- Spiraling wrap -->
       <path class="web-spiral" d="M 60 20 Q 55 14, 50 20 T 40 20 T 30 20 T 20 20" stroke-width="0.8" fill="none" opacity="0.95" />
       
-      <!-- Frayed fibers at the tip (extending to X=0) -->
-      <path class="web-fiber" d="M 15 20 C 12 14, 8 10, 2 8" stroke-width="1" fill="none" stroke-linecap="round" />
-      <path class="web-fiber" d="M 15 20 C 11 17, 7 15, 1 13" stroke-width="0.8" fill="none" stroke-linecap="round" />
-      <path class="web-fiber" d="M 15 20 L 0 20" stroke-width="1.2" fill="none" stroke-linecap="round" />
-      <path class="web-fiber" d="M 15 20 C 11 23, 7 25, 1 27" stroke-width="0.8" fill="none" stroke-linecap="round" />
-      <path class="web-fiber" d="M 15 20 C 12 26, 8 30, 2 32" stroke-width="1" fill="none" stroke-linecap="round" />
+      <!-- Frayed fibers at the tip (with distinct classes for wiggle and active grasp) -->
+      <path class="web-fiber web-fiber-1" d="M 15 20 C 12 14, 8 10, 2 8" stroke-width="1" fill="none" stroke-linecap="round" />
+      <path class="web-fiber web-fiber-2" d="M 15 20 C 11 17, 7 15, 1 13" stroke-width="0.8" fill="none" stroke-linecap="round" />
+      <path class="web-fiber web-fiber-3" d="M 15 20 L 0 20" stroke-width="1.2" fill="none" stroke-linecap="round" />
+      <path class="web-fiber web-fiber-4" d="M 15 20 C 11 23, 7 25, 1 27" stroke-width="0.8" fill="none" stroke-linecap="round" />
+      <path class="web-fiber web-fiber-5" d="M 15 20 C 12 26, 8 30, 2 32" stroke-width="1" fill="none" stroke-linecap="round" />
       
       <!-- Webbing cross-fibers connecting the frayed tips -->
       <path class="web-cross" d="M 8 10 Q 11 20, 8 30" stroke-width="0.5" fill="none" />
       <path class="web-cross" d="M 4 13 Q 6 20, 4 27" stroke-width="0.4" fill="none" />
+
+      <!-- Glowing central radioactive web core -->
+      <circle class="web-core-glow" cx="15" cy="20" r="3.5" />
     </g>
   </svg>
 </div>
@@ -3240,7 +3345,49 @@ let lastCurY = curY;
 let cursorAngle = 0;
 let cursorScale = 1;
 
-// Visibility and active state tracking (e.g. for idle fadeout)
+// Trailing Sparks Particle System
+let wlParticles = [];
+
+class WebSpark {
+  constructor(x, y, angle) {
+    this.x = x;
+    this.y = y;
+    // Emit opposite to movement direction with some random spread
+    const emitAngle = angle + Math.PI + (Math.random() - 0.5) * 0.8;
+    const speed = Math.random() * 2.2 + 0.6;
+    this.vx = Math.cos(emitAngle) * speed;
+    this.vy = Math.sin(emitAngle) * speed + (Math.random() - 0.5) * 0.5;
+    this.size = Math.random() * 1.8 + 0.8;
+    this.alpha = 1.0;
+    this.decay = Math.random() * 0.035 + 0.015;
+    
+    // Choose color: cyan glow, clean white, or glowing yellow
+    const rand = Math.random();
+    if (rand < 0.45) this.color = '0, 245, 255'; // Glowing cyan
+    else if (rand < 0.85) this.color = '255, 255, 255'; // Silvery white
+    else this.color = '255, 230, 64'; // Spidey Yellow
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.vy -= 0.012; // light upward drift
+    this.alpha -= this.decay;
+  }
+  draw() {
+    wlCtx.beginPath();
+    wlCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    wlCtx.fillStyle = `rgba(${this.color}, ${this.alpha})`;
+    wlCtx.shadowBlur = 4;
+    wlCtx.shadowColor = `rgb(${this.color})`;
+    wlCtx.fill();
+  }
+}
+
+// Traveling Web Energy Pulses (Thwip Pulses)
+let wlPulses = [];
+let lastPulseTime = Date.now();
+
+// Visibility and active state tracking
 let isTouch = false;
 let lastMoveTime = Date.now();
 let cursorActive = false;
@@ -3254,6 +3401,13 @@ function resizeWlCanvas() {
 resizeWlCanvas();
 window.addEventListener('resize', resizeWlCanvas);
 
+// Helper to spawn sparks
+function spawnSparks(x, y, count) {
+  for (let i = 0; i < count; i++) {
+    wlParticles.push(new WebSpark(x, y, cursorAngle));
+  }
+}
+
 // Track mouse position
 document.addEventListener('mousemove', e => {
   mouseX = e.clientX;
@@ -3261,6 +3415,11 @@ document.addEventListener('mousemove', e => {
   lastMoveTime = Date.now();
   isTouch = false;
   showCursorAndWeb();
+  
+  // Spawn trail sparks on move
+  if (cursorActive && Math.random() < 0.6) {
+    spawnSparks(curX, curY, 1);
+  }
 });
 
 // Touch support for mobile screens
@@ -3271,6 +3430,7 @@ document.addEventListener('touchstart', e => {
     mouseY = e.touches[0].clientY;
     lastMoveTime = Date.now();
     showCursorAndWeb();
+    cur.classList.add('active'); // active pinch on touch
   }
 }, { passive: true });
 
@@ -3280,11 +3440,15 @@ document.addEventListener('touchmove', e => {
     mouseY = e.touches[0].clientY;
     lastMoveTime = Date.now();
     showCursorAndWeb();
+    
+    if (cursorActive && Math.random() < 0.6) {
+      spawnSparks(curX, curY, 1);
+    }
   }
 }, { passive: true });
 
 document.addEventListener('touchend', () => {
-  // Mobile touch end: fade out after a short delay
+  cur.classList.remove('active');
   if (isTouch) {
     setTimeout(() => {
       if (Date.now() - lastMoveTime > 1200) {
@@ -3293,6 +3457,21 @@ document.addEventListener('touchend', () => {
     }, 1500);
   }
 }, { passive: true });
+
+// Mouse click animations (mousedown/mouseup)
+document.addEventListener('mousedown', () => {
+  cur.classList.add('active');
+  // Click burst sparks
+  if (cursorActive) {
+    spawnSparks(curX, curY, 12);
+    // Trigger instant rapid pulse down the web line
+    wlPulses.push({ t: 0, speed: 0.035 });
+  }
+});
+
+document.addEventListener('mouseup', () => {
+  cur.classList.remove('active');
+});
 
 function showCursorAndWeb() {
   cur.classList.add('visible');
@@ -3484,6 +3663,65 @@ function updateWebCursorPhysics() {
     wlCtx.strokeStyle = cur.classList.contains('hover') ? 'rgba(227, 30, 36, 0.6)' : 'rgba(255, 255, 255, 0.6)';
     wlCtx.lineWidth = 0.75;
     wlCtx.stroke();
+
+    // D. Update and Draw Traveling Energy Pulses
+    const now = Date.now();
+    // Auto-pulse every 2.5 seconds
+    if (now - lastPulseTime > 2500) {
+      wlPulses.push({ t: 0, speed: 0.018 });
+      lastPulseTime = now;
+    }
+    // Speed-triggered pulse
+    if (speed > 18 && now - lastPulseTime > 700) {
+      wlPulses.push({ t: 0, speed: 0.028 });
+      lastPulseTime = now;
+    }
+
+    wlPulses = wlPulses.filter(pulse => {
+      pulse.t += pulse.speed;
+      if (pulse.t >= 1.0) {
+        // Pulse reached the cursor tip! Trigger flash reaction
+        cursorScale = 1.45;
+        cur.classList.add('pulse-flash');
+        spawnSparks(curX, curY, 6); // spawn mini splash of sparks
+        setTimeout(() => {
+          cur.classList.remove('pulse-flash');
+          if (!cur.classList.contains('hover')) cursorScale = 1.0;
+        }, 220);
+        return false;
+      }
+
+      // Find 2D coordinate on the web line corresponding to pulse t
+      const totalSegments = WL_NODES_COUNT - 1;
+      const rawIndex = pulse.t * totalSegments;
+      const idx = Math.floor(rawIndex);
+      const frac = rawIndex - idx;
+
+      if (idx >= 0 && idx < totalSegments) {
+        const n1 = wlNodes[idx];
+        const n2 = wlNodes[idx + 1];
+        const px = n1.x + (n2.x - n1.x) * frac;
+        const py = n1.y + (n2.y - n1.y) * frac;
+
+        // Draw traveling glow bubble
+        wlCtx.beginPath();
+        wlCtx.arc(px, py, 5.5, 0, Math.PI * 2);
+        wlCtx.fillStyle = '#ffffff';
+        wlCtx.shadowBlur = 8;
+        wlCtx.shadowColor = '#00f5ff';
+        wlCtx.fill();
+        wlCtx.shadowBlur = 0; // reset
+      }
+      return true;
+    });
+
+    // E. Update and Draw Trailing Sparks Particle System
+    wlCtx.shadowBlur = 0;
+    wlParticles = wlParticles.filter(spark => {
+      spark.update();
+      spark.draw();
+      return spark.alpha > 0;
+    });
   }
 
   // 6. Idle fadeout handling
