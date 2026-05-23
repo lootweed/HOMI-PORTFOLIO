@@ -3260,6 +3260,7 @@ footer {
 const cur = document.getElementById('cursor');
 const wlCanvas = document.getElementById('webLineCanvas');
 const wlCtx = wlCanvas.getContext('2d');
+let loaderActive = true;
 
 // Web Line physics nodes
 const WL_NODES_COUNT = 16;
@@ -3346,6 +3347,7 @@ function spawnSparks(x, y, count) {
 
 // Track mouse position
 document.addEventListener('mousemove', e => {
+  if (loaderActive) return;
   mouseX = e.clientX;
   mouseY = e.clientY;
   lastMoveTime = Date.now();
@@ -3360,6 +3362,7 @@ document.addEventListener('mousemove', e => {
 
 // Touch support for mobile screens
 document.addEventListener('touchstart', e => {
+  if (loaderActive) return;
   isTouch = true;
   if (e.touches && e.touches[0]) {
     mouseX = e.touches[0].clientX;
@@ -3371,6 +3374,7 @@ document.addEventListener('touchstart', e => {
 }, { passive: true });
 
 document.addEventListener('touchmove', e => {
+  if (loaderActive) return;
   if (e.touches && e.touches[0]) {
     mouseX = e.touches[0].clientX;
     mouseY = e.touches[0].clientY;
@@ -3384,6 +3388,7 @@ document.addEventListener('touchmove', e => {
 }, { passive: true });
 
 document.addEventListener('touchend', () => {
+  if (loaderActive) return;
   cur.classList.remove('active');
   if (isTouch) {
     setTimeout(() => {
@@ -3396,6 +3401,7 @@ document.addEventListener('touchend', () => {
 
 // Mouse click animations (mousedown/mouseup)
 document.addEventListener('mousedown', () => {
+  if (loaderActive) return;
   cur.classList.add('active');
   // Click burst sparks
   if (cursorActive) {
@@ -3406,10 +3412,12 @@ document.addEventListener('mousedown', () => {
 });
 
 document.addEventListener('mouseup', () => {
+  if (loaderActive) return;
   cur.classList.remove('active');
 });
 
 function showCursorAndWeb() {
+  if (loaderActive) return;
   cur.classList.add('visible');
   wlCanvas.classList.add('visible');
   cursorActive = true;
@@ -3447,6 +3455,13 @@ function initWlRope(startX, startY, endX, endY) {
 
 // Main physics loop for the web strand and cursor rotation
 function updateWebCursorPhysics() {
+  if (loaderActive) {
+    wlCtx.clearRect(0, 0, wlCanvas.width, wlCanvas.height);
+    cur.classList.remove('visible');
+    wlCanvas.classList.remove('visible');
+    return;
+  }
+
   // 1. Smoothly interpolate cursor position (lerp)
   curX += (mouseX - curX) * 0.45;
   curY += (mouseY - curY) * 0.45;
@@ -3758,6 +3773,7 @@ function runLoader() {
   setTimeout(() => {
     loader.style.display = 'none';
     animateCounters();
+    loaderActive = false;
   }, 15500);
 }
 
@@ -3803,6 +3819,7 @@ resizeCanvas();
 window.addEventListener('resize', () => { resizeCanvas(); });
 
 document.addEventListener('mousemove', e => {
+  if (loaderActive) return;
   mousePos.x = e.clientX;
   mousePos.y = e.clientY;
 });
@@ -3835,6 +3852,10 @@ nodes = Array.from({ length: NODE_COUNT }, () => new WebNode());
 
 function drawWebStrands() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (loaderActive) {
+    requestAnimationFrame(drawWebStrands);
+    return;
+  }
 
   // Connect nearby nodes with web strands
   for (let i = 0; i < nodes.length; i++) {
@@ -4210,16 +4231,19 @@ function initRope(startX, startY) {
 // Track mouse and touch positioning
 if (heroSec) {
   heroSec.addEventListener('mousemove', (e) => {
+    if (loaderActive) return;
     globalMouseX = e.clientX;
     globalMouseY = e.clientY;
     mouseInHero = true;
   });
 
   heroSec.addEventListener('mouseleave', () => {
+    if (loaderActive) return;
     mouseInHero = false;
   });
 
   heroSec.addEventListener('click', (e) => {
+    if (loaderActive) return;
     // Only shoot if we clicked in the hero section and not on existing CTA buttons
     if (e.target.closest('.hero-actions') || e.target.closest('.nav-links') || e.target.closest('#hamburger') || e.target.closest('#hire-btn')) return;
 
@@ -4228,6 +4252,7 @@ if (heroSec) {
 
   // Support touch interactions on mobile
   heroSec.addEventListener('touchstart', (e) => {
+    if (loaderActive) return;
     if (e.target.closest('.hero-actions') || e.target.closest('.nav-links') || e.target.closest('#hamburger') || e.target.closest('#hire-btn')) return;
     
     const touch = e.touches[0];
@@ -4239,6 +4264,7 @@ if (heroSec) {
   }, { passive: true });
 
   heroSec.addEventListener('touchmove', (e) => {
+    if (loaderActive) return;
     if (e.target.closest('.hero-actions') || e.target.closest('.nav-links') || e.target.closest('#hamburger') || e.target.closest('#hire-btn')) return;
     
     const touch = e.touches[0];
@@ -4248,16 +4274,19 @@ if (heroSec) {
   }, { passive: true });
 
   heroSec.addEventListener('touchend', () => {
+    if (loaderActive) return;
     mouseInHero = false;
   }, { passive: true });
 
   heroSec.addEventListener('touchcancel', () => {
+    if (loaderActive) return;
     mouseInHero = false;
   }, { passive: true });
 }
 
 // Spawns comic popup text and particles
 function triggerWebShoot(targetX, targetY) {
+  if (loaderActive) return;
   const heroRect = heroSec.getBoundingClientRect();
   const clickX = targetX - heroRect.left;
   const clickY = targetY - heroRect.top;
@@ -4547,9 +4576,10 @@ function updatePhysics() {
     const curHandY = handY;
 
     if (mouseInHero) {
-      strandGlow.style.display = 'block';
-      strandCore.style.display = 'block';
-      strandSpiral.style.display = 'block';
+      // Disabled original web line to avoid duplication with the enhanced cursor web line
+      strandGlow.style.display = 'none';
+      strandCore.style.display = 'none';
+      strandSpiral.style.display = 'none';
 
       // Initialize rope nodes on first web creation
       if (!ropeInitialized) {
