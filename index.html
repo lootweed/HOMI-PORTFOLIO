@@ -221,31 +221,7 @@ input, textarea, select { font-family: var(--font-body); }
   opacity: 1;
 }
 
-/* Corner Spiderwebs */
-.corner-web {
-  position: fixed;
-  width: 140px; height: 140px;
-  pointer-events: none;
-  z-index: 99997;
-  opacity: 0.55;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-  transition: opacity 0.5s ease;
-}
-.corner-web svg {
-  width: 100%; height: 100%;
-  display: block;
-}
-.corner-web line,
-.corner-web path {
-  stroke: #ffffff;
-}
-#cornerWebLeft {
-  top: 0; left: 0;
-}
-#cornerWebRight {
-  top: 0; right: 0;
-  transform: scaleX(-1); /* Mirror to the right side */
-}
+
 
 /* ══════════════════════════════════════════════════
    HALFTONE & COMIC HELPERS
@@ -2224,44 +2200,7 @@ footer {
   </svg>
 </div>
 
-<!-- Viewport Corner Web Anchors -->
-<div id="cornerWebLeft" class="corner-web">
-  <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
-    <!-- Radial Lines -->
-    <line x1="0" y1="0" x2="140" y2="0" stroke-width="1.8" opacity="0.8" />
-    <line x1="0" y1="0" x2="135" y2="35" stroke-width="1" opacity="0.75" />
-    <line x1="0" y1="0" x2="120" y2="70" stroke-width="1" opacity="0.75" />
-    <line x1="0" y1="0" x2="90" y2="105" stroke-width="1.2" opacity="0.75" />
-    <line x1="0" y1="0" x2="50" y2="125" stroke-width="1" opacity="0.75" />
-    <line x1="0" y1="0" x2="0" y2="140" stroke-width="1.8" opacity="0.8" />
-    
-    <!-- Concentric Web Arcs -->
-    <path d="M 25 0 C 24 10, 10 24, 0 25" fill="none" stroke-width="0.8" opacity="0.7" />
-    <path d="M 50 0 C 47 20, 20 47, 0 50" fill="none" stroke-width="0.8" opacity="0.7" />
-    <path d="M 75 0 C 70 30, 30 70, 0 75" fill="none" stroke-width="0.8" opacity="0.7" />
-    <path d="M 105 0 C 95 42, 42 95, 0 105" fill="none" stroke-width="0.8" opacity="0.7" />
-    <path d="M 130 0 C 120 55, 55 120, 0 130" fill="none" stroke-width="0.8" opacity="0.6" />
-  </svg>
-</div>
 
-<div id="cornerWebRight" class="corner-web">
-  <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
-    <!-- Radial Lines -->
-    <line x1="0" y1="0" x2="140" y2="0" stroke-width="1.8" opacity="0.8" />
-    <line x1="0" y1="0" x2="135" y2="35" stroke-width="1" opacity="0.75" />
-    <line x1="0" y1="0" x2="120" y2="70" stroke-width="1" opacity="0.75" />
-    <line x1="0" y1="0" x2="90" y2="105" stroke-width="1.2" opacity="0.75" />
-    <line x1="0" y1="0" x2="50" y2="125" stroke-width="1" opacity="0.75" />
-    <line x1="0" y1="0" x2="0" y2="140" stroke-width="1.8" opacity="0.8" />
-    
-    <!-- Concentric Web Arcs -->
-    <path d="M 25 0 C 24 10, 10 24, 0 25" fill="none" stroke-width="0.8" opacity="0.7" />
-    <path d="M 50 0 C 47 20, 20 47, 0 50" fill="none" stroke-width="0.8" opacity="0.7" />
-    <path d="M 75 0 C 70 30, 30 70, 0 75" fill="none" stroke-width="0.8" opacity="0.7" />
-    <path d="M 105 0 C 95 42, 42 95, 0 105" fill="none" stroke-width="0.8" opacity="0.7" />
-    <path d="M 130 0 C 120 55, 55 120, 0 130" fill="none" stroke-width="0.8" opacity="0.6" />
-  </svg>
-</div>
 
 <!-- Web Line Canvas Overlay -->
 <canvas id="webLineCanvas"></canvas>
@@ -3330,10 +3269,8 @@ const WL_GRAVITY = 0.22;  // Small gravitational sag
 const WL_ITERATIONS = 10;
 let wlInitialized = false;
 
-// Web Anchors (center coordinates of top-left and top-right corner webs)
-const wlAnchorLeft = { x: 10, y: 10 };
-const wlAnchorRight = { x: window.innerWidth - 10, y: 10 };
-let currentAnchor = { x: wlAnchorLeft.x, y: wlAnchorLeft.y };
+// Selected anchor (dynamic screen coordinate of Spider-Man's hand)
+let currentAnchor = { x: window.innerWidth / 2, y: 150 };
 
 // Mouse coordinates
 let mouseX = window.innerWidth / 2;
@@ -3396,7 +3333,6 @@ let cursorActive = false;
 function resizeWlCanvas() {
   wlCanvas.width = window.innerWidth;
   wlCanvas.height = window.innerHeight;
-  wlAnchorRight.x = window.innerWidth - 10;
 }
 resizeWlCanvas();
 window.addEventListener('resize', resizeWlCanvas);
@@ -3515,10 +3451,23 @@ function updateWebCursorPhysics() {
   curX += (mouseX - curX) * 0.45;
   curY += (mouseY - curY) * 0.45;
 
-  // 2. Select anchor based on mouse side of the screen (smooth transition)
-  const targetAnchor = mouseX < window.innerWidth / 2 ? wlAnchorLeft : wlAnchorRight;
-  currentAnchor.x += (targetAnchor.x - currentAnchor.x) * 0.1;
-  currentAnchor.y += (targetAnchor.y - currentAnchor.y) * 0.1;
+  // 2. Select anchor based on Spider-Man's hand (DOM fallback or 3D) relative to viewport
+  const heroRect = heroSec.getBoundingClientRect();
+  let handVX, handVY;
+  if (projectedHandX > 0 && projectedHandY > 0) {
+    handVX = heroRect.left + projectedHandX;
+    handVY = heroRect.top + projectedHandY;
+  } else {
+    const markerRect = webNodeMarker.getBoundingClientRect();
+    handVX = markerRect.left + markerRect.width / 2;
+    handVY = markerRect.top + markerRect.height / 2;
+  }
+  // Clamp X inside screen margins, clamp Y to be at least 0 (top edge of viewport)
+  const targetAnchorX = Math.max(10, Math.min(window.innerWidth - 10, handVX));
+  const targetAnchorY = Math.max(0, handVY);
+  
+  currentAnchor.x = targetAnchorX;
+  currentAnchor.y = targetAnchorY;
 
   // 3. Determine angle and orientation
   const dx = curX - lastCurX;
