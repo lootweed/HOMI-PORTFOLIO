@@ -57,27 +57,93 @@ img { max-width: 100%; display: block; }
 button { cursor: none; font-family: var(--font-body); border: none; }
 input, textarea, select { font-family: var(--font-body); }
 
-/* Custom cursor */
+/* Custom cursor - Frayed Web Tip */
 #cursor {
-  width: 16px; height: 16px;
-  background: var(--red);
-  border: 2px solid var(--black);
-  border-radius: 50%;
-  position: fixed; top: 0; left: 0;
-  pointer-events: none; z-index: 99999;
-  transform: translate(-50%,-50%);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  mix-blend-mode: multiply;
+  position: fixed;
+  top: 0; left: 0;
+  width: 60px; height: 40px;
+  pointer-events: none;
+  z-index: 99999;
+  transform-origin: 0px 20px; /* Hotspot at X=0, Y=20 (very tip of the frayed end) */
+  transform: translate3d(0, -20px, 0) rotate(0deg);
+  filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.45));
+  transition: transform 0.04s linear, opacity 0.3s ease;
+  opacity: 0; /* Starts hidden until mouse move */
 }
-#cursor.hover { width: 32px; height: 32px; background: var(--yellow); }
-#cursor::after {
-  content: '';
-  position: absolute; inset: -6px;
-  border: 2px dashed var(--red);
-  border-radius: 50%;
-  animation: cursorSpin 6s linear infinite;
+#cursor.visible {
+  opacity: 1;
 }
-@keyframes cursorSpin { to { transform: rotate(360deg); } }
+#cursor svg {
+  width: 100%; height: 100%;
+  display: block;
+  overflow: visible;
+}
+/* Styles for web tip SVG elements */
+#cursor .web-core,
+#cursor .web-fiber {
+  stroke: #ffffff;
+  transition: stroke 0.3s ease, filter 0.3s ease;
+}
+#cursor .web-detail {
+  stroke: #e0e0e0;
+  transition: stroke 0.3s ease;
+}
+#cursor .web-spiral {
+  stroke: #ffffff;
+}
+#cursor .web-cross {
+  stroke: rgba(255,255,255,0.7);
+}
+
+/* Hover style modifications */
+#cursor.hover .web-core,
+#cursor.hover .web-fiber {
+  stroke: var(--yellow);
+  filter: drop-shadow(0 0 3px var(--yellow));
+}
+#cursor.hover .web-detail {
+  stroke: var(--red);
+}
+
+/* Web Line Canvas */
+#webLineCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 99998;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+#webLineCanvas.visible {
+  opacity: 1;
+}
+
+/* Corner Spiderwebs */
+.corner-web {
+  position: fixed;
+  width: 140px; height: 140px;
+  pointer-events: none;
+  z-index: 99997;
+  opacity: 0.55;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  transition: opacity 0.5s ease;
+}
+.corner-web svg {
+  width: 100%; height: 100%;
+  display: block;
+}
+.corner-web line,
+.corner-web path {
+  stroke: #ffffff;
+}
+#cornerWebLeft {
+  top: 0; left: 0;
+}
+#cornerWebRight {
+  top: 0; right: 0;
+  transform: scaleX(-1); /* Mirror to the right side */
+}
 
 /* ══════════════════════════════════════════════════
    HALFTONE & COMIC HELPERS
@@ -2020,8 +2086,80 @@ footer {
 </head>
 <body>
 
-<!-- ── CURSOR ── -->
-<div id="cursor"></div>
+<!-- ── CUSTOM SPIDERWEB CURSOR & WEB OVERLAYS ── -->
+<div id="cursor">
+  <svg width="60" height="40" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="webGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="1.2" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+    <g id="webTipG" filter="url(#webGlow)">
+      <!-- Main thread core -->
+      <path class="web-core" d="M 60 20 C 50 18, 40 22, 30 20 C 25 19, 20 21, 15 20" stroke-width="2.8" fill="none" stroke-linecap="round" />
+      <!-- Wrapping thread details -->
+      <path class="web-detail" d="M 60 17 Q 50 24, 40 18 T 20 22" stroke-width="1.2" fill="none" opacity="0.9" />
+      <path class="web-detail" d="M 60 23 Q 48 16, 36 22 T 16 18" stroke-width="1" fill="none" opacity="0.8" />
+      
+      <!-- Spiraling wrap -->
+      <path class="web-spiral" d="M 60 20 Q 55 14, 50 20 T 40 20 T 30 20 T 20 20" stroke-width="0.8" fill="none" opacity="0.95" />
+      
+      <!-- Frayed fibers at the tip (extending to X=0) -->
+      <path class="web-fiber" d="M 15 20 C 12 14, 8 10, 2 8" stroke-width="1" fill="none" stroke-linecap="round" />
+      <path class="web-fiber" d="M 15 20 C 11 17, 7 15, 1 13" stroke-width="0.8" fill="none" stroke-linecap="round" />
+      <path class="web-fiber" d="M 15 20 L 0 20" stroke-width="1.2" fill="none" stroke-linecap="round" />
+      <path class="web-fiber" d="M 15 20 C 11 23, 7 25, 1 27" stroke-width="0.8" fill="none" stroke-linecap="round" />
+      <path class="web-fiber" d="M 15 20 C 12 26, 8 30, 2 32" stroke-width="1" fill="none" stroke-linecap="round" />
+      
+      <!-- Webbing cross-fibers connecting the frayed tips -->
+      <path class="web-cross" d="M 8 10 Q 11 20, 8 30" stroke-width="0.5" fill="none" />
+      <path class="web-cross" d="M 4 13 Q 6 20, 4 27" stroke-width="0.4" fill="none" />
+    </g>
+  </svg>
+</div>
+
+<!-- Viewport Corner Web Anchors -->
+<div id="cornerWebLeft" class="corner-web">
+  <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+    <!-- Radial Lines -->
+    <line x1="0" y1="0" x2="140" y2="0" stroke-width="1.8" opacity="0.8" />
+    <line x1="0" y1="0" x2="135" y2="35" stroke-width="1" opacity="0.75" />
+    <line x1="0" y1="0" x2="120" y2="70" stroke-width="1" opacity="0.75" />
+    <line x1="0" y1="0" x2="90" y2="105" stroke-width="1.2" opacity="0.75" />
+    <line x1="0" y1="0" x2="50" y2="125" stroke-width="1" opacity="0.75" />
+    <line x1="0" y1="0" x2="0" y2="140" stroke-width="1.8" opacity="0.8" />
+    
+    <!-- Concentric Web Arcs -->
+    <path d="M 25 0 C 24 10, 10 24, 0 25" fill="none" stroke-width="0.8" opacity="0.7" />
+    <path d="M 50 0 C 47 20, 20 47, 0 50" fill="none" stroke-width="0.8" opacity="0.7" />
+    <path d="M 75 0 C 70 30, 30 70, 0 75" fill="none" stroke-width="0.8" opacity="0.7" />
+    <path d="M 105 0 C 95 42, 42 95, 0 105" fill="none" stroke-width="0.8" opacity="0.7" />
+    <path d="M 130 0 C 120 55, 55 120, 0 130" fill="none" stroke-width="0.8" opacity="0.6" />
+  </svg>
+</div>
+
+<div id="cornerWebRight" class="corner-web">
+  <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+    <!-- Radial Lines -->
+    <line x1="0" y1="0" x2="140" y2="0" stroke-width="1.8" opacity="0.8" />
+    <line x1="0" y1="0" x2="135" y2="35" stroke-width="1" opacity="0.75" />
+    <line x1="0" y1="0" x2="120" y2="70" stroke-width="1" opacity="0.75" />
+    <line x1="0" y1="0" x2="90" y2="105" stroke-width="1.2" opacity="0.75" />
+    <line x1="0" y1="0" x2="50" y2="125" stroke-width="1" opacity="0.75" />
+    <line x1="0" y1="0" x2="0" y2="140" stroke-width="1.8" opacity="0.8" />
+    
+    <!-- Concentric Web Arcs -->
+    <path d="M 25 0 C 24 10, 10 24, 0 25" fill="none" stroke-width="0.8" opacity="0.7" />
+    <path d="M 50 0 C 47 20, 20 47, 0 50" fill="none" stroke-width="0.8" opacity="0.7" />
+    <path d="M 75 0 C 70 30, 30 70, 0 75" fill="none" stroke-width="0.8" opacity="0.7" />
+    <path d="M 105 0 C 95 42, 42 95, 0 105" fill="none" stroke-width="0.8" opacity="0.7" />
+    <path d="M 130 0 C 120 55, 55 120, 0 130" fill="none" stroke-width="0.8" opacity="0.6" />
+  </svg>
+</div>
+
+<!-- Web Line Canvas Overlay -->
+<canvas id="webLineCanvas"></canvas>
 
 <!-- ══════════════════════════════════════════════════
      LOADING SCREEN
@@ -3074,16 +3212,296 @@ footer {
 <script>
 'use strict';
 
-/* ─── CUSTOM CURSOR ─────────────────────────────── */
+/* ─── CUSTOM SPIDERWEB CURSOR & VERLET WEB STRAND ─────────────────────────── */
 const cur = document.getElementById('cursor');
+const wlCanvas = document.getElementById('webLineCanvas');
+const wlCtx = wlCanvas.getContext('2d');
+
+// Web Line physics nodes
+const WL_NODES_COUNT = 16;
+let wlNodes = [];
+const WL_DAMPING = 0.86;  // Organic spring damping
+const WL_GRAVITY = 0.22;  // Small gravitational sag
+const WL_ITERATIONS = 10;
+let wlInitialized = false;
+
+// Web Anchors (center coordinates of top-left and top-right corner webs)
+const wlAnchorLeft = { x: 10, y: 10 };
+const wlAnchorRight = { x: window.innerWidth - 10, y: 10 };
+let currentAnchor = { x: wlAnchorLeft.x, y: wlAnchorLeft.y };
+
+// Mouse coordinates
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+let curX = mouseX;
+let curY = mouseY;
+let lastCurX = curX;
+let lastCurY = curY;
+let cursorAngle = 0;
+let cursorScale = 1;
+
+// Visibility and active state tracking (e.g. for idle fadeout)
+let isTouch = false;
+let lastMoveTime = Date.now();
+let cursorActive = false;
+
+// Handle canvas resizing
+function resizeWlCanvas() {
+  wlCanvas.width = window.innerWidth;
+  wlCanvas.height = window.innerHeight;
+  wlAnchorRight.x = window.innerWidth - 10;
+}
+resizeWlCanvas();
+window.addEventListener('resize', resizeWlCanvas);
+
+// Track mouse position
 document.addEventListener('mousemove', e => {
-  cur.style.left = e.clientX + 'px';
-  cur.style.top  = e.clientY + 'px';
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  lastMoveTime = Date.now();
+  isTouch = false;
+  showCursorAndWeb();
 });
-document.querySelectorAll('a,button,.villain-card,.mission-card,.fan-letter,.filter-badge').forEach(el => {
-  el.addEventListener('mouseenter', () => cur.classList.add('hover'));
-  el.addEventListener('mouseleave', () => cur.classList.remove('hover'));
+
+// Touch support for mobile screens
+document.addEventListener('touchstart', e => {
+  isTouch = true;
+  if (e.touches && e.touches[0]) {
+    mouseX = e.touches[0].clientX;
+    mouseY = e.touches[0].clientY;
+    lastMoveTime = Date.now();
+    showCursorAndWeb();
+  }
+}, { passive: true });
+
+document.addEventListener('touchmove', e => {
+  if (e.touches && e.touches[0]) {
+    mouseX = e.touches[0].clientX;
+    mouseY = e.touches[0].clientY;
+    lastMoveTime = Date.now();
+    showCursorAndWeb();
+  }
+}, { passive: true });
+
+document.addEventListener('touchend', () => {
+  // Mobile touch end: fade out after a short delay
+  if (isTouch) {
+    setTimeout(() => {
+      if (Date.now() - lastMoveTime > 1200) {
+        hideCursorAndWeb();
+      }
+    }, 1500);
+  }
+}, { passive: true });
+
+function showCursorAndWeb() {
+  cur.classList.add('visible');
+  wlCanvas.classList.add('visible');
+  cursorActive = true;
+}
+
+function hideCursorAndWeb() {
+  cur.classList.remove('visible');
+  wlCanvas.classList.remove('visible');
+  cursorActive = false;
+}
+
+// Hover reactions on interactive elements
+document.querySelectorAll('a, button, .villain-card, .mission-card, .fan-letter, .filter-badge, .social-chip, .btn-comic').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cur.classList.add('hover');
+    cursorScale = 1.25;
+  });
+  el.addEventListener('mouseleave', () => {
+    cur.classList.remove('hover');
+    cursorScale = 1.0;
+  });
 });
+
+// Initialize web rope nodes between anchor and cursor
+function initWlRope(startX, startY, endX, endY) {
+  wlNodes = [];
+  for (let i = 0; i < WL_NODES_COUNT; i++) {
+    const t = i / (WL_NODES_COUNT - 1);
+    const x = startX + (endX - startX) * t;
+    const y = startY + (endY - startY) * t;
+    wlNodes.push({ x, y, px: x, py: y });
+  }
+  wlInitialized = true;
+}
+
+// Main physics loop for the web strand and cursor rotation
+function updateWebCursorPhysics() {
+  // 1. Smoothly interpolate cursor position (lerp)
+  curX += (mouseX - curX) * 0.45;
+  curY += (mouseY - curY) * 0.45;
+
+  // 2. Select anchor based on mouse side of the screen (smooth transition)
+  const targetAnchor = mouseX < window.innerWidth / 2 ? wlAnchorLeft : wlAnchorRight;
+  currentAnchor.x += (targetAnchor.x - currentAnchor.x) * 0.1;
+  currentAnchor.y += (targetAnchor.y - currentAnchor.y) * 0.1;
+
+  // 3. Determine angle and orientation
+  const dx = curX - lastCurX;
+  const dy = curY - lastCurY;
+  const speed = Math.sqrt(dx*dx + dy*dy);
+  
+  let targetAngle;
+  if (speed > 0.3) {
+    targetAngle = Math.atan2(dy, dx);
+  } else {
+    // If stationary, align with the direction of the web strand (from anchor to cursor)
+    targetAngle = Math.atan2(curY - currentAnchor.y, curX - currentAnchor.x);
+  }
+
+  // Map to the left-pointing SVG tip
+  const targetRot = targetAngle - Math.PI;
+  
+  // Solve shortest path angle difference
+  let diff = targetRot - cursorAngle;
+  diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+  cursorAngle += diff * 0.18;
+
+  const deg = cursorAngle * 180 / Math.PI;
+  cur.style.transform = `translate3d(${curX}px, ${curY - 20}px, 0) rotate(${deg}deg) scale(${cursorScale})`;
+
+  // 4. Verlet Web Strand Simulation
+  if (!wlInitialized) {
+    initWlRope(currentAnchor.x, currentAnchor.y, curX, curY);
+  }
+
+  // Pin first node to corner web hub
+  wlNodes[0].x = currentAnchor.x;
+  wlNodes[0].y = currentAnchor.y;
+
+  // Pin last node to back of cursor tip
+  const rx = 52 * Math.cos(cursorAngle);
+  const ry = 52 * Math.sin(cursorAngle);
+  const connectionX = curX + rx;
+  const connectionY = curY + ry;
+
+  wlNodes[WL_NODES_COUNT - 1].x = connectionX;
+  wlNodes[WL_NODES_COUNT - 1].y = connectionY;
+
+  // Update intermediate nodes
+  const jitterAmp = cur.classList.contains('hover') ? (Math.random() - 0.5) * 2.5 : 0;
+  
+  for (let i = 1; i < WL_NODES_COUNT - 1; i++) {
+    const node = wlNodes[i];
+    const vx = (node.x - node.px) * WL_DAMPING;
+    const vy = (node.y - node.py) * WL_DAMPING;
+
+    node.px = node.x;
+    node.py = node.y;
+
+    // Apply velocity, gravity, and hover vibration jitter
+    node.x += vx + jitterAmp * Math.sin(i);
+    node.y += vy + WL_GRAVITY + jitterAmp * Math.cos(i);
+  }
+
+  // Solve distance constraints
+  const totalLength = Math.sqrt((connectionX - currentAnchor.x) ** 2 + (connectionY - currentAnchor.y) ** 2);
+  const segmentLength = totalLength / (WL_NODES_COUNT - 1);
+
+  for (let k = 0; k < WL_ITERATIONS; k++) {
+    wlNodes[0].x = currentAnchor.x;
+    wlNodes[0].y = currentAnchor.y;
+    wlNodes[WL_NODES_COUNT - 1].x = connectionX;
+    wlNodes[WL_NODES_COUNT - 1].y = connectionY;
+
+    for (let i = 0; i < WL_NODES_COUNT - 1; i++) {
+      const n1 = wlNodes[i];
+      const n2 = wlNodes[i + 1];
+
+      const dx = n2.x - n1.x;
+      const dy = n2.y - n1.y;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
+      const diff = segmentLength - dist;
+
+      const percent = (diff / dist) * 0.5;
+      const ox = dx * percent;
+      const oy = dy * percent;
+
+      if (i > 0) {
+        n1.x -= ox;
+        n1.y -= oy;
+      }
+      if (i + 1 < WL_NODES_COUNT - 1) {
+        n2.x += ox;
+        n2.y += oy;
+      }
+    }
+  }
+
+  // 5. Draw Web Strand on Canvas
+  wlCtx.clearRect(0, 0, wlCanvas.width, wlCanvas.height);
+
+  if (cursorActive && wlNodes.length > 0) {
+    // A. Draw Outer Glow Strand
+    wlCtx.beginPath();
+    wlCtx.moveTo(wlNodes[0].x, wlNodes[0].y);
+    for (let i = 1; i < WL_NODES_COUNT - 2; i++) {
+      const xc = (wlNodes[i].x + wlNodes[i + 1].x) / 2;
+      const yc = (wlNodes[i].y + wlNodes[i + 1].y) / 2;
+      wlCtx.quadraticCurveTo(wlNodes[i].x, wlNodes[i].y, xc, yc);
+    }
+    wlCtx.quadraticCurveTo(wlNodes[WL_NODES_COUNT - 2].x, wlNodes[WL_NODES_COUNT - 2].y, wlNodes[WL_NODES_COUNT - 1].x, wlNodes[WL_NODES_COUNT - 1].y);
+    
+    wlCtx.strokeStyle = cur.classList.contains('hover') ? 'rgba(255, 230, 64, 0.4)' : 'rgba(255, 255, 255, 0.35)';
+    wlCtx.lineWidth = 4.2;
+    wlCtx.shadowBlur = 3;
+    wlCtx.shadowColor = cur.classList.contains('hover') ? 'var(--yellow)' : '#ffffff';
+    wlCtx.stroke();
+
+    // B. Draw Main Core Strand
+    wlCtx.shadowBlur = 0;
+    wlCtx.strokeStyle = '#ffffff';
+    wlCtx.lineWidth = 1.5;
+    wlCtx.stroke();
+
+    // C. Draw Wrapping Spiral detail for fibrous texture
+    wlCtx.beginPath();
+    wlCtx.moveTo(wlNodes[0].x, wlNodes[0].y);
+    const time = Date.now() * 0.0016;
+    for (let i = 1; i < WL_NODES_COUNT; i++) {
+      const n1 = wlNodes[i - 1];
+      const n2 = wlNodes[i];
+      const midX = (n1.x + n2.x) / 2;
+      const midY = (n1.y + n2.y) / 2;
+
+      const segDx = n2.x - n1.x;
+      const segDy = n2.y - n1.y;
+      const len = Math.sqrt(segDx * segDx + segDy * segDy) || 0.1;
+      const nx = -segDy / len;
+      const ny = segDx / len;
+
+      const amp = Math.sin(time * 8.5 + i * 2.2) * 2.2; // fast sine wave wrap
+      const ox = midX + nx * amp;
+      const oy = midY + ny * amp;
+
+      wlCtx.quadraticCurveTo(ox, oy, n2.x, n2.y);
+    }
+    wlCtx.strokeStyle = cur.classList.contains('hover') ? 'rgba(227, 30, 36, 0.6)' : 'rgba(255, 255, 255, 0.6)';
+    wlCtx.lineWidth = 0.75;
+    wlCtx.stroke();
+  }
+
+  // 6. Idle fadeout handling
+  const idleThreshold = isTouch ? 1500 : 2000;
+  if (Date.now() - lastMoveTime > idleThreshold) {
+    hideCursorAndWeb();
+  }
+
+  lastCurX = curX;
+  lastCurY = curY;
+}
+
+// Set up secondary animation loop or tie directly to existing rendering
+function runWebCursorPhysicsLoop() {
+  updateWebCursorPhysics();
+  requestAnimationFrame(runWebCursorPhysicsLoop);
+}
+runWebCursorPhysicsLoop();
 
 /* ─── LOADING SCREEN SEQUENCE ───────────────────── */
 const loader       = document.getElementById('loader');
