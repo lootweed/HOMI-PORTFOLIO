@@ -3688,7 +3688,8 @@ function runWebCursorPhysicsLoop() {
   updateWebCursorPhysics();
   requestAnimationFrame(runWebCursorPhysicsLoop);
 }
-runWebCursorPhysicsLoop();
+// Start physics loop after page load to prevent TDZ errors on shared elements and coordinates
+window.addEventListener('load', runWebCursorPhysicsLoop);
 
 /* ─── LOADING SCREEN SEQUENCE ───────────────────── */
 const loader       = document.getElementById('loader');
