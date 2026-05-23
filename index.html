@@ -193,10 +193,120 @@ input, textarea, select { font-family: var(--font-body); }
 #loader-panels div { background: var(--red); }
 #loader-panels div:nth-child(even) { background: var(--blue); }
 
-#webShooterSvg {
-  width: min(420px, 90vw);
+/* ─── SPIDER TRANSFORMATION ANIMATION ─── */
+:root {
+  --spider-body: #141f19;
+  --spider-thorax: #1f2f25;
+  --spider-legs: #00CC44;
+  --spider-glow: drop-shadow(0 0 12px rgba(0, 204, 68, 0.7));
+  --radar-color: rgba(0, 204, 68, 0.15);
+}
+
+.spider-svg.hero {
+  --spider-body: #0038A8;
+  --spider-thorax: #E31E24;
+  --spider-legs: #E31E24;
+  --spider-glow: drop-shadow(0 0 16px rgba(227, 30, 36, 0.9)) drop-shadow(0 0 8px rgba(0, 56, 168, 0.6));
+  --radar-color: rgba(227, 30, 36, 0.25);
+}
+
+.spider-svg {
+  width: min(280px, 70vw);
+  height: auto;
   margin-bottom: 24px;
-  filter: drop-shadow(0 0 8px rgba(227,30,36,0.6));
+  filter: var(--spider-glow);
+  transition: filter 1.5s ease;
+  animation: spiderPulse 3s ease-in-out infinite;
+}
+
+@keyframes spiderPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+.spider-body {
+  fill: var(--spider-body);
+  transition: fill 1.5s ease;
+}
+
+.spider-thorax-part {
+  fill: var(--spider-thorax);
+  transition: fill 1.5s ease;
+}
+
+.spider-leg {
+  stroke: var(--spider-legs);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  transition: stroke 1.5s ease, transform 1.5s ease;
+}
+
+.spider-pedipalp {
+  stroke: var(--spider-legs);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  fill: none;
+  transition: stroke 1.5s ease;
+}
+
+.radar-ring {
+  stroke: var(--radar-color);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+  fill: none;
+  transition: stroke 1.5s ease;
+  transform-origin: 250px 110px;
+  animation: radarRotate 20s linear infinite;
+}
+
+@keyframes radarRotate {
+  to { transform: rotate(360deg); }
+}
+
+.radar-ring-2 {
+  stroke: var(--radar-color);
+  stroke-width: 1;
+  fill: none;
+  transition: stroke 1.5s ease;
+  transform-origin: 250px 110px;
+  animation: radarPulseRing 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes radarPulseRing {
+  from { transform: scale(0.9); opacity: 0.3; }
+  to { transform: scale(1.1); opacity: 0.8; }
+}
+
+.spider-42 {
+  font-family: var(--font-bang);
+  font-size: 26px;
+  fill: #ff2929;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-weight: bold;
+  opacity: 1;
+  transition: opacity 1.5s ease, transform 1.5s ease;
+  transform-origin: 250px 135px;
+  filter: drop-shadow(0 0 4px #ff2929);
+}
+
+.spider-svg.hero .spider-42 {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+.spidey-emblem {
+  opacity: 0;
+  transform: scale(0.5);
+  transform-origin: 250px 135px;
+  transition: opacity 1.5s ease, transform 1.5s ease;
+}
+
+.spider-svg.hero .spidey-emblem {
+  opacity: 1;
+  transform: scale(1);
 }
 
 #loader-text {
@@ -1863,66 +1973,60 @@ footer {
 
   <div id="loader-content" style="position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;width:100%;padding:24px">
 
-    <!-- SVG Web Shooter Animation -->
-    <svg id="webShooterSvg" viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg" fill="none">
-      <defs>
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="3" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
-      <!-- Wrist band -->
-      <rect x="160" y="110" width="180" height="38" rx="12"
-            stroke="#E31E24" stroke-width="3"
-            stroke-dasharray="460" stroke-dashoffset="460" class="ws-draw"
-            style="animation-delay:0.4s" filter="url(#glow)"/>
-      <!-- Cartridge slot -->
-      <rect x="192" y="94" width="116" height="20" rx="6"
-            stroke="#E31E24" stroke-width="2.5"
-            stroke-dasharray="280" stroke-dashoffset="280" class="ws-draw"
-            style="animation-delay:1.4s"/>
-      <!-- Nozzle -->
-      <path d="M 238 94 L 250 64 L 262 94"
-            stroke="#CC0000" stroke-width="2.5" stroke-linejoin="round"
-            stroke-dasharray="80" stroke-dashoffset="80" class="ws-draw"
-            style="animation-delay:2.0s"/>
-      <!-- Web strands shooting out -->
-      <path d="M 250 62 Q 340 20 460 -10" stroke="white" stroke-width="1.8" opacity="0.7"
-            stroke-dasharray="260" stroke-dashoffset="260" class="ws-draw"
-            style="animation-delay:2.4s"/>
-      <path d="M 250 62 Q 380 30 500 10" stroke="white" stroke-width="1.2" opacity="0.5"
-            stroke-dasharray="280" stroke-dashoffset="280" class="ws-draw"
-            style="animation-delay:2.7s"/>
-      <path d="M 250 62 Q 160 20 40 -10" stroke="white" stroke-width="1.5" opacity="0.6"
-            stroke-dasharray="240" stroke-dashoffset="240" class="ws-draw"
-            style="animation-delay:2.4s"/>
-      <!-- Web circle graphic (spider symbol) -->
-      <circle cx="250" cy="175" r="28"
-              stroke="#E31E24" stroke-width="2.5"
-              stroke-dasharray="176" stroke-dashoffset="176" class="ws-draw"
-              style="animation-delay:3.0s" filter="url(#glow)"/>
-      <!-- Spider legs on symbol -->
-      <line x1="222" y1="167" x2="200" y2="155" stroke="#E31E24" stroke-width="1.5"
-            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:3.6s"/>
-      <line x1="222" y1="175" x2="198" y2="175" stroke="#E31E24" stroke-width="1.5"
-            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:3.7s"/>
-      <line x1="222" y1="183" x2="200" y2="195" stroke="#E31E24" stroke-width="1.5"
-            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:3.8s"/>
-      <line x1="278" y1="167" x2="300" y2="155" stroke="#E31E24" stroke-width="1.5"
-            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:3.6s"/>
-      <line x1="278" y1="175" x2="302" y2="175" stroke="#E31E24" stroke-width="1.5"
-            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:3.7s"/>
-      <line x1="278" y1="183" x2="300" y2="195" stroke="#E31E24" stroke-width="1.5"
-            stroke-dasharray="30" stroke-dashoffset="30" class="ws-draw" style="animation-delay:3.8s"/>
-      <ellipse cx="250" cy="172" rx="10" ry="7" stroke="#E31E24" stroke-width="1.5"
-               stroke-dasharray="54" stroke-dashoffset="54" class="ws-draw" style="animation-delay:4.0s"/>
+    <!-- Radioactive Spider SVG Animation -->
+    <svg id="radioactiveSpiderSvg" class="spider-svg" viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+      <!-- Radar Rings -->
+      <circle cx="250" cy="110" r="75" class="radar-ring" />
+      <circle cx="250" cy="110" r="50" class="radar-ring-2" />
+      
+      <!-- Spider Legs (Left) -->
+      <path d="M 240 80 Q 200 40 170 50 T 150 90" class="spider-leg" />
+      <path d="M 238 85 Q 185 60 160 80 T 135 125" class="spider-leg" />
+      <path d="M 238 90 Q 180 110 165 130 T 140 175" class="spider-leg" />
+      <path d="M 240 95 Q 200 150 185 170 T 170 205" class="spider-leg" />
+
+      <!-- Spider Legs (Right) -->
+      <path d="M 260 80 Q 300 40 330 50 T 350 90" class="spider-leg" />
+      <path d="M 262 85 Q 315 60 340 80 T 365 125" class="spider-leg" />
+      <path d="M 262 90 Q 320 110 335 130 T 360 175" class="spider-leg" />
+      <path d="M 260 95 Q 300 150 315 170 T 330 205" class="spider-leg" />
+
+      <!-- Pedipalps -->
+      <path d="M 246 58 Q 242 50 246 45" class="spider-pedipalp" />
+      <path d="M 254 58 Q 258 50 254 45" class="spider-pedipalp" />
+
+      <!-- Spider Body -->
+      <circle cx="250" cy="62" r="7" class="spider-body" />
+      <ellipse cx="250" cy="85" rx="15" ry="12" class="spider-thorax-part" />
+      <path d="M 250,103 C 275,103 275,167 250,167 C 225,167 225,103 250,103 Z" class="spider-body" />
+
+      <!-- Radioactive 42 Overlay -->
+      <text x="250" y="142" class="spider-42">42</text>
+
+      <!-- Spidey emblem overlay -->
+      <g class="spidey-emblem">
+        <ellipse cx="250" cy="135" rx="5" ry="10" fill="#E31E24" />
+        <circle cx="250" cy="123" r="3.5" fill="#E31E24" />
+        <!-- upper legs -->
+        <path d="M 249 123 Q 240 114 233 118" stroke="#E31E24" stroke-width="1.5" fill="none" />
+        <path d="M 251 123 Q 260 114 267 118" stroke="#E31E24" stroke-width="1.5" fill="none" />
+        <!-- upper-mid legs -->
+        <path d="M 248 126 Q 237 122 232 129" stroke="#E31E24" stroke-width="1.5" fill="none" />
+        <path d="M 252 126 Q 263 122 268 129" stroke="#E31E24" stroke-width="1.5" fill="none" />
+        <!-- lower-mid legs -->
+        <path d="M 248 129 Q 237 136 235 145" stroke="#E31E24" stroke-width="1.5" fill="none" />
+        <path d="M 252 129 Q 263 136 265 145" stroke="#E31E24" stroke-width="1.5" fill="none" />
+        <!-- lower legs -->
+        <path d="M 249 133 Q 241 146 240 156" stroke="#E31E24" stroke-width="1.5" fill="none" />
+        <path d="M 251 133 Q 259 146 260 156" stroke="#E31E24" stroke-width="1.5" fill="none" />
+      </g>
     </svg>
 
     <div id="loader-thwip">THWIP!</div>
 
     <div id="health-bar-wrap">
       <div id="health-bar-label">
-        <span>LOADING HERO DATA...</span>
+        <span id="health-bar-text">SEQUENCING GENETIC DNA...</span>
         <span id="health-pct">0%</span>
       </div>
       <div id="health-bar-track">
@@ -2867,13 +2971,28 @@ const loaderTag    = document.getElementById('loader-tagline');
 const symbiote     = document.getElementById('symbiote');
 
 function runLoader() {
-  // Stage 1: SVG strokes draw (already animating via CSS)
+  const hbText = document.getElementById('health-bar-text');
+
+  // Stage 1.5: Radioactive Spider transforms into Spidey Red/Blue Spider at 3.5s
+  setTimeout(() => {
+    const spiderSvg = document.getElementById('radioactiveSpiderSvg');
+    if (spiderSvg) {
+      spiderSvg.classList.add('hero');
+    }
+    if (hbText) {
+      hbText.textContent = 'GENETIC RECOMBINATION DETECTED...';
+    }
+  }, 3500);
+
   // Stage 2: THWIP! after 4.8s
   setTimeout(() => { thwip.classList.add('show'); }, 4800);
 
   // Stage 3: Health bar 5.8s → 9.4s
   setTimeout(() => {
     hbWrap.classList.add('show');
+    if (hbText) {
+      hbText.textContent = 'STABILIZING MUTATED HERO MATRIX...';
+    }
     let pct = 0;
     const iv = setInterval(() => {
       pct = Math.min(pct + 0.5, 100);
@@ -2884,7 +3003,12 @@ function runLoader() {
   }, 5800);
 
   // Stage 4: Tagline fades in
-  setTimeout(() => { loaderTag.classList.add('show'); }, 9800);
+  setTimeout(() => {
+    loaderTag.classList.add('show');
+    if (hbText) {
+      hbText.textContent = 'HERO DATA STABLE!';
+    }
+  }, 9800);
 
   // Stage 5: Symbiote spreads
   setTimeout(() => {
