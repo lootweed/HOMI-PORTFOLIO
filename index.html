@@ -247,28 +247,34 @@ input, textarea, select { font-family: var(--font-body); }
 
 .spider-leg {
   stroke: var(--spider-legs);
-  stroke-width: 4.5;
+  stroke-width: 8;
   stroke-linecap: round;
   stroke-linejoin: round;
   fill: none;
-  transition: stroke 1.5s ease, transform 1.5s ease;
+  transition: stroke 1.5s ease, stroke-width 1.5s ease, transform 1.5s ease;
+}
+.spider-svg.hero .spider-leg {
+  stroke-width: 5;
 }
 
 .spider-pedipalp {
   stroke: var(--spider-legs);
-  stroke-width: 2.5;
+  stroke-width: 4;
   stroke-linecap: round;
   fill: none;
-  transition: stroke 1.5s ease;
+  transition: stroke 1.5s ease, stroke-width 1.5s ease;
+}
+.spider-svg.hero .spider-pedipalp {
+  stroke-width: 2.5;
 }
 
 .spider-fang {
   stroke: var(--spider-fangs);
-  stroke-width: 3.5;
+  stroke-width: 5.5;
   stroke-linecap: round;
   fill: none;
-  filter: drop-shadow(0 0 3px var(--spider-fangs));
-  transition: stroke 1.5s ease, opacity 1.5s ease;
+  filter: drop-shadow(0 0 4px var(--spider-fangs));
+  transition: stroke 1.5s ease, stroke-width 1.5s ease, opacity 1.5s ease;
 }
 .spider-svg.hero .spider-fang {
   opacity: 0;
@@ -276,11 +282,11 @@ input, textarea, select { font-family: var(--font-body); }
 
 .spider-spike {
   stroke: var(--spider-spikes);
-  stroke-width: 2.2;
+  stroke-width: 3.5;
   stroke-linecap: round;
   fill: none;
-  filter: drop-shadow(0 0 2px var(--spider-spikes));
-  transition: stroke 1.5s ease, opacity 1.5s ease;
+  filter: drop-shadow(0 0 3px var(--spider-spikes));
+  transition: stroke 1.5s ease, stroke-width 1.5s ease, opacity 1.5s ease;
   opacity: 1;
 }
 .spider-svg.hero .spider-spike {
