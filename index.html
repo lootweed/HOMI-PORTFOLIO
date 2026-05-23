@@ -57,17 +57,17 @@ img { max-width: 100%; display: block; }
 button { cursor: none; font-family: var(--font-body); border: none; }
 input, textarea, select { font-family: var(--font-body); }
 
-/* Custom cursor - Frayed Web Tip */
+/* Custom cursor - Spiderman Comic Arrow Pointer */
 #cursor {
   position: fixed;
   top: 0; left: 0;
-  width: 60px; height: 40px;
+  width: 60px; height: 60px;
   pointer-events: none;
   z-index: 99999;
-  transform-origin: 0px 20px; /* Hotspot at X=0, Y=20 (very tip of the frayed end) */
-  transform: translate3d(0, -20px, 0) rotate(0deg);
+  transform-origin: 12% 12%; /* Hotspot at X=12%, Y=12% (tip of the Spiderman arrow) */
+  transform: translate3d(0, 0, 0) rotate(0deg);
   filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.45));
-  transition: transform 0.04s linear, opacity 0.3s ease;
+  transition: opacity 0.3s ease;
   opacity: 0; /* Starts hidden until mouse move */
 }
 #cursor.visible {
@@ -78,133 +78,11 @@ input, textarea, select { font-family: var(--font-body); }
   display: block;
   overflow: visible;
 }
-/* Styles for web tip SVG elements */
-#cursor .web-core {
-  stroke: #ffffff;
-  transition: stroke 0.3s ease, filter 0.3s ease;
+#cursor.hover {
+  filter: drop-shadow(0 0 6px rgba(255, 230, 64, 0.85)) drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.45));
 }
-#cursor .web-fiber {
-  stroke: #ffffff;
-  transition: stroke 0.3s ease, filter 0.3s ease;
-}
-#cursor .web-detail {
-  stroke: #e0e0e0;
-  transition: stroke 0.3s ease;
-}
-#cursor .web-spiral {
-  stroke: #ffffff;
-}
-#cursor .web-cross {
-  stroke: rgba(255,255,255,0.7);
-  transition: transform 0.18s ease, opacity 0.18s ease;
-}
-
-/* Animated wiggles for the frayed fibers (gentle breathing sway) */
-#cursor .web-fiber-1 {
-  transform-origin: 15px 20px;
-  animation: fiberWiggle1 3.5s ease-in-out infinite alternate;
-}
-#cursor .web-fiber-2 {
-  transform-origin: 15px 20px;
-  animation: fiberWiggle2 4.0s ease-in-out infinite alternate;
-}
-#cursor .web-fiber-3 {
-  transform-origin: 15px 20px;
-  animation: fiberWiggle3 3.0s ease-in-out infinite alternate;
-}
-#cursor .web-fiber-4 {
-  transform-origin: 15px 20px;
-  animation: fiberWiggle2 4.2s ease-in-out infinite alternate-reverse;
-}
-#cursor .web-fiber-5 {
-  transform-origin: 15px 20px;
-  animation: fiberWiggle1 3.8s ease-in-out infinite alternate-reverse;
-}
-
-@keyframes fiberWiggle1 {
-  0% { transform: rotate(-3.5deg) scaleY(0.94); }
-  100% { transform: rotate(3.5deg) scaleY(1.06); }
-}
-@keyframes fiberWiggle2 {
-  0% { transform: rotate(2.5deg) scaleX(0.96); }
-  100% { transform: rotate(-2.5deg) scaleX(1.04); }
-}
-@keyframes fiberWiggle3 {
-  0% { transform: rotate(-1.8deg); }
-  100% { transform: rotate(1.8deg); }
-}
-
-/* Pulsing radioactive web core */
-#cursor .web-core-glow {
-  fill: #00f5ff;
-  opacity: 0.8;
-  transition: fill 0.3s, opacity 0.3s;
-  animation: corePulse 1.6s ease-in-out infinite alternate;
-}
-@keyframes corePulse {
-  0% { fill: #00ffff; opacity: 0.65; filter: drop-shadow(0 0 2px #00ffff); }
-  100% { fill: #ffffff; opacity: 1; filter: drop-shadow(0 0 6px #00ffff) drop-shadow(0 0 10px #00e5ff); }
-}
-
-/* Click grasping/nozzle pinch reaction */
-#cursor.active .web-fiber-1 {
-  animation: none;
-  transform: rotate(14deg) scaleY(0.85);
-  transition: transform 0.12s cubic-bezier(0.19, 1, 0.22, 1);
-}
-#cursor.active .web-fiber-2 {
-  animation: none;
-  transform: rotate(8deg);
-  transition: transform 0.12s cubic-bezier(0.19, 1, 0.22, 1);
-}
-#cursor.active .web-fiber-3 {
-  animation: none;
-  transform: scaleX(0.6);
-  transition: transform 0.12s cubic-bezier(0.19, 1, 0.22, 1);
-}
-#cursor.active .web-fiber-4 {
-  animation: none;
-  transform: rotate(-8deg);
-  transition: transform 0.12s cubic-bezier(0.19, 1, 0.22, 1);
-}
-#cursor.active .web-fiber-5 {
-  animation: none;
-  transform: rotate(-14deg) scaleY(0.85);
-  transition: transform 0.12s cubic-bezier(0.19, 1, 0.22, 1);
-}
-#cursor.active .web-cross {
-  transform: scale(0.6);
-  transform-origin: 15px 20px;
-  opacity: 0.25;
-}
-
-/* Active clicked state glow change */
-#cursor.active .web-core,
-#cursor.active .web-fiber {
-  stroke: #00f5ff;
-  filter: drop-shadow(0 0 4px #00e5ff);
-}
-
-/* Pulse flash state (when a traveling web pulse hits the tip) */
-#cursor.pulse-flash .web-core-glow {
-  fill: #ffffff;
-  opacity: 1;
-  filter: drop-shadow(0 0 10px #00ffff) drop-shadow(0 0 18px #ffffff);
-}
-#cursor.pulse-flash .web-core,
-#cursor.pulse-flash .web-fiber {
-  stroke: #00f5ff;
-  filter: drop-shadow(0 0 6px #00ffff);
-}
-
-/* Hover style modifications */
-#cursor.hover .web-core,
-#cursor.hover .web-fiber {
-  stroke: var(--yellow);
-  filter: drop-shadow(0 0 3px var(--yellow));
-}
-#cursor.hover .web-detail {
-  stroke: var(--red);
+#cursor.active {
+  filter: drop-shadow(0 0 8px rgba(0, 245, 255, 0.95)) drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.55));
 }
 
 /* Web Line Canvas */
@@ -2166,36 +2044,58 @@ footer {
 
 <!-- ── CUSTOM SPIDERWEB CURSOR & WEB OVERLAYS ── -->
 <div id="cursor">
-  <svg width="60" height="40" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <filter id="webGlow" x="-30%" y="-30%" width="160%" height="160%">
-        <feGaussianBlur stdDeviation="1.2" result="blur" />
-        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-      </filter>
-    </defs>
-    <g id="webTipG" filter="url(#webGlow)">
-      <!-- Main thread core -->
-      <path class="web-core" d="M 60 20 C 50 18, 40 22, 30 20 C 25 19, 20 21, 15 20" stroke-width="2.8" fill="none" stroke-linecap="round" />
-      <!-- Wrapping thread details -->
-      <path class="web-detail" d="M 60 17 Q 50 24, 40 18 T 20 22" stroke-width="1.2" fill="none" opacity="0.9" />
-      <path class="web-detail" d="M 60 23 Q 48 16, 36 22 T 16 18" stroke-width="1" fill="none" opacity="0.8" />
+  <!-- Spiderman Custom Arrow Cursor -->
+  <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Outer thick shadow / border -->
+    <path d="M 12 12 C 12 25, 10 45, 15 60 C 20 63, 33 60, 38 52 L 68 82 C 73 87, 87 73, 82 68 L 52 38 C 60 33, 63 20, 60 15 C 45 10, 25 12, 12 12 Z" fill="#3a0204" stroke="#3a0204" stroke-width="4.5" stroke-linejoin="round" />
+    
+    <!-- Red body base -->
+    <path d="M 12 12 C 12 25, 10 45, 15 60 C 20 63, 33 60, 38 52 L 68 82 C 73 87, 87 73, 82 68 L 52 38 C 60 33, 63 20, 60 15 C 45 10, 25 12, 12 12 Z" fill="#d61c22" />
+    
+    <!-- Blue flank accents -->
+    <path d="M 15 60 C 20 63, 33 60, 38 52 L 48 62 C 43 67, 28 67, 15 60 Z" fill="#0056a8" />
+    <path d="M 60 15 C 63 20, 60 33, 52 38 L 62 48 C 67 43, 67 28, 60 15 Z" fill="#0056a8" />
+    
+    <!-- Spider Web pattern (black thin lines) -->
+    <g stroke="rgba(0,0,0,0.65)" stroke-width="1.2" fill="none">
+      <!-- Radials -->
+      <path d="M 36 36 L 12 12" />
+      <path d="M 36 36 L 15 60" />
+      <path d="M 36 36 L 60 15" />
+      <path d="M 36 36 L 75 75" />
       
-      <!-- Spiraling wrap -->
-      <path class="web-spiral" d="M 60 20 Q 55 14, 50 20 T 40 20 T 30 20 T 20 20" stroke-width="0.8" fill="none" opacity="0.95" />
+      <!-- Concentric web arcs -->
+      <path d="M 20 28 Q 28 28, 28 20" />
+      <path d="M 26 38 Q 38 38, 38 26" />
+      <path d="M 32 48 Q 48 48, 48 32" />
       
-      <!-- Frayed fibers at the tip (with distinct classes for wiggle and active grasp) -->
-      <path class="web-fiber web-fiber-1" d="M 15 20 C 12 14, 8 10, 2 8" stroke-width="1" fill="none" stroke-linecap="round" />
-      <path class="web-fiber web-fiber-2" d="M 15 20 C 11 17, 7 15, 1 13" stroke-width="0.8" fill="none" stroke-linecap="round" />
-      <path class="web-fiber web-fiber-3" d="M 15 20 L 0 20" stroke-width="1.2" fill="none" stroke-linecap="round" />
-      <path class="web-fiber web-fiber-4" d="M 15 20 C 11 23, 7 25, 1 27" stroke-width="0.8" fill="none" stroke-linecap="round" />
-      <path class="web-fiber web-fiber-5" d="M 15 20 C 12 26, 8 30, 2 32" stroke-width="1" fill="none" stroke-linecap="round" />
+      <!-- Stem web lines -->
+      <path d="M 42 56 L 56 42" />
+      <path d="M 50 64 L 64 50" />
+      <path d="M 58 72 L 72 58" />
+    </g>
+    
+    <!-- Spider emblem in the center -->
+    <g fill="#1a1a1a">
+      <!-- Spider body and head -->
+      <ellipse cx="36" cy="35" rx="3.2" ry="5.2" />
+      <circle cx="36" cy="42" r="1.8" />
       
-      <!-- Webbing cross-fibers connecting the frayed tips -->
-      <path class="web-cross" d="M 8 10 Q 11 20, 8 30" stroke-width="0.5" fill="none" />
-      <path class="web-cross" d="M 4 13 Q 6 20, 4 27" stroke-width="0.4" fill="none" />
-
-      <!-- Glowing central radioactive web core -->
-      <circle class="web-core-glow" cx="15" cy="20" r="3.5" />
+      <!-- 8 Legs -->
+      <g stroke="#1a1a1a" stroke-width="0.95" fill="none" stroke-linecap="round">
+        <!-- Top legs -->
+        <path d="M 34 33 Q 28 26, 23 24" />
+        <path d="M 38 33 Q 44 26, 49 24" />
+        <!-- Upper-mid legs -->
+        <path d="M 33 35 Q 24 32, 19 33" />
+        <path d="M 39 35 Q 48 32, 53 33" />
+        <!-- Lower-mid legs -->
+        <path d="M 33 37 Q 24 40, 21 46" />
+        <path d="M 39 37 Q 48 40, 51 46" />
+        <!-- Bottom legs -->
+        <path d="M 34 39 Q 28 47, 25 53" />
+        <path d="M 38 39 Q 44 47, 47 53" />
+      </g>
     </g>
   </svg>
 </div>
@@ -3484,42 +3384,37 @@ function updateWebCursorPhysics() {
   currentAnchor.x = targetAnchorX;
   currentAnchor.y = targetAnchorY;
 
-  // 3. Determine angle and orientation
-  const dx = curX - lastCurX;
-  const dy = curY - lastCurY;
-  const speed = Math.sqrt(dx*dx + dy*dy);
+  // 3. Calculate cursor velocity for dynamic tilt (sway)
+  const vx = curX - lastCurX;
+  const vy = curY - lastCurY;
   
-  let targetAngle;
-  if (speed > 0.3) {
-    targetAngle = Math.atan2(dy, dx);
-  } else {
-    // If stationary, align with the direction of the web strand (from anchor to cursor)
-    targetAngle = Math.atan2(curY - currentAnchor.y, curX - currentAnchor.x);
-  }
-
-  // Map to the left-pointing SVG tip
-  const targetRot = targetAngle - Math.PI;
+  // Tilt proportional to horizontal movement speed, capped at +/- 15 degrees
+  let targetTilt = vx * 0.45;
+  targetTilt = Math.max(-15, Math.min(15, targetTilt));
   
-  // Solve shortest path angle difference
-  let diff = targetRot - cursorAngle;
-  diff = Math.atan2(Math.sin(diff), Math.cos(diff));
-  cursorAngle += diff * 0.18;
+  // Smoothly interpolate current tilt angle
+  if (typeof cursorAngle === 'undefined' || isNaN(cursorAngle)) cursorAngle = 0;
+  cursorAngle += (targetTilt - cursorAngle) * 0.15;
 
-  const deg = cursorAngle * 180 / Math.PI;
-  cur.style.transform = `translate3d(${curX}px, ${curY - 20}px, 0) rotate(${deg}deg) scale(${cursorScale})`;
+  // Render cursor with translation (accounting for 12% hotspot offset in a 60px container -> 7.2px) and dynamic tilt
+  const hotspotOffset = 7.2;
+  cur.style.transform = `translate3d(${curX - hotspotOffset}px, ${curY - hotspotOffset}px, 0) rotate(${cursorAngle}deg) scale(${cursorScale})`;
 
   // 4. Verlet Web Strand Simulation
   if (!wlInitialized) {
     initWlRope(currentAnchor.x, currentAnchor.y, curX, curY);
   }
 
-  // Pin first node to corner web hub
+  // Pin first node to Spider-Man's hand (anchor)
   wlNodes[0].x = currentAnchor.x;
   wlNodes[0].y = currentAnchor.y;
 
-  // Pin last node to back of cursor tip
-  const rx = 52 * Math.cos(cursorAngle);
-  const ry = 52 * Math.sin(cursorAngle);
+  // Pin last node to the bottom-right stem center of the cursor
+  // Stem center is at offset (75, 75) relative to tip (12, 12), which is dx=63, dy=63 in a 100x100 viewBox.
+  // In a 60px screen size, this is dx=37.8px, dy=37.8px. Distance = 53.46px, angle = 45 degrees (Math.PI / 4).
+  const rad = cursorAngle * Math.PI / 180;
+  const rx = 53.46 * cursorScale * Math.cos(rad + Math.PI / 4);
+  const ry = 53.46 * cursorScale * Math.sin(rad + Math.PI / 4);
   const connectionX = curX + rx;
   const connectionY = curY + ry;
 
