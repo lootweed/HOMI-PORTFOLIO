@@ -57,46 +57,50 @@ img { max-width: 100%; display: block; }
 button { cursor: none; font-family: var(--font-body); border: none; }
 input, textarea, select { font-family: var(--font-body); }
 
-/* Custom cursor - Spiderman Comic Arrow Pointer */
+/* Custom cursor - Red Comic Circle */
 #cursor {
+  width: 16px;
+  height: 16px;
+  background: var(--red);
+  border: 2px solid var(--black);
+  border-radius: 50%;
   position: fixed;
-  top: 0; left: 0;
-  width: 60px; height: 60px;
+  top: 0;
+  left: 0;
   pointer-events: none;
   z-index: 99999;
-  transform-origin: 12% 12%; /* Hotspot at X=12%, Y=12% (tip of the Spiderman arrow) */
-  transform: translate3d(0, 0, 0) rotate(0deg);
-  filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.45));
-  transition: opacity 0.3s ease;
+  transform: translate(-50%, -50%);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+              width 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+              height 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.25s ease,
+              opacity 0.3s ease;
+  mix-blend-mode: multiply;
   opacity: 0; /* Starts hidden until mouse move */
 }
 #cursor.visible {
   opacity: 1;
 }
-#cursor svg {
-  width: 100%; height: 100%;
-  display: block;
-  overflow: visible;
-}
 #cursor.hover {
-  filter: drop-shadow(0 0 6px rgba(255, 230, 64, 0.85)) drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.45));
+  width: 32px;
+  height: 32px;
+  background: var(--yellow);
 }
-#cursor.active {
-  filter: drop-shadow(0 0 8px rgba(0, 245, 255, 0.95)) drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.55));
+#cursor::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border: 2px dashed var(--red);
+  border-radius: 50%;
+  animation: cursorSpin 6s linear infinite;
+  transition: inset 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
 }
-
-/* Web Line Canvas */
-#webLineCanvas {
-  position: fixed;
-  inset: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 99998;
-  transition: opacity 0.3s ease;
-  opacity: 0;
+#cursor.hover::after {
+  inset: -8px;
+  border-color: var(--yellow);
 }
-#webLineCanvas.visible {
-  opacity: 1;
+@keyframes cursorSpin {
+  to { transform: rotate(360deg); }
 }
 
 
@@ -2042,68 +2046,8 @@ footer {
 </head>
 <body>
 
-<!-- ── CUSTOM SPIDERWEB CURSOR & WEB OVERLAYS ── -->
-<div id="cursor">
-  <!-- Spiderman Custom Arrow Cursor -->
-  <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <!-- Outer thick shadow / border -->
-    <path d="M 12 12 C 12 25, 10 45, 15 60 C 20 63, 33 60, 38 52 L 68 82 C 73 87, 87 73, 82 68 L 52 38 C 60 33, 63 20, 60 15 C 45 10, 25 12, 12 12 Z" fill="#3a0204" stroke="#3a0204" stroke-width="4.5" stroke-linejoin="round" />
-    
-    <!-- Red body base -->
-    <path d="M 12 12 C 12 25, 10 45, 15 60 C 20 63, 33 60, 38 52 L 68 82 C 73 87, 87 73, 82 68 L 52 38 C 60 33, 63 20, 60 15 C 45 10, 25 12, 12 12 Z" fill="#d61c22" />
-    
-    <!-- Blue flank accents -->
-    <path d="M 15 60 C 20 63, 33 60, 38 52 L 48 62 C 43 67, 28 67, 15 60 Z" fill="#0056a8" />
-    <path d="M 60 15 C 63 20, 60 33, 52 38 L 62 48 C 67 43, 67 28, 60 15 Z" fill="#0056a8" />
-    
-    <!-- Spider Web pattern (black thin lines) -->
-    <g stroke="rgba(0,0,0,0.65)" stroke-width="1.2" fill="none">
-      <!-- Radials -->
-      <path d="M 36 36 L 12 12" />
-      <path d="M 36 36 L 15 60" />
-      <path d="M 36 36 L 60 15" />
-      <path d="M 36 36 L 75 75" />
-      
-      <!-- Concentric web arcs -->
-      <path d="M 20 28 Q 28 28, 28 20" />
-      <path d="M 26 38 Q 38 38, 38 26" />
-      <path d="M 32 48 Q 48 48, 48 32" />
-      
-      <!-- Stem web lines -->
-      <path d="M 42 56 L 56 42" />
-      <path d="M 50 64 L 64 50" />
-      <path d="M 58 72 L 72 58" />
-    </g>
-    
-    <!-- Spider emblem in the center -->
-    <g fill="#1a1a1a">
-      <!-- Spider body and head -->
-      <ellipse cx="36" cy="35" rx="3.2" ry="5.2" />
-      <circle cx="36" cy="42" r="1.8" />
-      
-      <!-- 8 Legs -->
-      <g stroke="#1a1a1a" stroke-width="0.95" fill="none" stroke-linecap="round">
-        <!-- Top legs -->
-        <path d="M 34 33 Q 28 26, 23 24" />
-        <path d="M 38 33 Q 44 26, 49 24" />
-        <!-- Upper-mid legs -->
-        <path d="M 33 35 Q 24 32, 19 33" />
-        <path d="M 39 35 Q 48 32, 53 33" />
-        <!-- Lower-mid legs -->
-        <path d="M 33 37 Q 24 40, 21 46" />
-        <path d="M 39 37 Q 48 40, 51 46" />
-        <!-- Bottom legs -->
-        <path d="M 34 39 Q 28 47, 25 53" />
-        <path d="M 38 39 Q 44 47, 47 53" />
-      </g>
-    </g>
-  </svg>
-</div>
-
-
-
-<!-- Web Line Canvas Overlay -->
-<canvas id="webLineCanvas"></canvas>
+<!-- ── CURSOR ── -->
+<div id="cursor"></div>
 
 <!-- ══════════════════════════════════════════════════
      LOADING SCREEN
@@ -3156,451 +3100,49 @@ footer {
 <script>
 'use strict';
 
-/* ─── CUSTOM SPIDERWEB CURSOR & VERLET WEB STRAND ─────────────────────────── */
+/* ─── CUSTOM CURSOR ─────────────────────────────── */
 const cur = document.getElementById('cursor');
-const wlCanvas = document.getElementById('webLineCanvas');
-const wlCtx = wlCanvas.getContext('2d');
 let loaderActive = true;
-
-// Web Line physics nodes
-const WL_NODES_COUNT = 16;
-let wlNodes = [];
-const WL_DAMPING = 0.86;  // Organic spring damping
-const WL_GRAVITY = 0.22;  // Small gravitational sag
-const WL_ITERATIONS = 10;
-let wlInitialized = false;
-
-// Selected anchor (dynamic screen coordinate of Spider-Man's hand)
-let currentAnchor = { x: window.innerWidth / 2, y: 150 };
-
-// Mouse coordinates
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
 let curX = mouseX;
 let curY = mouseY;
-let lastCurX = curX;
-let lastCurY = curY;
-let cursorAngle = 0;
-let cursorScale = 1;
+let cursorVisible = false;
 
-// Trailing Sparks Particle System
-let wlParticles = [];
-
-class WebSpark {
-  constructor(x, y, angle) {
-    this.x = x;
-    this.y = y;
-    // Emit opposite to movement direction with some random spread
-    const emitAngle = angle + Math.PI + (Math.random() - 0.5) * 0.8;
-    const speed = Math.random() * 2.2 + 0.6;
-    this.vx = Math.cos(emitAngle) * speed;
-    this.vy = Math.sin(emitAngle) * speed + (Math.random() - 0.5) * 0.5;
-    this.size = Math.random() * 1.8 + 0.8;
-    this.alpha = 1.0;
-    this.decay = Math.random() * 0.035 + 0.015;
-    
-    // Choose color: cyan glow, clean white, or glowing yellow
-    const rand = Math.random();
-    if (rand < 0.45) this.color = '0, 245, 255'; // Glowing cyan
-    else if (rand < 0.85) this.color = '255, 255, 255'; // Silvery white
-    else this.color = '255, 230, 64'; // Spidey Yellow
-  }
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
-    this.vy -= 0.012; // light upward drift
-    this.alpha -= this.decay;
-  }
-  draw() {
-    wlCtx.beginPath();
-    wlCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    wlCtx.fillStyle = `rgba(${this.color}, ${this.alpha})`;
-    wlCtx.shadowBlur = 4;
-    wlCtx.shadowColor = `rgb(${this.color})`;
-    wlCtx.fill();
-  }
-}
-
-// Traveling Web Energy Pulses (Thwip Pulses)
-let wlPulses = [];
-let lastPulseTime = Date.now();
-
-// Visibility and active state tracking
-let isTouch = false;
-let lastMoveTime = Date.now();
-let cursorActive = false;
-
-// Handle canvas resizing
-function resizeWlCanvas() {
-  wlCanvas.width = window.innerWidth;
-  wlCanvas.height = window.innerHeight;
-}
-resizeWlCanvas();
-window.addEventListener('resize', resizeWlCanvas);
-
-// Helper to spawn sparks
-function spawnSparks(x, y, count) {
-  for (let i = 0; i < count; i++) {
-    wlParticles.push(new WebSpark(x, y, cursorAngle));
-  }
-}
-
-// Track mouse position
 document.addEventListener('mousemove', e => {
-  if (loaderActive) return;
   mouseX = e.clientX;
   mouseY = e.clientY;
-  lastMoveTime = Date.now();
-  isTouch = false;
-  showCursorAndWeb();
   
-  // Spawn trail sparks on move
-  if (cursorActive && Math.random() < 0.6) {
-    spawnSparks(curX, curY, 1);
+  if (!loaderActive && !cursorVisible) {
+    cur.classList.add('visible');
+    cursorVisible = true;
   }
 });
 
-// Touch support for mobile screens
-document.addEventListener('touchstart', e => {
-  if (loaderActive) return;
-  isTouch = true;
-  if (e.touches && e.touches[0]) {
-    mouseX = e.touches[0].clientX;
-    mouseY = e.touches[0].clientY;
-    lastMoveTime = Date.now();
-    showCursorAndWeb();
-    cur.classList.add('active'); // active pinch on touch
-  }
-}, { passive: true });
-
-document.addEventListener('touchmove', e => {
-  if (loaderActive) return;
-  if (e.touches && e.touches[0]) {
-    mouseX = e.touches[0].clientX;
-    mouseY = e.touches[0].clientY;
-    lastMoveTime = Date.now();
-    showCursorAndWeb();
-    
-    if (cursorActive && Math.random() < 0.6) {
-      spawnSparks(curX, curY, 1);
+// Update cursor position with smooth lerp
+function updateCursorPosition() {
+  if (loaderActive) {
+    if (cursorVisible) {
+      cur.classList.remove('visible');
+      cursorVisible = false;
     }
+  } else if (cursorVisible) {
+    // Smooth lerp positioning
+    curX += (mouseX - curX) * 0.3;
+    curY += (mouseY - curY) * 0.3;
+    cur.style.left = `${curX}px`;
+    cur.style.top = `${curY}px`;
   }
-}, { passive: true });
-
-document.addEventListener('touchend', () => {
-  if (loaderActive) return;
-  cur.classList.remove('active');
-  if (isTouch) {
-    setTimeout(() => {
-      if (Date.now() - lastMoveTime > 1200) {
-        hideCursorAndWeb();
-      }
-    }, 1500);
-  }
-}, { passive: true });
-
-// Mouse click animations (mousedown/mouseup)
-document.addEventListener('mousedown', () => {
-  if (loaderActive) return;
-  cur.classList.add('active');
-  // Click burst sparks
-  if (cursorActive) {
-    spawnSparks(curX, curY, 12);
-    // Trigger instant rapid pulse down the web line
-    wlPulses.push({ t: 0, speed: 0.035 });
-  }
-});
-
-document.addEventListener('mouseup', () => {
-  if (loaderActive) return;
-  cur.classList.remove('active');
-});
-
-function showCursorAndWeb() {
-  if (loaderActive) return;
-  cur.classList.add('visible');
-  wlCanvas.classList.add('visible');
-  cursorActive = true;
+  requestAnimationFrame(updateCursorPosition);
 }
-
-function hideCursorAndWeb() {
-  cur.classList.remove('visible');
-  wlCanvas.classList.remove('visible');
-  cursorActive = false;
-}
+updateCursorPosition();
 
 // Hover reactions on interactive elements
-document.querySelectorAll('a, button, .villain-card, .mission-card, .fan-letter, .filter-badge, .social-chip, .btn-comic').forEach(el => {
-  el.addEventListener('mouseenter', () => {
-    cur.classList.add('hover');
-    cursorScale = 1.25;
-  });
-  el.addEventListener('mouseleave', () => {
-    cur.classList.remove('hover');
-    cursorScale = 1.0;
-  });
+const hoverTargets = 'a, button, .villain-card, .mission-card, .fan-letter, .filter-badge, .social-chip, .btn-comic, .btn, .project-card, .tech-tag, .filter-btn';
+document.querySelectorAll(hoverTargets).forEach(el => {
+  el.addEventListener('mouseenter', () => cur.classList.add('hover'));
+  el.addEventListener('mouseleave', () => cur.classList.remove('hover'));
 });
-
-// Initialize web rope nodes between anchor and cursor
-function initWlRope(startX, startY, endX, endY) {
-  wlNodes = [];
-  for (let i = 0; i < WL_NODES_COUNT; i++) {
-    const t = i / (WL_NODES_COUNT - 1);
-    const x = startX + (endX - startX) * t;
-    const y = startY + (endY - startY) * t;
-    wlNodes.push({ x, y, px: x, py: y });
-  }
-  wlInitialized = true;
-}
-
-// Main physics loop for the web strand and cursor rotation
-function updateWebCursorPhysics() {
-  if (loaderActive) {
-    wlCtx.clearRect(0, 0, wlCanvas.width, wlCanvas.height);
-    cur.classList.remove('visible');
-    wlCanvas.classList.remove('visible');
-    return;
-  }
-
-  // 1. Smoothly interpolate cursor position (lerp)
-  curX += (mouseX - curX) * 0.45;
-  curY += (mouseY - curY) * 0.45;
-
-  // 2. Select anchor based on Spider-Man's hand (DOM fallback or 3D) relative to viewport
-  const heroRect = heroSec.getBoundingClientRect();
-  let handVX, handVY;
-  if (projectedHandX > 0 && projectedHandY > 0) {
-    handVX = heroRect.left + projectedHandX;
-    handVY = heroRect.top + projectedHandY;
-  } else {
-    const markerRect = webNodeMarker.getBoundingClientRect();
-    handVX = markerRect.left + markerRect.width / 2;
-    handVY = markerRect.top + markerRect.height / 2;
-  }
-  // Clamp X inside screen margins, clamp Y to be at least 0 (top edge of viewport)
-  const targetAnchorX = Math.max(10, Math.min(window.innerWidth - 10, handVX));
-  const targetAnchorY = Math.max(0, handVY);
-  
-  currentAnchor.x = targetAnchorX;
-  currentAnchor.y = targetAnchorY;
-
-  // 3. Calculate cursor velocity for dynamic tilt (sway)
-  const vx = curX - lastCurX;
-  const vy = curY - lastCurY;
-  const speed = Math.sqrt(vx * vx + vy * vy);
-  
-  // Tilt proportional to horizontal movement speed, capped at +/- 15 degrees
-  let targetTilt = vx * 0.45;
-  targetTilt = Math.max(-15, Math.min(15, targetTilt));
-  
-  // Smoothly interpolate current tilt angle
-  if (typeof cursorAngle === 'undefined' || isNaN(cursorAngle)) cursorAngle = 0;
-  cursorAngle += (targetTilt - cursorAngle) * 0.15;
-
-  // Render cursor with translation (accounting for 12% hotspot offset in a 60px container -> 7.2px) and dynamic tilt
-  const hotspotOffset = 7.2;
-  cur.style.transform = `translate3d(${curX - hotspotOffset}px, ${curY - hotspotOffset}px, 0) rotate(${cursorAngle}deg) scale(${cursorScale})`;
-
-  // 4. Verlet Web Strand Simulation
-  if (!wlInitialized) {
-    initWlRope(currentAnchor.x, currentAnchor.y, curX, curY);
-  }
-
-  // Pin first node to Spider-Man's hand (anchor)
-  wlNodes[0].x = currentAnchor.x;
-  wlNodes[0].y = currentAnchor.y;
-
-  // Pin last node to the bottom-right stem center of the cursor
-  // Stem center is at offset (75, 75) relative to tip (12, 12), which is dx=63, dy=63 in a 100x100 viewBox.
-  // In a 60px screen size, this is dx=37.8px, dy=37.8px. Distance = 53.46px, angle = 45 degrees (Math.PI / 4).
-  const rad = cursorAngle * Math.PI / 180;
-  const rx = 53.46 * cursorScale * Math.cos(rad + Math.PI / 4);
-  const ry = 53.46 * cursorScale * Math.sin(rad + Math.PI / 4);
-  const connectionX = curX + rx;
-  const connectionY = curY + ry;
-
-  wlNodes[WL_NODES_COUNT - 1].x = connectionX;
-  wlNodes[WL_NODES_COUNT - 1].y = connectionY;
-
-  // Update intermediate nodes
-  const jitterAmp = cur.classList.contains('hover') ? (Math.random() - 0.5) * 2.5 : 0;
-  
-  for (let i = 1; i < WL_NODES_COUNT - 1; i++) {
-    const node = wlNodes[i];
-    const vx = (node.x - node.px) * WL_DAMPING;
-    const vy = (node.y - node.py) * WL_DAMPING;
-
-    node.px = node.x;
-    node.py = node.y;
-
-    // Apply velocity, gravity, and hover vibration jitter
-    node.x += vx + jitterAmp * Math.sin(i);
-    node.y += vy + WL_GRAVITY + jitterAmp * Math.cos(i);
-  }
-
-  // Solve distance constraints
-  const totalLength = Math.sqrt((connectionX - currentAnchor.x) ** 2 + (connectionY - currentAnchor.y) ** 2);
-  const segmentLength = totalLength / (WL_NODES_COUNT - 1);
-
-  for (let k = 0; k < WL_ITERATIONS; k++) {
-    wlNodes[0].x = currentAnchor.x;
-    wlNodes[0].y = currentAnchor.y;
-    wlNodes[WL_NODES_COUNT - 1].x = connectionX;
-    wlNodes[WL_NODES_COUNT - 1].y = connectionY;
-
-    for (let i = 0; i < WL_NODES_COUNT - 1; i++) {
-      const n1 = wlNodes[i];
-      const n2 = wlNodes[i + 1];
-
-      const dx = n2.x - n1.x;
-      const dy = n2.y - n1.y;
-      const dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
-      const diff = segmentLength - dist;
-
-      const percent = (diff / dist) * 0.5;
-      const ox = dx * percent;
-      const oy = dy * percent;
-
-      if (i > 0) {
-        n1.x -= ox;
-        n1.y -= oy;
-      }
-      if (i + 1 < WL_NODES_COUNT - 1) {
-        n2.x += ox;
-        n2.y += oy;
-      }
-    }
-  }
-
-  // 5. Draw Web Strand on Canvas
-  wlCtx.clearRect(0, 0, wlCanvas.width, wlCanvas.height);
-
-  if (cursorActive && wlNodes.length > 0) {
-    // A. Draw Outer Glow Strand
-    wlCtx.beginPath();
-    wlCtx.moveTo(wlNodes[0].x, wlNodes[0].y);
-    for (let i = 1; i < WL_NODES_COUNT - 2; i++) {
-      const xc = (wlNodes[i].x + wlNodes[i + 1].x) / 2;
-      const yc = (wlNodes[i].y + wlNodes[i + 1].y) / 2;
-      wlCtx.quadraticCurveTo(wlNodes[i].x, wlNodes[i].y, xc, yc);
-    }
-    wlCtx.quadraticCurveTo(wlNodes[WL_NODES_COUNT - 2].x, wlNodes[WL_NODES_COUNT - 2].y, wlNodes[WL_NODES_COUNT - 1].x, wlNodes[WL_NODES_COUNT - 1].y);
-    
-    wlCtx.strokeStyle = cur.classList.contains('hover') ? 'rgba(255, 230, 64, 0.4)' : 'rgba(255, 255, 255, 0.35)';
-    wlCtx.lineWidth = 4.2;
-    wlCtx.shadowBlur = 3;
-    wlCtx.shadowColor = cur.classList.contains('hover') ? 'var(--yellow)' : '#ffffff';
-    wlCtx.stroke();
-
-    // B. Draw Main Core Strand
-    wlCtx.shadowBlur = 0;
-    wlCtx.strokeStyle = '#ffffff';
-    wlCtx.lineWidth = 1.5;
-    wlCtx.stroke();
-
-    // C. Draw Wrapping Spiral detail for fibrous texture
-    wlCtx.beginPath();
-    wlCtx.moveTo(wlNodes[0].x, wlNodes[0].y);
-    const time = Date.now() * 0.0016;
-    for (let i = 1; i < WL_NODES_COUNT; i++) {
-      const n1 = wlNodes[i - 1];
-      const n2 = wlNodes[i];
-      const midX = (n1.x + n2.x) / 2;
-      const midY = (n1.y + n2.y) / 2;
-
-      const segDx = n2.x - n1.x;
-      const segDy = n2.y - n1.y;
-      const len = Math.sqrt(segDx * segDx + segDy * segDy) || 0.1;
-      const nx = -segDy / len;
-      const ny = segDx / len;
-
-      const amp = Math.sin(time * 8.5 + i * 2.2) * 2.2; // fast sine wave wrap
-      const ox = midX + nx * amp;
-      const oy = midY + ny * amp;
-
-      wlCtx.quadraticCurveTo(ox, oy, n2.x, n2.y);
-    }
-    wlCtx.strokeStyle = cur.classList.contains('hover') ? 'rgba(227, 30, 36, 0.6)' : 'rgba(255, 255, 255, 0.6)';
-    wlCtx.lineWidth = 0.75;
-    wlCtx.stroke();
-
-    // D. Update and Draw Traveling Energy Pulses
-    const now = Date.now();
-    // Auto-pulse every 2.5 seconds
-    if (now - lastPulseTime > 2500) {
-      wlPulses.push({ t: 0, speed: 0.018 });
-      lastPulseTime = now;
-    }
-    // Speed-triggered pulse
-    if (speed > 18 && now - lastPulseTime > 700) {
-      wlPulses.push({ t: 0, speed: 0.028 });
-      lastPulseTime = now;
-    }
-
-    wlPulses = wlPulses.filter(pulse => {
-      pulse.t += pulse.speed;
-      if (pulse.t >= 1.0) {
-        // Pulse reached the cursor tip! Trigger flash reaction
-        cursorScale = 1.45;
-        cur.classList.add('pulse-flash');
-        spawnSparks(curX, curY, 6); // spawn mini splash of sparks
-        setTimeout(() => {
-          cur.classList.remove('pulse-flash');
-          if (!cur.classList.contains('hover')) cursorScale = 1.0;
-        }, 220);
-        return false;
-      }
-
-      // Find 2D coordinate on the web line corresponding to pulse t
-      const totalSegments = WL_NODES_COUNT - 1;
-      const rawIndex = pulse.t * totalSegments;
-      const idx = Math.floor(rawIndex);
-      const frac = rawIndex - idx;
-
-      if (idx >= 0 && idx < totalSegments) {
-        const n1 = wlNodes[idx];
-        const n2 = wlNodes[idx + 1];
-        const px = n1.x + (n2.x - n1.x) * frac;
-        const py = n1.y + (n2.y - n1.y) * frac;
-
-        // Draw traveling glow bubble
-        wlCtx.beginPath();
-        wlCtx.arc(px, py, 5.5, 0, Math.PI * 2);
-        wlCtx.fillStyle = '#ffffff';
-        wlCtx.shadowBlur = 8;
-        wlCtx.shadowColor = '#00f5ff';
-        wlCtx.fill();
-        wlCtx.shadowBlur = 0; // reset
-      }
-      return true;
-    });
-
-    // E. Update and Draw Trailing Sparks Particle System
-    wlCtx.shadowBlur = 0;
-    wlParticles = wlParticles.filter(spark => {
-      spark.update();
-      spark.draw();
-      return spark.alpha > 0;
-    });
-  }
-
-  // 6. Idle fadeout handling
-  const idleThreshold = isTouch ? 1500 : 2000;
-  if (Date.now() - lastMoveTime > idleThreshold) {
-    hideCursorAndWeb();
-  }
-
-  lastCurX = curX;
-  lastCurY = curY;
-}
-
-// Set up secondary animation loop or tie directly to existing rendering
-function runWebCursorPhysicsLoop() {
-  updateWebCursorPhysics();
-  requestAnimationFrame(runWebCursorPhysicsLoop);
-}
-// Start physics loop after page load to prevent TDZ errors on shared elements and coordinates
-window.addEventListener('load', runWebCursorPhysicsLoop);
 
 /* ─── LOADING SCREEN SEQUENCE ───────────────────── */
 const loader       = document.getElementById('loader');
