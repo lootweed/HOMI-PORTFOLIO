@@ -223,7 +223,7 @@ input, textarea, select { font-family: var(--font-body); }
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   overflow: hidden;
-  transition: opacity 1.5s ease-in-out;
+  transition: opacity 0.8s ease-in-out;
 }
 #loader.fade-out { opacity: 0; pointer-events: none; }
 
@@ -3518,7 +3518,7 @@ const symbiote     = document.getElementById('symbiote');
 function runLoader() {
   const hbText = document.getElementById('health-bar-text');
 
-  // Stage 1.5: Radioactive Spider transforms into Spidey Red/Blue Spider at 3.5s
+  // Stage 1.5: Radioactive Spider transforms into Spidey Red/Blue Spider at 1.5s
   setTimeout(() => {
     const spiderSvg = document.getElementById('radioactiveSpiderSvg');
     if (spiderSvg) {
@@ -3527,12 +3527,12 @@ function runLoader() {
     if (hbText) {
       hbText.textContent = 'GENETIC RECOMBINATION DETECTED...';
     }
-  }, 3500);
+  }, 1500);
 
-  // Stage 2: THWIP! after 4.8s
-  setTimeout(() => { thwip.classList.add('show'); }, 4800);
+  // Stage 2: THWIP! after 2.1s
+  setTimeout(() => { thwip.classList.add('show'); }, 2100);
 
-  // Stage 3: Health bar 5.8s → 9.4s
+  // Stage 3: Health bar 2.6s → 4.2s
   setTimeout(() => {
     hbWrap.classList.add('show');
     if (hbText) {
@@ -3544,37 +3544,37 @@ function runLoader() {
       hbFill.style.width = pct + '%';
       hbPct.textContent  = Math.round(pct) + '%';
       if (pct >= 100) clearInterval(iv);
-    }, 18);
-  }, 5800);
+    }, 8);
+  }, 2600);
 
-  // Stage 4: Tagline fades in
+  // Stage 4: Tagline fades in at 4.4s
   setTimeout(() => {
     loaderTag.classList.add('show');
     if (hbText) {
       hbText.textContent = 'HERO DATA STABLE!';
     }
-  }, 9800);
+  }, 4400);
 
-  // Stage 5: Symbiote spreads
+  // Stage 5: Symbiote spreads at 4.9s
   setTimeout(() => {
-    symbiote.style.transition = 'clip-path 2.2s cubic-bezier(0.16, 1, 0.3, 1)';
+    symbiote.style.transition = 'clip-path 1.0s cubic-bezier(0.16, 1, 0.3, 1)';
     symbiote.classList.add('spread');
-  }, 10800);
+  }, 4900);
 
-  // Stage 6: Symbiote rips away
+  // Stage 6: Symbiote rips away at 6.1s
   setTimeout(() => {
-    symbiote.style.transition = 'clip-path 1.6s cubic-bezier(0.16, 1, 0.3, 1)';
+    symbiote.style.transition = 'clip-path 0.7s cubic-bezier(0.16, 1, 0.3, 1)';
     symbiote.classList.remove('spread');
     symbiote.classList.add('rip');
     loader.classList.add('fade-out');
-  }, 13500);
+  }, 6100);
 
-  // Stage 7: Loader gone, start hero counters
+  // Stage 7: Loader gone, start hero counters at 7.0s
   setTimeout(() => {
     loader.style.display = 'none';
     animateCounters();
     loaderActive = false;
-  }, 15500);
+  }, 7000);
 }
 
 // Fallback if fonts don't load
