@@ -4617,13 +4617,31 @@ form.addEventListener('submit', e => {
   submitBtn.textContent = '⏳ SWINGING TO YOUR INBOX...';
   submitBtn.disabled = true;
 
-  setTimeout(() => {
-    form.reset();
+  const formData = new FormData(form);
+  formData.append("access_key", "087b3a27-a756-405d-9f9a-d54b6e2f8648");
+
+  fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      form.reset();
+      successMsg.classList.add('show');
+      setTimeout(() => successMsg.classList.remove('show'), 6000);
+    } else {
+      alert("Error sending message. Please try again later.");
+    }
+  })
+  .catch(error => {
+    console.error("Error:", error);
+    alert("An error occurred. Please check your internet connection.");
+  })
+  .finally(() => {
     submitBtn.textContent = '🕷️ FIRE THE SIGNAL!';
     submitBtn.disabled = false;
-    successMsg.classList.add('show');
-    setTimeout(() => successMsg.classList.remove('show'), 6000);
-  }, 1800);
+  });
 });
 
 /* ─── HERO ACTION WORDS random float animation ───── */
