@@ -74,7 +74,8 @@ input, textarea, select { font-family: var(--font-body); }
               width 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
               height 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
               background-color 0.25s ease,
-              opacity 0.3s ease;
+              opacity 0.3s ease,
+              box-shadow 0.2s ease;
   mix-blend-mode: multiply;
   opacity: 0; /* Starts hidden until mouse move */
 }
@@ -85,6 +86,9 @@ input, textarea, select { font-family: var(--font-body); }
   width: 32px;
   height: 32px;
   background: var(--yellow);
+}
+#cursor.pulse-flash {
+  box-shadow: 0 0 16px rgba(0, 245, 255, 0.95), 0 0 8px rgba(0, 245, 255, 0.6);
 }
 #cursor::after {
   content: '';
@@ -101,6 +105,20 @@ input, textarea, select { font-family: var(--font-body); }
 }
 @keyframes cursorSpin {
   to { transform: rotate(360deg); }
+}
+
+/* Web Line Canvas */
+#webLineCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 99998;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+#webLineCanvas.visible {
+  opacity: 1;
 }
 
 
@@ -2049,6 +2067,9 @@ footer {
 <!-- ── CURSOR ── -->
 <div id="cursor"></div>
 
+<!-- Web Line Canvas Overlay -->
+<canvas id="webLineCanvas"></canvas>
+
 <!-- ══════════════════════════════════════════════════
      LOADING SCREEN
 ══════════════════════════════════════════════════ -->
@@ -3100,42 +3121,383 @@ footer {
 <script>
 'use strict';
 
-/* ─── CUSTOM CURSOR ─────────────────────────────── */
+/* ─── CUSTOM CURSOR & VERLET WEB STRAND ─────────────────────────── */
 const cur = document.getElementById('cursor');
+const wlCanvas = document.getElementById('webLineCanvas');
+const wlCtx = wlCanvas.getContext('2d');
 let loaderActive = true;
+
+// Web Line physics nodes
+const WL_NODES_COUNT = 16;
+let wlNodes = [];
+const WL_DAMPING = 0.86;  // Organic spring damping
+const WL_GRAVITY = 0.22;  // Small gravitational sag
+const WL_ITERATIONS = 10;
+let wlInitialized = false;
+
+// Selected anchor (dynamic screen coordinate of Spider-Man's hand)
+let currentAnchor = { x: window.innerWidth / 2, y: 150 };
+
+// Mouse/Cursor coordinates
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
 let curX = mouseX;
 let curY = mouseY;
+let lastCurX = curX;
+let lastCurY = curY;
 let cursorVisible = false;
+
+// Trailing Sparks Particle System
+let wlParticles = [];
+
+class WebSpark {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    const emitAngle = Math.random() * Math.PI * 2;
+    const speed = Math.random() * 2.2 + 0.6;
+    this.vx = Math.cos(emitAngle) * speed;
+    this.vy = Math.sin(emitAngle) * speed + (Math.random() - 0.5) * 0.5;
+    this.size = Math.random() * 1.8 + 0.8;
+    this.alpha = 1.0;
+    this.decay = Math.random() * 0.035 + 0.015;
+    
+    const rand = Math.random();
+    if (rand < 0.45) this.color = '0, 245, 255';
+    else if (rand < 0.85) this.color = '255, 255, 255';
+    else this.color = '255, 230, 64';
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.vy -= 0.012;
+    this.alpha -= this.decay;
+  }
+  draw() {
+    wlCtx.beginPath();
+    wlCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    wlCtx.fillStyle = `rgba(${this.color}, ${this.alpha})`;
+    wlCtx.shadowBlur = 4;
+    wlCtx.shadowColor = `rgb(${this.color})`;
+    wlCtx.fill();
+  }
+}
+
+let wlPulses = [];
+let lastPulseTime = Date.now();
+let isTouch = false;
+let lastMoveTime = Date.now();
+
+function resizeWlCanvas() {
+  wlCanvas.width = window.innerWidth;
+  wlCanvas.height = window.innerHeight;
+}
+resizeWlCanvas();
+window.addEventListener('resize', resizeWlCanvas);
+
+function spawnSparks(x, y, count) {
+  for (let i = 0; i < count; i++) {
+    wlParticles.push(new WebSpark(x, y));
+  }
+}
 
 document.addEventListener('mousemove', e => {
   mouseX = e.clientX;
   mouseY = e.clientY;
+  lastMoveTime = Date.now();
+  isTouch = false;
   
   if (!loaderActive && !cursorVisible) {
     cur.classList.add('visible');
+    wlCanvas.classList.add('visible');
     cursorVisible = true;
+  }
+  
+  if (cursorVisible && Math.random() < 0.6) {
+    spawnSparks(curX, curY, 1);
   }
 });
 
-// Update cursor position with smooth lerp
-function updateCursorPosition() {
-  if (loaderActive) {
-    if (cursorVisible) {
-      cur.classList.remove('visible');
-      cursorVisible = false;
+document.addEventListener('touchstart', e => {
+  if (loaderActive) return;
+  isTouch = true;
+  if (e.touches && e.touches[0]) {
+    mouseX = e.touches[0].clientX;
+    mouseY = e.touches[0].clientY;
+    lastMoveTime = Date.now();
+    
+    if (!cursorVisible) {
+      cur.classList.add('visible');
+      wlCanvas.classList.add('visible');
+      cursorVisible = true;
     }
-  } else if (cursorVisible) {
-    // Smooth lerp positioning
-    curX += (mouseX - curX) * 0.3;
-    curY += (mouseY - curY) * 0.3;
-    cur.style.left = `${curX}px`;
-    cur.style.top = `${curY}px`;
   }
-  requestAnimationFrame(updateCursorPosition);
+}, { passive: true });
+
+document.addEventListener('touchmove', e => {
+  if (loaderActive) return;
+  if (e.touches && e.touches[0]) {
+    mouseX = e.touches[0].clientX;
+    mouseY = e.touches[0].clientY;
+    lastMoveTime = Date.now();
+    
+    if (cursorVisible && Math.random() < 0.6) {
+      spawnSparks(curX, curY, 1);
+    }
+  }
+}, { passive: true });
+
+document.addEventListener('touchend', () => {
+  if (loaderActive) return;
+  if (isTouch) {
+    setTimeout(() => {
+      if (Date.now() - lastMoveTime > 1200) {
+        cur.classList.remove('visible');
+        wlCanvas.classList.remove('visible');
+        cursorVisible = false;
+      }
+    }, 1500);
+  }
+}, { passive: true });
+
+document.addEventListener('mousedown', () => {
+  if (loaderActive) return;
+  if (cursorVisible) {
+    spawnSparks(curX, curY, 12);
+    wlPulses.push({ t: 0, speed: 0.035 });
+  }
+});
+
+function initWlRope(startX, startY, endX, endY) {
+  wlNodes = [];
+  for (let i = 0; i < WL_NODES_COUNT; i++) {
+    const t = i / (WL_NODES_COUNT - 1);
+    const x = startX + (endX - startX) * t;
+    const y = startY + (endY - startY) * t;
+    wlNodes.push({ x, y, px: x, py: y });
+  }
+  wlInitialized = true;
 }
-updateCursorPosition();
+
+function updateWebCursorPhysics() {
+  if (loaderActive) {
+    wlCtx.clearRect(0, 0, wlCanvas.width, wlCanvas.height);
+    cur.classList.remove('visible');
+    wlCanvas.classList.remove('visible');
+    cursorVisible = false;
+    return;
+  }
+
+  // 1. Smoothly interpolate cursor position (lerp)
+  curX += (mouseX - curX) * 0.3;
+  curY += (mouseY - curY) * 0.3;
+
+  cur.style.left = `${curX}px`;
+  cur.style.top = `${curY}px`;
+
+  if (!cursorVisible) {
+    wlCtx.clearRect(0, 0, wlCanvas.width, wlCanvas.height);
+    return;
+  }
+
+  // 2. Select anchor based on Spider-Man's hand (DOM fallback or 3D) relative to viewport
+  const heroRect = heroSec.getBoundingClientRect();
+  let handVX, handVY;
+  if (projectedHandX > 0 && projectedHandY > 0) {
+    handVX = heroRect.left + projectedHandX;
+    handVY = heroRect.top + projectedHandY;
+  } else {
+    const markerRect = webNodeMarker.getBoundingClientRect();
+    handVX = markerRect.left + markerRect.width / 2;
+    handVY = markerRect.top + markerRect.height / 2;
+  }
+  
+  const targetAnchorX = Math.max(10, Math.min(window.innerWidth - 10, handVX));
+  const targetAnchorY = Math.max(0, handVY);
+  
+  currentAnchor.x = targetAnchorX;
+  currentAnchor.y = targetAnchorY;
+
+  const vx = curX - lastCurX;
+  const vy = curY - lastCurY;
+  const speed = Math.sqrt(vx * vx + vy * vy);
+
+  // 4. Verlet Web Simulation
+  if (!wlInitialized) {
+    initWlRope(currentAnchor.x, currentAnchor.y, curX, curY);
+  }
+
+  wlNodes[0].x = currentAnchor.x;
+  wlNodes[0].y = currentAnchor.y;
+
+  wlNodes[WL_NODES_COUNT - 1].x = curX;
+  wlNodes[WL_NODES_COUNT - 1].y = curY;
+
+  const jitterAmp = cur.classList.contains('hover') ? (Math.random() - 0.5) * 2.5 : 0;
+  
+  for (let i = 1; i < WL_NODES_COUNT - 1; i++) {
+    const node = wlNodes[i];
+    const nvx = (node.x - node.px) * WL_DAMPING;
+    const nvy = (node.y - node.py) * WL_DAMPING;
+
+    node.px = node.x;
+    node.py = node.y;
+
+    node.x += nvx + jitterAmp * Math.sin(i);
+    node.y += nvy + WL_GRAVITY + jitterAmp * Math.cos(i);
+  }
+
+  const totalLength = Math.sqrt((curX - currentAnchor.x) ** 2 + (curY - currentAnchor.y) ** 2);
+  const segmentLength = totalLength / (WL_NODES_COUNT - 1);
+
+  for (let k = 0; k < WL_ITERATIONS; k++) {
+    wlNodes[0].x = currentAnchor.x;
+    wlNodes[0].y = currentAnchor.y;
+    wlNodes[WL_NODES_COUNT - 1].x = curX;
+    wlNodes[WL_NODES_COUNT - 1].y = curY;
+
+    for (let i = 0; i < WL_NODES_COUNT - 1; i++) {
+      const n1 = wlNodes[i];
+      const n2 = wlNodes[i + 1];
+
+      const dx = n2.x - n1.x;
+      const dy = n2.y - n1.y;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
+      const diff = segmentLength - dist;
+
+      const percent = (diff / dist) * 0.5;
+      const ox = dx * percent;
+      const oy = dy * percent;
+
+      if (i > 0) {
+        n1.x -= ox;
+        n1.y -= oy;
+      }
+      if (i + 1 < WL_NODES_COUNT - 1) {
+        n2.x += ox;
+        n2.y += oy;
+      }
+    }
+  }
+
+  // Draw Web
+  wlCtx.clearRect(0, 0, wlCanvas.width, wlCanvas.height);
+
+  if (cursorVisible && wlNodes.length > 0) {
+    wlCtx.beginPath();
+    wlCtx.moveTo(wlNodes[0].x, wlNodes[0].y);
+    for (let i = 1; i < WL_NODES_COUNT - 2; i++) {
+      const xc = (wlNodes[i].x + wlNodes[i + 1].x) / 2;
+      const yc = (wlNodes[i].y + wlNodes[i + 1].y) / 2;
+      wlCtx.quadraticCurveTo(wlNodes[i].x, wlNodes[i].y, xc, yc);
+    }
+    wlCtx.quadraticCurveTo(wlNodes[WL_NODES_COUNT - 2].x, wlNodes[WL_NODES_COUNT - 2].y, wlNodes[WL_NODES_COUNT - 1].x, wlNodes[WL_NODES_COUNT - 1].y);
+    
+    wlCtx.strokeStyle = cur.classList.contains('hover') ? 'rgba(255, 230, 64, 0.4)' : 'rgba(255, 255, 255, 0.35)';
+    wlCtx.lineWidth = 4.2;
+    wlCtx.shadowBlur = 3;
+    wlCtx.shadowColor = cur.classList.contains('hover') ? 'var(--yellow)' : '#ffffff';
+    wlCtx.stroke();
+
+    wlCtx.shadowBlur = 0;
+    wlCtx.strokeStyle = '#ffffff';
+    wlCtx.lineWidth = 1.5;
+    wlCtx.stroke();
+
+    // Spiral Detail
+    wlCtx.beginPath();
+    wlCtx.moveTo(wlNodes[0].x, wlNodes[0].y);
+    const time = Date.now() * 0.0016;
+    for (let i = 1; i < WL_NODES_COUNT; i++) {
+      const n1 = wlNodes[i - 1];
+      const n2 = wlNodes[i];
+      const midX = (n1.x + n2.x) / 2;
+      const midY = (n1.y + n2.y) / 2;
+
+      const segDx = n2.x - n1.x;
+      const segDy = n2.y - n1.y;
+      const len = Math.sqrt(segDx * segDx + segDy * segDy) || 0.1;
+      const nx = -segDy / len;
+      const ny = segDx / len;
+
+      const amp = Math.sin(time * 8.5 + i * 2.2) * 2.2;
+      const ox = midX + nx * amp;
+      const oy = midY + ny * amp;
+
+      wlCtx.quadraticCurveTo(ox, oy, n2.x, n2.y);
+    }
+    wlCtx.strokeStyle = cur.classList.contains('hover') ? 'rgba(227, 30, 36, 0.6)' : 'rgba(255, 255, 255, 0.6)';
+    wlCtx.lineWidth = 0.75;
+    wlCtx.stroke();
+
+    // Pulses
+    const now = Date.now();
+    if (now - lastPulseTime > 2500) {
+      wlPulses.push({ t: 0, speed: 0.018 });
+      lastPulseTime = now;
+    }
+    if (speed > 18 && now - lastPulseTime > 700) {
+      wlPulses.push({ t: 0, speed: 0.028 });
+      lastPulseTime = now;
+    }
+
+    wlPulses = wlPulses.filter(pulse => {
+      pulse.t += pulse.speed;
+      if (pulse.t >= 1.0) {
+        cur.classList.add('pulse-flash');
+        spawnSparks(curX, curY, 6);
+        setTimeout(() => {
+          cur.classList.remove('pulse-flash');
+        }, 220);
+        return false;
+      }
+
+      const totalSegments = WL_NODES_COUNT - 1;
+      const rawIndex = pulse.t * totalSegments;
+      const idx = Math.floor(rawIndex);
+      const frac = rawIndex - idx;
+
+      if (idx >= 0 && idx < totalSegments) {
+        const n1 = wlNodes[idx];
+        const n2 = wlNodes[idx + 1];
+        const px = n1.x + (n2.x - n1.x) * frac;
+        const py = n1.y + (n2.y - n1.y) * frac;
+
+        wlCtx.beginPath();
+        wlCtx.arc(px, py, 5.5, 0, Math.PI * 2);
+        wlCtx.fillStyle = '#ffffff';
+        wlCtx.shadowBlur = 8;
+        wlCtx.shadowColor = '#00f5ff';
+        wlCtx.fill();
+        wlCtx.shadowBlur = 0;
+      }
+      return true;
+    });
+
+    wlCtx.shadowBlur = 0;
+    wlParticles = wlParticles.filter(spark => {
+      spark.update();
+      spark.draw();
+      return spark.alpha > 0;
+    });
+  }
+
+  const idleThreshold = isTouch ? 1500 : 2000;
+  if (Date.now() - lastMoveTime > idleThreshold) {
+    cur.classList.remove('visible');
+    wlCanvas.classList.remove('visible');
+    cursorVisible = false;
+  }
+
+  lastCurX = curX;
+  lastCurY = curY;
+}
+
+function runWebCursorPhysicsLoop() {
+  updateWebCursorPhysics();
+  requestAnimationFrame(runWebCursorPhysicsLoop);
+}
+window.addEventListener('load', runWebCursorPhysicsLoop);
 
 // Hover reactions on interactive elements
 const hoverTargets = 'a, button, .villain-card, .mission-card, .fan-letter, .filter-badge, .social-chip, .btn-comic, .btn, .project-card, .tech-tag, .filter-btn';
